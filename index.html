@@ -11,7 +11,7 @@
             --bg-app: #dfe6e9; --cell-bg: #ffffff;
             --correct: #00b894; --wrong: #ff7675; --text-color: #2d3436;
             --dark-bar: #2d3436;
-            --max-width: 480px; /* Oyun alanının maksimum genişliği */
+            --max-width: 480px;
         }
         
         * { box-sizing: border-box; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
@@ -24,16 +24,10 @@
             overflow: hidden; color: var(--text-color);
         }
 
-        /* --- MERKEZİ KAPSAYICI (EN ÖNEMLİ KISIM) --- */
-        /* Bu yapı sayesinde masaüstünde her şey ortada toplanır */
         .app-container {
-            width: 100%;
-            max-width: var(--max-width);
-            height: 100%;
-            background: var(--bg-app);
-            display: flex; flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1); /* Masaüstünde şık durması için gölge */
+            width: 100%; max-width: var(--max-width); height: 100%;
+            background: var(--bg-app); display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
         /* EKRANLAR */
@@ -46,28 +40,20 @@
         }
         .hidden { display: none !important; opacity: 0; }
 
-        /* GİRİŞ BUTONLARI */
         .btn-main {
             border: none; padding: 18px; width: 85%;
             border-radius: 12px; font-size: 1.1rem; font-weight: 600;
             margin-bottom: 15px; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; justify-content: space-between; align-items: center;
-            transition: transform 0.1s;
         }
         .btn-main:active { transform: scale(0.98); }
         .btn-lang { background: var(--primary); color: white; }
         .btn-level { background: white; color: var(--primary); border: 2px solid var(--primary); }
 
-        /* --- OYUN EKRANI --- */
-        #game-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-        }
+        /* OYUN EKRANI */
+        #game-screen { display: none; flex-direction: column; height: 100%; width: 100%; }
 
-        /* 1. ÜST BAR (Artık max-width içinde olduğu için dağılmaz) */
         .top-bar {
             background: var(--dark-bar); color: white;
             padding: 0 15px; height: 60px; flex-shrink: 0;
@@ -76,8 +62,7 @@
         }
         .icon-btn {
             background: transparent; border: none; font-size: 1.5rem; cursor: pointer;
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-            color: #fdcb6e;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fdcb6e;
         }
         .icon-btn:disabled { opacity: 0.3; color: #fff; }
         
@@ -92,67 +77,39 @@
             border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
         }
 
-        /* 2. OYUN ALANI (GRID) */
         .board-area {
-            flex: 1;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Dikey ortala */
-            align-items: center;     /* Yatay ortala */
-            overflow: hidden;
-            padding: 10px;
+            flex: 1; width: 100%; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            overflow: hidden; padding: 10px;
         }
 
         .grid {
-            display: grid;
-            gap: 3px;
-            width: 100%;
-            /* Grid'in kendisi kare olmak zorunda değil, içerik sığsın yeter */
-            /* Ama max boyut veriyoruz ki çok büyümesin */
-            max-width: 95%; 
-            margin: 0 auto;
-            /* Grid içeriğini ortala */
-            justify-content: center;
-            align-content: center;
+            display: grid; gap: 3px; width: 100%; max-width: 95%; margin: 0 auto;
+            justify-content: center; align-content: center;
         }
 
         .cell {
-            background: transparent;
-            border-radius: 4px;
+            background: transparent; border-radius: 4px;
             display: flex; justify-content: center; align-items: center;
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: var(--text-color);
-            cursor: pointer;
-            
-            /* ÇÖZÜM BURADA: Kutuları ne olursa olsun kare yap */
-            aspect-ratio: 1 / 1;
-            
-            /* Boş hücreler için çok hafif iz */
-            border: 1px solid rgba(0,0,0,0.04);
-            position: relative;
-        }
-
-        /* Yazı boyutunu ekran küçüldükçe dinamik küçült */
-        @media (max-height: 700px) {
-            .cell { font-size: 0.9rem; }
+            font-weight: 800; font-size: 1.2rem; color: var(--text-color);
+            cursor: pointer; aspect-ratio: 1 / 1;
+            border: 1px solid rgba(0,0,0,0.04); position: relative;
+            /* Performans için */
+            backface-visibility: hidden;
+            -webkit-font-smoothing: antialiased;
         }
         
-        .cell.playable { 
-            background: white; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            border: none; 
-        }
+        @media (max-height: 700px) { .cell { font-size: 0.9rem; } }
         
+        .cell.playable { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
         .cell.highlighted { background: #fff7d1; }
         
+        /* DÜZELTME: Transform kaldırıldı, Border ile vurgu yapıldı */
         .cell.active { 
             background: var(--accent); 
-            border: 2px solid #e17055;
-            transform: scale(1.05);
+            /* Kutu boyutunu bozmadan içe doğru kalın kenarlık */
+            box-shadow: inset 0 0 0 2px #e17055; 
             z-index: 5;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
 
         .cell.correct { background: var(--correct); color: white; }
@@ -160,48 +117,39 @@
 
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 
-        /* 3. KLAVYE */
         .keyboard-container {
-            background: #dcdde1;
-            padding: 8px 5px 25px 5px;
-            width: 100%;
-            flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 6px;
-            border-top: 1px solid #b2bec3;
+            background: #dcdde1; padding: 8px 5px 25px 5px; width: 100%; flex-shrink: 0;
+            display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #b2bec3;
         }
-
         .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
-
         .kb-key {
-            font-family: 'Poppins', sans-serif;
-            background: #fff; color: var(--text-color);
-            border: none; border-radius: 5px;
-            font-weight: 700; 
-            font-size: 1.1rem;
-            height: 48px; 
-            flex: 1; 
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.15);
-            transition: background 0.1s;
-            max-width: 45px; /* Tuşlar çok yayılmasın */
+            font-family: 'Poppins', sans-serif; background: #fff; color: var(--text-color);
+            border: none; border-radius: 5px; font-weight: 700; font-size: 1.1rem; height: 48px; 
+            flex: 1; display: flex; justify-content: center; align-items: center; cursor: pointer;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.15); max-width: 45px;
         }
-        
         .kb-key:active { transform: translateY(2px); box-shadow: none; background: #f1f2f6; }
         .kb-key.wide { flex: 1.5; max-width: 65px; background: #7f8c8d; color: white; font-size: 0.9rem; }
 
-        /* MODAL & LOADING */
+        /* MODAL & SCORE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-box { background: white; width: 100%; max-width: 320px; border-radius: 20px; padding: 25px; text-align: center; }
-        .modal-list { max-height: 200px; overflow-y: auto; margin: 15px 0; padding: 0; list-style: none; text-align: left; font-size: 0.9rem; }
-        .modal-list li { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; }
-        #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--primary); }
+        .modal-list { max-height: 150px; overflow-y: auto; margin: 15px 0; padding: 0; list-style: none; text-align: left; font-size: 0.85rem; }
+        .modal-list li { border-bottom: 1px solid #eee; padding: 6px 0; display: flex; justify-content: space-between; }
+        
+        .score-card {
+            background: #f1f2f6; padding: 15px; border-radius: 10px; margin-bottom: 15px;
+            border: 2px solid var(--primary);
+        }
+        .score-title { font-size: 0.8rem; color: #636e72; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .score-val { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 5px 0; }
+        .score-detail { font-size: 0.9rem; color: #2d3436; font-weight: 600; }
 
+        #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <!-- Tüm içeriği saran, genişliği sınırlayan kapsayıcı -->
     <div class="app-container">
 
         <div id="loading-overlay">
@@ -233,19 +181,14 @@
 
         <!-- 3. OYUN EKRANI -->
         <div id="game-screen" class="hidden">
-            <!-- Üst Bar -->
             <div class="top-bar">
                 <button id="hint-btn" class="icon-btn" onclick="giveHint()" disabled>💡</button>
                 <div id="clue-text" class="clue-container">BAŞLA</div>
                 <button class="menu-btn" onclick="goBackToLevel()">Menü</button>
             </div>
-
-            <!-- Grid Alanı -->
             <div class="board-area">
                 <div id="grid" class="grid"></div>
             </div>
-
-            <!-- Klavye -->
             <div class="keyboard-container">
                 <div class="kb-row" id="row1"></div>
                 <div class="kb-row" id="row2"></div>
@@ -253,16 +196,24 @@
             </div>
         </div>
 
-    </div> <!-- app-container sonu -->
+    </div>
 
-    <!-- MODAL (Container dışında olabilir, ekranı kaplamalı) -->
+    <!-- WIN MODAL -->
     <div id="win-modal" class="modal">
         <div class="modal-box">
-            <div style="font-size:3rem;">🎉</div>
-            <h2 style="color:var(--correct); margin:10px 0;">Tebrikler!</h2>
-            <p>Hepsini buldun.</p>
+            <h2 style="color:var(--correct); margin:0 0 15px 0;">Tebrikler! 🎉</h2>
+            
+            <!-- SKOR KARTI -->
+            <div class="score-card">
+                <div class="score-title">Başarı Oranı</div>
+                <div id="final-percentage" class="score-val">%100</div>
+                <div id="final-stats" class="score-detail">28/0 İpucu</div>
+            </div>
+
+            <p style="margin:5px 0; font-size:0.9rem; color:#b2bec3;">Bulunan Kelimeler:</p>
             <ul id="summary-list" class="modal-list"></ul>
-            <button class="btn-main btn-lang" style="width:100%" onclick="initGame()">Yeni Oyun</button>
+            
+            <button class="btn-main btn-lang" style="width:100%; margin-top:10px;" onclick="initGame()">Yeni Oyun</button>
             <button style="margin-top:10px; background:none; border:none; color:#636e72; cursor:pointer;" onclick="goBackToLevel()">Menüye Dön</button>
         </div>
     </div>
@@ -276,12 +227,13 @@ let appState = {
     currentWords: [],
     selectedWord: null,
     cursor: { r: -1, c: -1 },
-    gridData: [] 
+    gridData: [],
+    // Puanlama için değişkenler
+    totalLetters: 0,
+    hintsUsed: 0
 };
 
-// --- NAVIGASYON ---
 function showScreen(id) {
-    // Sadece app-container içindeki ekranları gizle/göster
     document.querySelectorAll('.screen, #game-screen').forEach(s => {
         s.classList.add('hidden');
         s.style.display = 'none';
@@ -300,7 +252,7 @@ async function selectLevel(filename) {
     document.getElementById('loading-overlay').style.display = 'flex';
     try {
         const response = await fetch(`./data/${filename}.json`);
-        if (!response.ok) throw new Error("Dosya bulunamadı");
+        if (!response.ok) throw new Error("Hata");
         appState.sourceWords = await response.json();
         document.getElementById('loading-overlay').style.display = 'none';
         showScreen('game-screen');
@@ -309,7 +261,7 @@ async function selectLevel(filename) {
     } catch (error) {
         console.error(error);
         document.getElementById('loading-overlay').style.display = 'none';
-        alert("Veri yüklenemedi: " + filename);
+        alert("Veri yüklenemedi.");
     }
 }
 
@@ -318,10 +270,12 @@ function goBackToLevel() {
     showScreen('level-screen'); 
 }
 
-// --- OYUN BAŞLATMA ---
 function initGame() {
     appState.selectedWord = null;
     appState.cursor = { r: -1, c: -1 };
+    appState.hintsUsed = 0; // İpucu sayacını sıfırla
+    appState.totalLetters = 0; // Toplam harf sayısını sıfırla
+
     document.getElementById('win-modal').style.display = 'none';
     document.getElementById('hint-btn').disabled = true;
     document.getElementById('hint-btn').style.opacity = "0.3";
@@ -345,22 +299,27 @@ function initGame() {
     const result = generateCrossword(selection);
     appState.currentWords = result.placedWords;
     
-    // Eğer kelimeler sığmadıysa tekrar dene
     if (appState.currentWords.length < 4) {
         setTimeout(initGame, 50); 
         return;
     }
 
+    // Toplam harf sayısını hesapla (Kesişimler dahil grid üzerindeki dolu hücreler)
+    let count = 0;
+    for(let r=0; r<GRID_SIZE; r++) {
+        for(let c=0; c<GRID_SIZE; c++) {
+            if(result.grid[r][c] !== null) count++;
+        }
+    }
+    appState.totalLetters = count;
+
     appState.gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(""));
     renderGrid(result.grid);
 }
 
-// --- GÖRSELLEŞTİRME ---
 function renderGrid(structure) {
     const gridEl = document.getElementById('grid');
     gridEl.innerHTML = '';
-    
-    // Grid Columns sayısını dinamik olarak ayarlayalım
     gridEl.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
 
     for(let r=0; r<GRID_SIZE; r++) {
@@ -386,7 +345,6 @@ function renderKeyboard() {
         "A S D F G H J K L Ş İ",
         "Z X C V B N M Ö Ç"
     ];
-    
     const makeRow = (str, id) => {
         const container = document.getElementById(id);
         container.innerHTML = '';
@@ -413,22 +371,15 @@ function renderKeyboard() {
     makeRow(rows[2], 'row3');
 }
 
-// --- FİZİKSEL KLAVYE DESTEĞİ ---
 document.addEventListener('keydown', (e) => {
-    // Oyun ekranı gizliyse işlem yapma
     if(document.getElementById('game-screen').classList.contains('hidden')) return;
-    
     const key = e.key;
-    if(key === 'Backspace') {
-        handleVirtualKey('BACKSPACE');
-        return;
-    }
+    if(key === 'Backspace') { handleVirtualKey('BACKSPACE'); return; }
     if(key.length === 1 && /^[a-zA-ZçÇğĞıİöÖşŞüÜ]$/.test(key)) {
         handleVirtualKey(key.toLocaleUpperCase('tr'));
     }
 });
 
-// --- OYUN İŞLEVLERİ ---
 function handleCellClick(r, c) {
     const wordsAtCell = appState.currentWords.filter(w => {
         if (w.dir === 'across') return r === w.row && c >= w.col && c < w.col + w.answer.length;
@@ -441,14 +392,9 @@ function handleCellClick(r, c) {
     
     if (appState.selectedWord && wordsAtCell.length > 1) {
         if (appState.selectedWord.index === wordsAtCell[0].index) {
-            // Aynı hücreye tekrar tıklandıysa diğer kelimeye geç (varsa)
-            if(appState.cursor.r === r && appState.cursor.c === c) {
-                targetWord = wordsAtCell[1];
-            } else {
-                targetWord = wordsAtCell[0];
-            }
+            if(appState.cursor.r === r && appState.cursor.c === c) targetWord = wordsAtCell[1];
+            else targetWord = wordsAtCell[0];
         } else {
-            // Kesişim noktasındaysak mantıklı olanı seç
             targetWord = wordsAtCell.some(w => w.index === appState.selectedWord.index) ? appState.selectedWord : wordsAtCell[0];
         }
     }
@@ -458,7 +404,6 @@ function handleCellClick(r, c) {
         updateClueDisplay();
         highlightBoard();
         
-        // Kelimenin ilk boş hücresini bul
         let foundEmpty = false;
         for(let i=0; i<targetWord.answer.length; i++) {
             const tr = targetWord.dir === 'across' ? targetWord.row : targetWord.row + i;
@@ -571,7 +516,6 @@ function checkCorrectness() {
     }
 
     domCells.forEach(c => c.classList.remove('correct', 'wrong'));
-    
     if (isFull) {
         if (fullWord === w.answer) domCells.forEach(c => c.classList.add('correct'));
         else domCells.forEach(c => c.classList.add('wrong'));
@@ -581,11 +525,16 @@ function checkCorrectness() {
 function giveHint() {
     if(!appState.selectedWord) return;
     const w = appState.selectedWord;
+    
     for(let i=0; i<w.answer.length; i++) {
         const r = w.dir === 'across' ? w.row : w.row + i;
         const c = w.dir === 'across' ? w.col + i : w.col;
+        
+        // Eğer kutu boşsa veya yanlışsa
         if (appState.gridData[r][c] !== w.answer[i]) {
             appState.gridData[r][c] = w.answer[i];
+            appState.hintsUsed++; // İpucu sayacını artır
+            
             updateCellUI(r, c);
             appState.cursor = { r, c };
             updateCursorUI();
@@ -607,6 +556,17 @@ function checkWin() {
     });
 
     if (allCorrect) {
+        // Puan Hesapla
+        const total = appState.totalLetters;
+        const used = appState.hintsUsed;
+        // Eksi puana düşmesin diye max(0, ...)
+        const rawPercentage = ((total - used) / total) * 100;
+        const percentage = Math.max(0, Math.round(rawPercentage));
+
+        // Ekrana Yaz
+        document.getElementById('final-percentage').innerText = `%${percentage}`;
+        document.getElementById('final-stats').innerText = `${total}/${used} İpucu`;
+
         const list = document.getElementById('summary-list');
         list.innerHTML = '';
         appState.currentWords.forEach(w => {
