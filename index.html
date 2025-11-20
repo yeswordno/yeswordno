@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- Ekran kaymasını engellemek için -->
+    <!-- Sayfanın mobil cihazlarda oynamasını, zoom yapılmasını engeller -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Kelime Avcısı Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -13,17 +13,20 @@
             --correct: #00b894; --wrong: #ff7675; --text-color: #2d3436;
             --dark-bar: #2d3436;
         }
+        
+        /* Tüm seçimleri ve dokunma gecikmelerini kapat */
         * { box-sizing: border-box; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
         
         body {
             font-family: 'Poppins', sans-serif; background-color: var(--bg-app);
             margin: 0; padding: 0; 
-            height: 100dvh; /* Mobil tarayıcılar için dinamik yükseklik */
+            height: 100dvh; /* Dinamik yükseklik */
+            width: 100vw;
             display: flex; flex-direction: column;
             overflow: hidden; color: var(--text-color);
         }
 
-        /* GİRİŞ EKRANLARI */
+        /* --- EKRANLAR GENEL --- */
         .screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-app); z-index: 10;
@@ -33,17 +36,20 @@
         }
         .hidden { display: none !important; opacity: 0; }
 
+        /* GİRİŞ BUTONLARI */
         .btn-main {
-            border: none; padding: 18px 20px; width: 85%; max-width: 320px;
-            border-radius: 12px; font-size: 1.1rem; font-weight: 600;
+            border: none; padding: 15px 20px; width: 85%; max-width: 320px;
+            border-radius: 12px; font-size: 1rem; font-weight: 600;
             margin-bottom: 15px; cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             display: flex; justify-content: space-between; align-items: center;
+            transition: transform 0.1s;
         }
+        .btn-main:active { transform: scale(0.98); }
         .btn-lang { background: var(--primary); color: white; }
         .btn-level { background: white; color: var(--primary); border: 2px solid var(--primary); }
 
-        /* --- OYUN EKRANI (Bundle Tarzı) --- */
+        /* --- OYUN EKRANI --- */
         #game-screen {
             display: none;
             flex-direction: column;
@@ -53,94 +59,78 @@
 
         /* 1. ÜST BAR */
         .top-bar {
-            background: var(--dark-bar);
-            color: white;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 60px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            z-index: 20;
+            background: var(--dark-bar); color: white;
+            padding: 0 10px; height: 55px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 20;
         }
-
         .icon-btn {
-            background: transparent; border: none; font-size: 1.4rem; cursor: pointer; 
-            width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; transition: background 0.2s;
+            background: transparent; border: none; font-size: 1.4rem; cursor: pointer;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
         }
-        .icon-btn:active { background: rgba(255,255,255,0.1); }
         .icon-btn:disabled { opacity: 0.3; }
-
         .clue-container {
-            flex: 1;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 0 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #b2bec3; /* Başlangıçta gri */
+            flex: 1; text-align: center; font-weight: 700; font-size: 0.9rem;
+            padding: 0 5px; white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis; text-transform: uppercase; color: #b2bec3;
         }
-        
         .menu-btn {
             background: transparent; border: 1px solid #636e72; color: #b2bec3;
-            border-radius: 6px; padding: 6px 12px; font-size: 0.75rem; font-weight: 600;
-            cursor: pointer;
+            border-radius: 6px; padding: 5px 10px; font-size: 0.7rem; font-weight: 600; cursor: pointer;
         }
 
-        /* 2. OYUN ALANI (Grid) */
+        /* 2. OYUN ALANI (GRID) */
         .board-area {
             flex: 1;
             width: 100%;
             display: flex;
             justify-content: center;
-            align-items: center; /* Dikey ortalama */
-            overflow: hidden;
+            align-items: center; /* Tam ortala */
+            overflow: hidden; /* Kaydırmayı engelle, sığdıracağız */
             padding: 10px;
-            position: relative;
         }
 
         .grid {
             display: grid;
             gap: 3px;
-            /* Responsive Genişlik Ayarı */
-            width: 100%;
-            max-width: 360px; 
-            /* Kare olması için aspect-ratio şart, desteklemeyen tarayıcılar için fallback yok ama modern hepsi destekler */
-            aspect-ratio: 1 / 1; 
+            /* ÖNEMLİ: Izgaranın her zaman kare kalmasını sağlar */
+            aspect-ratio: 1 / 1;
+            
+            /* Genişlik ekranın %95'i olsun ama asla yüksekliğin %60'ını geçmesin (klavye payı) */
+            width: 95%;
+            max-width: 55vh; 
+            max-height: 55vh;
+            
             margin: auto;
         }
 
         .cell {
-            position: relative;
             background: transparent;
             border-radius: 4px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             font-weight: 800;
-            font-size: 1.1rem;
+            /* Font boyutunu grid boyutuna göre ayarla */
+            font-size: clamp(10px, 2.5vh, 24px); 
             color: var(--text-color);
             cursor: pointer;
-            /* Boş hücrelerin yerini görmek için çok hafif border (Debug için de iyi) */
-            border: 1px solid rgba(0,0,0,0.03); 
+            
+            /* Oynanmayan hücreler için çok silik kenarlık (yer belli olsun diye) */
+            border: 1px solid rgba(0,0,0,0.04);
+            
+            /* İçerik değiştiğinde boyut değişmesin diye */
+            overflow: hidden;
         }
         
+        /* Oynanabilir Hücreler */
         .cell.playable { 
             background: white; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            border: none; 
+            border: none; /* Kenarlığı kaldır, gölge var */
         }
         
-        /* Seçili Kelime Yolu */
-        .cell.highlighted { background: #fff7d1; }
+        .cell.highlighted { background: #fff7d1; } /* Seçili Kelime Yolu */
         
-        /* Seçili Aktif Kare */
+        /* Seçili Olan Aktif Kutu */
         .cell.active { 
             background: var(--accent); 
             border: 2px solid #e17055;
@@ -151,49 +141,53 @@
 
         .cell.correct { background: var(--correct); color: white; }
         .cell.wrong { background: var(--wrong); color: white; animation: shake 0.4s; }
-
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 
         /* 3. SANAL KLAVYE */
         .keyboard-container {
             background: #dcdde1;
-            padding: 8px 4px 20px 4px; /* Alt boşluk iPhone home bar için */
+            padding: 5px 2px 20px 2px; /* Alt boşluk iOS çubuğu için */
             width: 100%;
             flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            display: flex; flex-direction: column; gap: 5px;
             border-top: 1px solid #b2bec3;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
 
-        .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
+        .kb-row { display: flex; justify-content: center; gap: 3px; width: 100%; }
 
         .kb-key {
             font-family: 'Poppins', sans-serif;
-            background: #fff; 
-            color: var(--text-color);
+            background: #fff; color: var(--text-color);
             border: none; border-radius: 5px;
-            font-weight: 700; font-size: 1.1rem;
-            height: 46px; 
-            flex: 1;
+            font-weight: 700; 
+            font-size: 1rem; /* Mobilde yazı boyutu */
+            height: 44px; 
+            flex: 1; /* Esnek genişlik */
             display: flex; justify-content: center; align-items: center;
             cursor: pointer;
-            max-width: 34px; /* Tuşlar çok genişlemesin */
             box-shadow: 0 2px 0 rgba(0,0,0,0.15);
-            transition: transform 0.1s;
+            transition: background 0.1s;
         }
         
+        /* Tuşların çok geniş olmasını engelle (Masaüstü için) */
+        .kb-key { max-width: 40px; } 
+        
         .kb-key:active { transform: translateY(2px); box-shadow: none; background: #f1f2f6; }
-        .kb-key.wide { flex: 1.5; max-width: 55px; background: #7f8c8d; color: white; font-size: 1rem; }
+        .kb-key.wide { flex: 1.5; max-width: 60px; background: #7f8c8d; color: white; font-size: 0.9rem; }
 
-        /* MODAL */
+        /* MODAL ve LOADING */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal-box { background: white; width: 100%; max-width: 350px; border-radius: 20px; padding: 25px; text-align: center; }
         .modal-list { max-height: 200px; overflow-y: auto; margin: 15px 0; padding: 0; list-style: none; text-align: left; font-size: 0.9rem; }
         .modal-list li { border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; }
-        
-        /* LOADING */
         #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--primary); }
+
+        /* Küçük ekranlar için ince ayar */
+        @media (max-height: 650px) {
+            .grid { max-width: 45vh; max-height: 45vh; }
+            .kb-key { height: 38px; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
@@ -234,12 +228,12 @@
             <button class="menu-btn" onclick="goBackToLevel()">Menü</button>
         </div>
 
-        <!-- Grid Alanı -->
+        <!-- Grid Alanı (Kare ve Sabit) -->
         <div class="board-area">
             <div id="grid" class="grid"></div>
         </div>
 
-        <!-- Klavye -->
+        <!-- Klavye (QWERTY + Türkçe) -->
         <div class="keyboard-container">
             <div class="kb-row" id="row1"></div>
             <div class="kb-row" id="row2"></div>
@@ -260,8 +254,8 @@
     </div>
 
 <script>
-// --- YAPILANDIRMA ---
-const GRID_SIZE = 15; // Daha rahat sığması için 15x15 yaptık
+// --- AYARLAR ---
+const GRID_SIZE = 15; 
 let appState = {
     mode: 'EN_TR',
     sourceWords: [],
@@ -290,11 +284,9 @@ function goBackToLang() { showScreen('lang-screen'); }
 async function selectLevel(filename) {
     document.getElementById('loading-overlay').style.display = 'flex';
     try {
-        // Dosya yolu kontrolü
         const response = await fetch(`./data/${filename}.json`);
         if (!response.ok) throw new Error("Dosya bulunamadı");
         appState.sourceWords = await response.json();
-        
         document.getElementById('loading-overlay').style.display = 'none';
         showScreen('game-screen');
         renderKeyboard();
@@ -302,7 +294,7 @@ async function selectLevel(filename) {
     } catch (error) {
         console.error(error);
         document.getElementById('loading-overlay').style.display = 'none';
-        alert("Veri yüklenemedi. Lütfen 'data' klasöründe '" + filename + ".json' dosyasının olduğundan emin olun.");
+        alert("Veri yüklenemedi. './data/" + filename + ".json' dosyasını kontrol edin.");
     }
 }
 
@@ -318,24 +310,17 @@ function initGame() {
     document.getElementById('win-modal').style.display = 'none';
     document.getElementById('hint-btn').disabled = true;
     document.getElementById('hint-btn').style.opacity = "0.3";
-    document.getElementById('clue-text').innerText = "BAŞLAMAK İÇİN TIKLA";
+    document.getElementById('clue-text').innerText = "BAŞLAMAK İÇİN BİR KUTUYA TIKLA";
     document.getElementById('clue-text').style.color = "#b2bec3";
 
-    if (!appState.sourceWords || appState.sourceWords.length === 0) {
-        alert("Kelime listesi boş!");
-        return;
-    }
+    if (!appState.sourceWords || appState.sourceWords.length === 0) return;
 
-    // Rastgele kelimeler
     const shuffled = [...appState.sourceWords].sort(() => 0.5 - Math.random());
     
-    // Veriyi temizle ve hazırla
     const selection = shuffled.slice(0, 35).map(item => {
         const rawAnswer = appState.mode === 'EN_TR' ? item.en : item.tr;
         const clue = appState.mode === 'EN_TR' ? item.tr : item.en;
-        
-        if(!rawAnswer) return null; // Hatalı veriyi atla
-
+        if(!rawAnswer) return null;
         return {
             answer: rawAnswer.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, ''),
             clue: clue,
@@ -346,17 +331,13 @@ function initGame() {
     const result = generateCrossword(selection);
     appState.currentWords = result.placedWords;
     
-    // Eğer hiç kelime yerleştirilemediyse tekrar dene
-    if (appState.currentWords.length < 3) {
-        console.log("Yetersiz kelime, yeniden deneniyor...");
-        // Sonsuz döngüye girmemesi için basit bir kontrol eklenebilir ama şimdilik tekrar çağırıyoruz
-        setTimeout(initGame, 100); 
+    // Kelimeler yerleşmezse yeniden dene
+    if (appState.currentWords.length < 4) {
+        setTimeout(initGame, 50); 
         return;
     }
 
-    // Grid Datasını Sıfırla
     appState.gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(""));
-    
     renderGrid(result.grid);
 }
 
@@ -372,7 +353,6 @@ function renderGrid(structure) {
             cell.dataset.r = r;
             cell.dataset.c = c;
             
-            // Structure içinde harf varsa orası oynanabilir alandır
             if (structure[r][c]) {
                 cell.className = 'cell playable';
                 cell.onclick = () => handleCellClick(r, c);
@@ -385,8 +365,9 @@ function renderGrid(structure) {
 }
 
 function renderKeyboard() {
+    // DÜZELTME: Tam QWERTY ve Türkçe karakterler eklendi
     const rows = [
-        "E R T Y U I O P Ğ Ü",
+        "Q W E R T Y U I O P Ğ Ü",
         "A S D F G H J K L Ş İ",
         "Z X C V B N M Ö Ç"
     ];
@@ -399,17 +380,17 @@ function renderKeyboard() {
             const btn = document.createElement('button');
             btn.className = 'kb-key';
             btn.innerText = char;
-            // Touchstart ile daha hızlı tepki
-            btn.ontouchstart = (e) => { e.preventDefault(); handleVirtualKey(char); };
-            btn.onclick = () => handleVirtualKey(char);
+            // Hem dokunmatik hem mouse için hızlı tepki
+            btn.addEventListener('mousedown', (e) => { e.preventDefault(); handleVirtualKey(char); });
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleVirtualKey(char); });
             container.appendChild(btn);
         });
         if(id === 'row3') {
             const delBtn = document.createElement('button');
             delBtn.className = 'kb-key wide';
             delBtn.innerHTML = '⌫';
-            delBtn.ontouchstart = (e) => { e.preventDefault(); handleVirtualKey('BACKSPACE'); };
-            delBtn.onclick = () => handleVirtualKey('BACKSPACE');
+            delBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleVirtualKey('BACKSPACE'); });
+            delBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleVirtualKey('BACKSPACE'); });
             container.appendChild(delBtn);
         }
     };
@@ -417,6 +398,24 @@ function renderKeyboard() {
     makeRow(rows[1], 'row2');
     makeRow(rows[2], 'row3');
 }
+
+// --- FİZİKSEL KLAVYE DESTEĞİ ---
+document.addEventListener('keydown', (e) => {
+    if(document.getElementById('game-screen').classList.contains('hidden')) return;
+
+    const key = e.key;
+    
+    if(key === 'Backspace') {
+        handleVirtualKey('BACKSPACE');
+        return;
+    }
+
+    // Harf kontrolü (Türkçe karakterleri de kapsar)
+    if(key.length === 1 && /^[a-zA-ZçÇğĞıİöÖşŞüÜ]$/.test(key)) {
+        // toLocaleUpperCase('tr') önemli: i -> İ, ı -> I dönüşümü için
+        handleVirtualKey(key.toLocaleUpperCase('tr'));
+    }
+});
 
 // --- ETKİLEŞİM ---
 function handleCellClick(r, c) {
@@ -429,20 +428,16 @@ function handleCellClick(r, c) {
 
     let targetWord = wordsAtCell[0];
     
-    // Kesişim mantığı
     if (appState.selectedWord && wordsAtCell.length > 1) {
-        // Zaten bu kelime seçiliyse diğerine geç
         if (appState.selectedWord.index === wordsAtCell[0].index) {
-            // Eğer aynı kutuya ikinci kez tıkladıysa yön değiştir
+            // Aynı kelimeye tıklandı, aynı kutuysa yön değiştir
             if(appState.cursor.r === r && appState.cursor.c === c) {
                 targetWord = wordsAtCell[1];
             } else {
-                targetWord = wordsAtCell[0]; // Farklı kutuya tıkladıysa aynı kelimede kal
+                targetWord = wordsAtCell[0];
             }
         } else {
-            targetWord = wordsAtCell.some(w => w.index === appState.selectedWord.index) 
-                ? appState.selectedWord 
-                : wordsAtCell[0];
+            targetWord = wordsAtCell.some(w => w.index === appState.selectedWord.index) ? appState.selectedWord : wordsAtCell[0];
         }
     }
 
@@ -451,7 +446,7 @@ function handleCellClick(r, c) {
         updateClueDisplay();
         highlightBoard();
         
-        // Kelime değiştiğinde başa git (İlk boş harf veya en baş)
+        // Kelime başına veya ilk boşluğa git
         let foundEmpty = false;
         for(let i=0; i<targetWord.answer.length; i++) {
             const tr = targetWord.dir === 'across' ? targetWord.row : targetWord.row + i;
@@ -462,13 +457,10 @@ function handleCellClick(r, c) {
                 break;
             }
         }
-        if(!foundEmpty) {
-            appState.cursor = { r: targetWord.row, c: targetWord.col };
-        }
+        if(!foundEmpty) appState.cursor = { r: targetWord.row, c: targetWord.col };
         
         updateCursorUI();
     } else {
-        // Aynı kelime içinde başka kutuya tıklandı
         appState.cursor = { r, c };
         updateCursorUI();
     }
@@ -479,10 +471,12 @@ function handleVirtualKey(key) {
 
     if (key === 'BACKSPACE') {
         const { r, c } = appState.cursor;
+        // Eğer kutu doluysa sil, yerinde kal
         if (appState.gridData[r][c] !== "") {
             appState.gridData[r][c] = "";
             updateCellUI(r, c);
         } else {
+            // Kutu boşsa geriye git ve sil
             moveCursor(-1);
             const prev = appState.cursor;
             appState.gridData[prev.r][prev.c] = "";
@@ -537,10 +531,7 @@ function updateCursorUI() {
 
 function updateCellUI(r, c) {
     const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
-    if(cell) {
-        cell.innerText = appState.gridData[r][c];
-        // Doluysa biraz daha koyu yapabiliriz (opsiyonel)
-    }
+    if(cell) cell.innerText = appState.gridData[r][c];
 }
 
 function updateClueDisplay() {
@@ -549,7 +540,7 @@ function updateClueDisplay() {
         txt.innerText = appState.selectedWord.clue;
         txt.style.color = "white";
     } else {
-        txt.innerText = "BAŞLAMAK İÇİN TIKLA";
+        txt.innerText = "BAŞLAMAK İÇİN BİR KUTUYA TIKLA";
         txt.style.color = "#b2bec3";
     }
 }
@@ -587,7 +578,6 @@ function giveHint() {
         if (appState.gridData[r][c] !== w.answer[i]) {
             appState.gridData[r][c] = w.answer[i];
             updateCellUI(r, c);
-            // İpucu alınan kareyi göster
             appState.cursor = { r, c };
             updateCursorUI();
             checkCorrectness();
@@ -619,19 +609,16 @@ function checkWin() {
     }
 }
 
-// --- KELİME YERLEŞTİRME ALGORİTMASI ---
+// --- KELİME YERLEŞTİRME (GRID) ---
 function generateCrossword(words) {
     words.sort((a, b) => b.answer.length - a.answer.length);
     let grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
     let placedWords = [];
-
     if(words.length === 0) return { grid, placedWords };
 
     const first = words[0];
     const startRow = Math.floor(GRID_SIZE / 2);
     const startCol = Math.floor((GRID_SIZE - first.answer.length) / 2);
-    
-    // Eğer ilk kelime bile sığmıyorsa
     if (startCol < 0) return { grid, placedWords };
 
     placeWord(grid, first, startRow, startCol, 'across');
@@ -640,7 +627,6 @@ function generateCrossword(words) {
     for (let i = 1; i < words.length; i++) {
         const word = words[i];
         let placed = false;
-        // Mevcut yerleşmiş kelimelerin harflerine tutunmaya çalış
         for (let pw of placedWords) {
             if (placed) break;
             for (let j = 0; j < pw.answer.length; j++) {
@@ -676,7 +662,6 @@ function canPlace(grid, word, row, col, dir) {
     if (dir === 'across' && col + word.length > GRID_SIZE) return false;
     if (dir === 'down' && row + word.length > GRID_SIZE) return false;
 
-    // Başlangıç ve bitiş sınır kontrolleri (kelimeler birbirine yapışmasın)
     if (dir === 'across') {
         if (col > 0 && grid[row][col-1] !== null) return false;
         if (col + word.length < GRID_SIZE && grid[row][col + word.length] !== null) return false;
@@ -689,12 +674,9 @@ function canPlace(grid, word, row, col, dir) {
         const r = dir === 'across' ? row : row + i;
         const c = dir === 'across' ? col + i : col;
         const currentCell = grid[r][c];
-        
         if (currentCell !== null) {
-            // Çakışma var, harf aynı mı?
             if (currentCell !== word[i]) return false;
         } else {
-            // Boş hücreye koyuyoruz, yan komşuları kontrol et (istenmeyen yapışmalar)
             if (dir === 'across') {
                 if (r > 0 && grid[r-1][c] !== null) return false;
                 if (r < GRID_SIZE-1 && grid[r+1][c] !== null) return false;
