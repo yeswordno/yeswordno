@@ -2,8 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <!-- viewport-fit=cover ve interactive-widget=resizes-content klavye davranışını iyileştirir -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kelime Avcısı Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -13,13 +12,9 @@
             --correct: #00b894; --wrong: #ff7675; --text-color: #2d3436;
         }
         * { box-sizing: border-box; touch-action: manipulation; }
-        
         body {
             font-family: 'Poppins', sans-serif; background-color: var(--bg-app);
-            margin: 0; padding: 0; 
-            /* Dinamik yükseklik ayarı */
-            height: 100dvh; 
-            display: flex; flex-direction: column;
+            margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column;
             overflow: hidden; color: var(--text-color);
         }
 
@@ -64,100 +59,25 @@
         h1 { font-weight: 800; color: var(--primary); font-size: 2rem; margin-bottom: 10px; }
         h2 { font-weight: 600; color: #636e72; font-size: 1.2rem; margin-bottom: 30px; }
 
-        /* OYUN EKRANI YAPISI (Flex Değişiklikleri) */
-        #game-screen { 
-            display: none; 
-            background: var(--bg-app); 
-            flex-direction: column;
-            height: 100dvh; /* Dinamik viewport */
-            padding: 0; /* Padding'i kaldırdık, iç elementler halledecek */
-            position: relative; /* Absolute yerine relative */
-        }
-
-        /* ÜST MENÜ */
-        .header { 
-            width: 100%;
-            padding: 10px 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: white; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            z-index: 20;
-            flex-shrink: 0; /* Küçülmesini engelle */
-        }
-
-        /* YENİ: İPUCU ALANI (Üstte) */
-        .game-info-bar {
-            width: 100%;
-            background: #fff;
-            padding: 10px 15px;
-            border-bottom: 1px solid #dfe6e9;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            z-index: 15;
-            flex-shrink: 0; /* Küçülmesini engelle */
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-
-        .clue-text { 
-            font-size: 1.1rem; 
-            font-weight: 700; 
-            color: var(--text-color); 
-            margin-bottom: 5px;
-            min-height: 1.4em;
-        }
-
+        /* OYUN IZGARASI */
+        #game-screen { display: none; background: var(--bg-app); }
+        .header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .btn-mini { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 5px 15px; border-radius: 20px; font-weight: 600; cursor: pointer; }
-        
-        .btn-hint { 
-            background: #fab1a0; color: #d63031; border: none; 
-            padding: 5px 20px; border-radius: 50px; font-weight: 700; 
-            font-size: 0.9rem;
-            cursor: pointer; 
-        }
-        .btn-hint:disabled { background: #dfe6e9; color: #b2bec3; }
-
-        /* BOARD CONTAINER (Kalan boşluğu doldurur) */
-        .board-container { 
-            flex: 1; 
-            width: 100%;
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start; /* Ortalamak yerine üstten başlat */
-            padding: 20px; 
-            overflow-y: auto; /* Klavye açılınca kaydırmaya izin ver */
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .grid { 
-            display: grid; 
-            width: 100%; 
-            max-width: 400px; /* Mobilde çok büyümesin */
-            aspect-ratio: 1; 
-            gap: 2px; 
-            margin: auto; /* Dikey ortalama için */
-        }
-
-        .cell { background: transparent; border-radius: 4px; position: relative; display: flex; justify-content: center; align-items: center; aspect-ratio: 1; }
+        .board-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px; overflow: hidden; }
+        .grid { display: grid; width: 100%; aspect-ratio: 1; max-height: 100%; gap: 2px; }
+        .cell { background: transparent; border-radius: 4px; position: relative; display: flex; justify-content: center; align-items: center; }
         .cell.playable { background: var(--cell-bg); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .cell input { 
-            width: 100%; height: 100%; border: none; background: transparent; 
-            text-align: center; padding: 0; margin: 0; 
-            font-family: 'Poppins', sans-serif; font-weight: 800; 
-            font-size: 18px; color: var(--text-color); 
-            text-transform: uppercase; outline: none; border-radius: 4px; 
-        }
-        
+        .cell input { width: 100%; height: 100%; border: none; background: transparent; text-align: center; padding: 0; margin: 0; font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 18px; color: var(--text-color); text-transform: uppercase; outline: none; border-radius: 4px; }
         .cell.highlighted { background: #fff7d1; border: 1px solid var(--accent); }
         .cell.selected { background: var(--accent); transform: scale(1.05); z-index: 2; }
         .cell.correct { background: var(--correct); } .cell.correct input { color: white; }
         .cell.wrong { background: var(--wrong); animation: shake 0.4s; } .cell.wrong input { color: white; }
-        
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+        .footer { background: white; padding: 15px; border-radius: 20px 20px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); text-align: center; z-index: 10; }
+        .clue-text { font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top:5px; }
+        .btn-hint { background: #fab1a0; color: #d63031; border: none; padding: 10px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .btn-hint:disabled { background: #dfe6e9; color: #b2bec3; }
 
         /* MODAL */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.95); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
@@ -194,27 +114,18 @@
         <button class="btn-mini" style="margin-top:20px; border:none; color:#636e72" onclick="goBackToLang()">⬅ Geri Dön</button>
     </div>
 
-    <!-- 3. OYUN EKRANI (YENİ DÜZEN) -->
-    <div id="game-screen" class="hidden">
-        
-        <!-- Üst Menü -->
+    <!-- 3. OYUN -->
+    <div id="game-screen" class="screen hidden">
         <div class="header">
             <button class="btn-mini" onclick="goBackToLevel()">⬅ Menü</button>
             <div style="font-weight:700; color:#b2bec3;">Kalan: <span id="words-left" style="color:var(--primary)">0</span></div>
         </div>
-
-        <!-- İpucu ve Buton Alanı (Footer'dan buraya taşındı) -->
-        <div class="game-info-bar">
-            <div style="font-size: 0.7rem; color: #b2bec3; font-weight: 700; letter-spacing: 1px; margin-bottom:2px;">İPUCU</div>
-            <div id="clue-text" class="clue-text">Kelime seçmek için tıkla</div>
+        <div class="board-container"><div id="grid" class="grid"></div></div>
+        <div class="footer">
+            <div style="font-size: 0.8rem; color: #b2bec3; font-weight: 700; letter-spacing: 1px;">İPUCU</div>
+            <div id="clue-text" class="clue-text">Başlamak için tıkla</div>
             <button id="hint-btn" class="btn-hint" onclick="giveSmartHint()" disabled>💡 Harf Al</button>
         </div>
-
-        <!-- Oyun Alanı (Scrollable) -->
-        <div class="board-container">
-            <div id="grid" class="grid"></div>
-        </div>
-
     </div>
 
     <!-- MODAL -->
@@ -233,22 +144,16 @@
 let appState = {
     mode: 'EN_TR',
     levelFile: '',
-    sourceWords: [], 
-    currentWords: [], 
+    sourceWords: [], // JSON'dan çekilen tüm liste
+    currentWords: [], // Oyundaki 10-15 kelime
     selectedWord: null
 };
 
 function showScreen(id) {
-    document.querySelectorAll('.screen, #game-screen').forEach(s => s.classList.add('hidden'));
-    const el = document.getElementById(id);
-    el.classList.remove('hidden');
-    
-    if(id === 'game-screen') {
-        el.style.display = 'flex'; 
-    } else {
-        // Diğer ekranlar absolute positioning kullanıyor
-        el.style.display = 'flex';
-    }
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    if(id === 'game-screen') document.getElementById(id).style.display = 'flex';
+    else document.getElementById('game-screen').style.display = 'none';
 }
 
 function selectLang(mode) {
@@ -258,21 +163,27 @@ function selectLang(mode) {
 
 function goBackToLang() { showScreen('lang-screen'); }
 
+// JSON DOSYASINI ÇEKEN FONKSİYON
 async function selectLevel(filename) {
     appState.levelFile = filename;
     document.getElementById('loading-overlay').style.display = 'flex';
 
     try {
+        // Github veya Yerel Klasörden Veri Çekme
+        // Not: Vercel'e atıldığında ./data/ çalışır.
         const response = await fetch(`./data/${filename}.json`);
         if (!response.ok) throw new Error("Veri bulunamadı");
+        
         appState.sourceWords = await response.json();
+        
         document.getElementById('loading-overlay').style.display = 'none';
         showScreen('game-screen');
         initGame();
+
     } catch (error) {
         console.error(error);
         document.getElementById('loading-overlay').style.display = 'none';
-        alert("Kelimeler yüklenirken hata. Dosya adı ./data/" + filename + ".json kontrol edin.");
+        alert("Kelimeler yüklenirken bir hata oluştu. Lütfen dosya isimlerini kontrol edin.");
     }
 }
 
@@ -285,8 +196,9 @@ function initGame() {
     appState.selectedWord = null;
     document.getElementById('win-modal').style.display = 'none';
     document.getElementById('hint-btn').disabled = true;
-    document.getElementById('clue-text').innerText = "Kelime seçmek için tıkla";
+    document.getElementById('clue-text').innerText = "Başlamak için tıkla";
     
+    // Veri havuzundan rastgele 25 tane alıp deneyeceğiz
     if (!appState.sourceWords || appState.sourceWords.length === 0) return;
 
     const shuffled = [...appState.sourceWords].sort(() => 0.5 - Math.random());
@@ -306,20 +218,17 @@ function initGame() {
     renderGrid(result.grid);
 }
 
-// --- GRID ALGORITMASI ---
+// --- GRID ALGORITMASI VE OYUN MOTORU (Öncekiyle aynı) ---
+
 function generateCrossword(words) {
     words.sort((a, b) => b.answer.length - a.answer.length);
-    const size = 13; // Mobilde daha rahat sığması için boyutu hafif küçülttüm (15 -> 13)
+    const size = 15;
     let grid = Array(size).fill(null).map(() => Array(size).fill(null));
     let placedWords = [];
 
     const first = words[0];
     const startRow = Math.floor(size / 2);
     const startCol = Math.floor((size - first.answer.length) / 2);
-    
-    // İlk kelime sığıyor mu kontrolü (güvenlik için)
-    if (startCol < 0) return { grid, placedWords: [] }; 
-
     placeWord(grid, first, startRow, startCol, 'across');
     placedWords.push({ ...first, row: startRow, col: startCol, dir: 'across', index: 0 });
 
@@ -409,18 +318,9 @@ function renderGrid(gridData) {
                 input.maxLength = 1;
                 input.dataset.r = r; input.dataset.c = c;
                 input.autocomplete = "off";
-                input.enterKeyHint = "next"; // Klavyede 'Geç' butonu gösterir
                 input.addEventListener('click', (e) => handleCellClick(e, r, c));
                 input.addEventListener('input', (e) => handleInput(e, r, c));
                 input.addEventListener('keydown', (e) => handleKeyDown(e, r, c));
-                
-                // iOS klavye açıldığında focuslanan elemana scroll yapma
-                input.addEventListener('focus', (e) => {
-                    setTimeout(() => {
-                        e.target.scrollIntoView({behavior: "smooth", block: "center"});
-                    }, 300);
-                });
-                
                 cell.appendChild(input);
             } else { cell.className = 'cell'; }
             gridEl.appendChild(cell);
@@ -441,12 +341,8 @@ function handleCellClick(e, r, c) {
     
     if (appState.selectedWord !== targetWord) {
         selectWord(targetWord);
-        const startInput = document.querySelector(`input[data-r='${r}'][data-c='${c}']`); // Tıklanan hücreye odaklan, kelime başına değil
-        if (startInput) {
-            startInput.focus();
-            // Eğer mobilde klavye açılırsa yukarı kaydır
-            setTimeout(() => startInput.scrollIntoView({behavior: "smooth", block: "center"}), 100);
-        }
+        const startInput = document.querySelector(`input[data-r='${targetWord.row}'][data-c='${targetWord.col}']`);
+        if (startInput) setTimeout(() => startInput.focus(), 0);
     } else { e.target.select(); }
 }
 
@@ -572,15 +468,6 @@ function checkWin() {
         }, 500);
     }
 }
-
-// Klavye açılıp kapandığında boyutları tekrar hesapla (iOS Safari için hack)
-window.addEventListener('resize', () => {
-    if(document.getElementById('game-screen').classList.contains('hidden')) return;
-    // Ekranın üstüne doğru scroll'u engelle, sadece aktif input'u göster
-    if(document.activeElement && document.activeElement.tagName === 'INPUT') {
-        document.activeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
-    }
-});
 </script>
 </body>
 </html>
