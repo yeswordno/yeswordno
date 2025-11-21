@@ -1,157 +1,696 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Kelime Avcısı Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6c5ce7; --secondary: #a29bfe; --accent: #fdcb6e;
-            --bg-app: #dfe6e9; --cell-bg: #ffffff;
-            --correct: #00b894; --wrong: #ff7675; --text-color: #2d3436;
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fdcb6e;
+            --bg-app: #dfe6e9;
+            --cell-bg: #ffffff;
+            --correct: #00b894;
+            --wrong: #ff7675;
+            --text-color: #2d3436;
             --dark-bar: #2d3436;
-            --max-width: 480px;
+            --max-width: 500px;
         }
-        
-        * { box-sizing: border-box; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
-        
+
+        * {
+            box-sizing: border-box;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
         body {
-            font-family: 'Poppins', sans-serif; background-color: var(--bg-app);
-            margin: 0; padding: 0; 
-            height: 100dvh; width: 100vw;
-            display: flex; flex-direction: column; align-items: center;
-            overflow: hidden; color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-app);
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-color);
         }
 
         .app-container {
-            width: 100%; max-width: var(--max-width); height: 100%;
-            background: var(--bg-app); display: flex; flex-direction: column;
-            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: var(--max-width);
+            height: 100%;
+            background: var(--bg-app);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
         }
 
         /* EKRANLAR */
         .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-app); z-index: 10;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-app);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             transition: opacity 0.3s;
         }
-        .hidden { display: none !important; opacity: 0; }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
 
         .btn-main {
-            border: none; padding: 18px; width: 85%;
-            border-radius: 12px; font-size: 1.1rem; font-weight: 600;
-            margin-bottom: 15px; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex; justify-content: space-between; align-items: center;
+            border: none;
+            padding: 18px;
+            width: 85%;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .btn-main:active { transform: scale(0.98); }
-        .btn-lang { background: var(--primary); color: white; }
-        .btn-level { background: white; color: var(--primary); border: 2px solid var(--primary); }
+
+        .btn-main:active {
+            transform: scale(0.98);
+        }
+
+        .btn-lang {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-level {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
 
         /* OYUN EKRANI */
-        #game-screen { display: none; flex-direction: column; height: 100%; width: 100%; }
+        #game-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
 
         .top-bar {
-            background: var(--dark-bar); color: white;
-            padding: 0 15px; height: 60px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 20;
-        }
-        .icon-btn {
-            background: transparent; border: none; font-size: 1.5rem; cursor: pointer;
-            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: #fdcb6e;
-        }
-        .icon-btn:disabled { opacity: 0.3; color: #fff; }
-        
-        .clue-container {
-            flex: 1; text-align: center; font-weight: 700; font-size: 1rem;
-            padding: 0 10px; white-space: nowrap; overflow: hidden;
-            text-overflow: ellipsis; text-transform: uppercase; color: #b2bec3;
-        }
-        
-        .menu-btn {
-            background: transparent; border: 1px solid #636e72; color: #b2bec3;
-            border-radius: 6px; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            background: var(--dark-bar);
+            color: white;
+            padding: 0 15px;
+            height: 55px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            z-index: 20;
         }
 
+        .icon-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fdcb6e;
+        }
+
+        .icon-btn:disabled {
+            opacity: 0.3;
+            color: #fff;
+        }
+
+        .clue-container {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            color: #b2bec3;
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid #636e72;
+            color: #b2bec3;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* BOARD AREA - YENİ YAKLAŞIM */
         .board-area {
-            flex: 1; width: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            overflow: hidden; padding: 10px;
+            flex: 1;
+            width: 100%;
+            overflow: auto;
+            position: relative;
+            background: var(--bg-app);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .board-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        .grid-wrapper {
+            /* Artık zoom yok, sadece padding */
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Minimal padding - mobilde de masaüstünde de düzgün */
+            padding: 20px;
         }
 
         .grid {
-            display: grid; gap: 3px; width: 100%; max-width: 95%; margin: 0 auto;
-            justify-content: center; align-content: center;
+            display: grid;
+            gap: 3px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            /* Mobilde grid daha büyük, masaüstünde orta */
+            max-width: min(95vw, 450px);
+        }
+
+        /* Tablet ve masaüstü için grid küçülsün */
+        @media (min-width: 768px) {
+            .grid {
+                max-width: 420px;
+                gap: 4px;
+            }
+        }
+
+        /* Büyük ekranlarda daha da küçük */
+        @media (min-width: 1024px) {
+            .grid {
+                max-width: 380px;
+            }
         }
 
         .cell {
-            background: transparent; border-radius: 4px;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: 800; font-size: 1.2rem; color: var(--text-color);
-            cursor: pointer; aspect-ratio: 1 / 1;
-            border: 1px solid rgba(0,0,0,0.04); position: relative;
-            /* Performans için */
-            backface-visibility: hidden;
-            -webkit-font-smoothing: antialiased;
+            background: transparent;
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 800;
+            color: var(--text-color);
+            cursor: pointer;
+            aspect-ratio: 1 / 1;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            position: relative;
+            /* Font boyutu grid boyutuna göre otomatik */
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+            transition: all 0.2s ease;
         }
-        
-        @media (max-height: 700px) { .cell { font-size: 0.9rem; } }
-        
-        .cell.playable { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
-        .cell.highlighted { background: #fff7d1; }
-        
-        /* DÜZELTME: Transform kaldırıldı, Border ile vurgu yapıldı */
-        .cell.active { 
-            background: var(--accent); 
-            /* Kutu boyutunu bozmadan içe doğru kalın kenarlık */
-            box-shadow: inset 0 0 0 2px #e17055; 
+
+        .cell.playable {
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border: none;
+        }
+
+        .cell.highlighted {
+            background: #fff7d1;
+            box-shadow: 0 3px 8px rgba(253, 203, 110, 0.3);
+        }
+
+        .cell.active {
+            background: var(--accent);
+            box-shadow: 0 0 0 3px #e17055;
             z-index: 5;
+            transform: scale(1.05);
         }
 
-        .cell.correct { background: var(--correct); color: white; }
-        .cell.wrong { background: var(--wrong); color: white; animation: shake 0.4s; }
+        .cell.correct {
+            background: var(--correct);
+            color: white;
+            animation: pop 0.3s ease;
+        }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+        .cell.wrong {
+            background: var(--wrong);
+            color: white;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        @keyframes pop {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
 
         .keyboard-container {
-            background: #dcdde1; padding: 8px 5px 25px 5px; width: 100%; flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 6px; border-top: 1px solid #b2bec3;
+            background: #dcdde1;
+            padding: 8px 5px;
+            /* Mobilde klavye için daha fazla padding bottom */
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+            width: 100%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            border-top: 1px solid #b2bec3;
+            z-index: 30;
         }
-        .kb-row { display: flex; justify-content: center; gap: 4px; width: 100%; }
+
+        .kb-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+        }
+
         .kb-key {
-            font-family: 'Poppins', sans-serif; background: #fff; color: var(--text-color);
-            border: none; border-radius: 5px; font-weight: 700; font-size: 1.1rem; height: 48px; 
-            flex: 1; display: flex; justify-content: center; align-items: center; cursor: pointer;
-            box-shadow: 0 2px 0 rgba(0,0,0,0.15); max-width: 45px;
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+            color: var(--text-color);
+            border: none;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2.2vw, 1.1rem);
+            height: 46px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+            max-width: 42px;
+            transition: all 0.1s;
         }
-        .kb-key:active { transform: translateY(2px); box-shadow: none; background: #f1f2f6; }
-        .kb-key.wide { flex: 1.5; max-width: 65px; background: #7f8c8d; color: white; font-size: 0.9rem; }
 
-        /* MODAL & SCORE */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-        .modal-box { background: white; width: 100%; max-width: 320px; border-radius: 20px; padding: 25px; text-align: center; }
-        .modal-list { max-height: 150px; overflow-y: auto; margin: 15px 0; padding: 0; list-style: none; text-align: left; font-size: 0.85rem; }
-        .modal-list li { border-bottom: 1px solid #eee; padding: 6px 0; display: flex; justify-content: space-between; }
-        
+        .kb-key:active {
+            transform: translateY(2px);
+            box-shadow: none;
+            background: #f1f2f6;
+        }
+
+        .kb-key.wide {
+            flex: 1.5;
+            max-width: 65px;
+            background: #7f8c8d;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: white;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-list {
+            max-height: 180px;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding: 0;
+            list-style: none;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .modal-list li {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
         .score-card {
-            background: #f1f2f6; padding: 15px; border-radius: 10px; margin-bottom: 15px;
+            background: linear-gradient(135deg, #f1f2f6 0%, #dfe4ea 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
             border: 2px solid var(--primary);
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.2);
         }
-        .score-title { font-size: 0.8rem; color: #636e72; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .score-val { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; margin: 5px 0; }
-        .score-detail { font-size: 0.9rem; color: #2d3436; font-weight: 600; }
 
-        #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.95); z-index: 200; display: none; justify-content: center; align-items: center; flex-direction: column; color: var(--primary); }
+        .score-title {
+            font-size: 0.75rem;
+            color: #636e72;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .score-val {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin: 8px 0;
+        }
+
+        .score-detail {
+            font-size: 1rem;
+            color: #2d3436;
+            font-weight: 600;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: var(--primary);
+        }
+
+        /* --- TABLET AYARLARI (768px ve üzeri) --- */
+        @media (min-width: 768px) {
+            .board-area {
+                overflow: hidden !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .grid-wrapper {
+                height: 100%;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .grid {
+                height: calc(100vh - 240px) !important;
+                width: calc(100vh - 240px) !important;
+                max-width: none !important;
+                max-height: none !important;
+                aspect-ratio: 1 / 1;
+            }
+
+            .cell {
+                border: 1px solid #bdc3c7 !important;
+                font-size: clamp(0.8rem, 1.5vh, 1.2rem) !important;
+            }
+        }
+
+        /* --- LAPTOP VE MASAÜSTÜ (YAN YANA TASARIM - MOBİL STİLİ) (1024px ve üzeri) --- */
+        @media (min-width: 1024px) {
+            :root {
+                --max-width: 100% !important;
+            }
+
+            body {
+                overflow: hidden !important;
+            }
+
+            .app-container {
+                max-width: 100% !important;
+                background: #dfe6e9;
+            }
+
+            .btn-main {
+                max-width: 380px !important;
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #lang-screen,
+            #level-screen {
+                max-width: 100%;
+            }
+
+            #game-screen {
+                display: grid !important;
+                grid-template-columns: 1fr 450px;
+                grid-template-rows: 1fr 1fr;
+                grid-template-areas:
+                    "board top"
+                    "board keys";
+                height: 100vh;
+                overflow: hidden;
+                padding: 30px;
+                gap: 30px;
+                background: #dfe6e9;
+            }
+
+            /* SOL TARAF: OYUN ALANI */
+            .board-area {
+                grid-area: board;
+                /* Mobildeki zemin renginin aynısı: */
+                background: #dfe6e9 !important;
+                border-radius: 25px;
+                /* Kart görünümünü kaldırdık, mobildeki gibi bütünleşik dursun */
+                box-shadow: none !important;
+                padding: 0 !important;
+                height: 100% !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden !important;
+            }
+
+            .grid-wrapper {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .grid {
+                height: 80vh !important;
+                width: 80vh !important;
+                aspect-ratio: 1/1;
+                max-width: none !important;
+                max-height: none !important;
+                gap: 4px !important;
+            }
+
+            /* --- KUTUCUK TASARIMI (MOBİL GÖRÜNÜMÜNE GERİ DÖNÜŞ) --- */
+            .cell {
+                /* Boş kutular şeffaf ve çok silik kenarlıklı (Mobildeki gibi) */
+                background: transparent;
+                border: 1px solid rgba(0, 0, 0, 0.04) !important;
+                border-radius: 6px;
+                font-size: clamp(1rem, 2.5vh, 2rem) !important;
+                color: #2d3436;
+                transition: all 0.2s;
+            }
+
+            /* Yazı yazılan kutular: BEYAZ, GÖLGELİ, KENARLIKSIZ */
+            .cell.playable {
+                background: white !important;
+                border: none !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+                /* Mobildeki gölge efekti */
+            }
+
+            .cell.highlighted {
+                background: #fff7d1 !important;
+                box-shadow: 0 3px 8px rgba(253, 203, 110, 0.4) !important;
+            }
+
+            .cell.active {
+                background: var(--accent) !important;
+                box-shadow: 0 0 0 4px #e17055 !important;
+                /* Seçiliyken belirgin çerçeve */
+                transform: scale(1.08);
+                z-index: 10;
+                border: none !important;
+            }
+
+            /* RENKLER (Doğru/Yanlış) */
+            .cell.correct {
+                background-color: #00b894 !important;
+                color: white !important;
+                box-shadow: none !important;
+                animation: pop 0.3s ease;
+            }
+
+            .cell.wrong {
+                background-color: #ff7675 !important;
+                color: white !important;
+                box-shadow: none !important;
+                animation: shake 0.4s;
+            }
+
+            /* SAĞ TARAF AYARLARI (Aynen korundu) */
+            .top-bar {
+                grid-area: top;
+                background: transparent;
+                box-shadow: none;
+                flex-direction: column;
+                justify-content: flex-end;
+                align-items: center;
+                height: 100%;
+                padding-bottom: 20px;
+                position: relative;
+            }
+
+            .clue-container {
+                font-size: 1.8rem !important;
+                color: #2d3436 !important;
+                margin: 20px 0;
+                white-space: normal;
+                line-height: 1.3;
+            }
+
+            .menu-btn {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: white;
+                border: 2px solid #b2bec3;
+                color: #636e72;
+                padding: 8px 20px;
+                border-radius: 8px;
+                transition: 0.2s;
+            }
+
+            .menu-btn:hover {
+                background: #f1f2f6;
+            }
+
+            #hint-btn {
+                background-color: #fdcb6e !important;
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                font-size: 2.5rem;
+                border: none !important;
+                box-shadow: 0 8px 20px rgba(253, 203, 110, 0.4);
+                color: white !important;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+            #hint-btn:hover:not(:disabled) {
+                transform: scale(1.1) rotate(10deg);
+            }
+
+            #hint-btn:disabled {
+                background-color: #ffeaa7 !important;
+                box-shadow: none;
+                cursor: not-allowed;
+            }
+
+            .keyboard-container {
+                grid-area: keys;
+                background: white;
+                border-radius: 20px;
+                justify-content: center;
+                padding: 30px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                gap: 8px;
+            }
+
+            .kb-key {
+                height: 60px;
+                font-size: 1.2rem;
+                border-radius: 8px;
+                background: #f1f2f6;
+                box-shadow: 0 4px 0 #dfe6e9;
+            }
+
+            .kb-key:hover {
+                background: #e1e2e6;
+            }
+
+            .kb-key:active {
+                transform: translateY(4px);
+                box-shadow: none;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-    <div class="app-container">
-
+    <div class="app-container" id="app-container">
         <div id="loading-overlay">
             <div style="font-size:3rem;">🔄</div>
             <div style="font-weight:bold; margin-top:10px;">Yükleniyor...</div>
@@ -164,7 +703,8 @@
             <button class="btn-main btn-lang" onclick="selectLang('EN_TR')">
                 <span>🇬🇧 İngilizce</span> <span>➔</span> <span>🇹🇷 Türkçe</span>
             </button>
-            <button class="btn-main btn-lang" style="background:var(--accent); color:#2d3436" onclick="selectLang('TR_EN')">
+            <button class="btn-main btn-lang" style="background:var(--accent); color:#2d3436"
+                onclick="selectLang('TR_EN')">
                 <span>🇹🇷 Türkçe</span> <span>➔</span> <span>🇬🇧 İngilizce</span>
             </button>
         </div>
@@ -176,7 +716,9 @@
             <button class="btn-main btn-level" onclick="selectLevel('b1_b2')">🚀 B1 & B2</button>
             <button class="btn-main btn-level" onclick="selectLevel('c1_c2')">🔥 C1 & C2</button>
             <button class="btn-main btn-level" onclick="selectLevel('academic')">🎓 Akademik</button>
-            <button style="margin-top:25px; background:none; border:none; color:#b2bec3; font-weight:600; cursor:pointer;" onclick="goBackToLang()">⬅ Geri Dön</button>
+            <button
+                style="margin-top:25px; background:none; border:none; color:#b2bec3; font-weight:600; cursor:pointer;"
+                onclick="goBackToLang()">⬅ Geri Dön</button>
         </div>
 
         <!-- 3. OYUN EKRANI -->
@@ -186,485 +728,531 @@
                 <div id="clue-text" class="clue-container">BAŞLA</div>
                 <button class="menu-btn" onclick="goBackToLevel()">Menü</button>
             </div>
-            <div class="board-area">
-                <div id="grid" class="grid"></div>
+
+            <div class="board-area" id="board-area">
+                <div class="grid-wrapper" id="grid-wrapper">
+                    <div id="grid" class="grid"></div>
+                </div>
             </div>
+
             <div class="keyboard-container">
                 <div class="kb-row" id="row1"></div>
                 <div class="kb-row" id="row2"></div>
                 <div class="kb-row" id="row3"></div>
             </div>
         </div>
-
     </div>
 
     <!-- WIN MODAL -->
     <div id="win-modal" class="modal">
         <div class="modal-box">
-            <h2 style="color:var(--correct); margin:0 0 15px 0;">Tebrikler! 🎉</h2>
-            
-            <!-- SKOR KARTI -->
+            <h2 style="color:var(--correct); margin:0 0 20px 0;">Tebrikler! 🎉</h2>
+
             <div class="score-card">
                 <div class="score-title">Başarı Oranı</div>
                 <div id="final-percentage" class="score-val">%100</div>
-                <div id="final-stats" class="score-detail">28/0 İpucu</div>
+                <div id="final-stats" class="score-detail">0/0 Bulunan Harf</div>
             </div>
 
-            <p style="margin:5px 0; font-size:0.9rem; color:#b2bec3;">Bulunan Kelimeler:</p>
+            <p style="margin:5px 0 10px 0; font-size:0.85rem; color:#b2bec3; font-weight:600;">Bulunan Kelimeler:</p>
             <ul id="summary-list" class="modal-list"></ul>
-            
-            <button class="btn-main btn-lang" style="width:100%; margin-top:10px;" onclick="initGame()">Yeni Oyun</button>
-            <button style="margin-top:10px; background:none; border:none; color:#636e72; cursor:pointer;" onclick="goBackToLevel()">Menüye Dön</button>
+
+            <button class="btn-main btn-lang" style="width:100%; margin-top:15px; justify-content:center;"
+                onclick="initGame()">🎮 Yeni Oyun</button>
+            <button
+                style="margin-top:12px; background:none; border:none; color:#636e72; cursor:pointer; font-weight:600; width:100%; text-align:center;"
+                onclick="goBackToLevel()">⬅ Menüye Dön</button>
         </div>
     </div>
 
-<script>
-// --- AYARLAR ---
-const GRID_SIZE = 15; 
-let appState = {
-    mode: 'EN_TR',
-    sourceWords: [],
-    currentWords: [],
-    selectedWord: null,
-    cursor: { r: -1, c: -1 },
-    gridData: [],
-    // Puanlama için değişkenler
-    totalLetters: 0,
-    hintsUsed: 0
-};
+    <script>
+        function setAppHeight() {
+            const height = window.innerHeight;
+            document.getElementById('app-container').style.height = `${height}px`;
+        }
+        window.addEventListener('resize', setAppHeight);
+        setAppHeight();
 
-function showScreen(id) {
-    document.querySelectorAll('.screen, #game-screen').forEach(s => {
-        s.classList.add('hidden');
-        s.style.display = 'none';
-    });
-    const el = document.getElementById(id);
-    el.classList.remove('hidden');
-    
-    if(id === 'game-screen') el.style.display = 'flex'; 
-    else el.style.display = 'flex';
-}
-
-function selectLang(mode) { appState.mode = mode; showScreen('level-screen'); }
-function goBackToLang() { showScreen('lang-screen'); }
-
-async function selectLevel(filename) {
-    document.getElementById('loading-overlay').style.display = 'flex';
-    try {
-        const response = await fetch(`./data/${filename}.json`);
-        if (!response.ok) throw new Error("Hata");
-        appState.sourceWords = await response.json();
-        document.getElementById('loading-overlay').style.display = 'none';
-        showScreen('game-screen');
-        renderKeyboard();
-        initGame();
-    } catch (error) {
-        console.error(error);
-        document.getElementById('loading-overlay').style.display = 'none';
-        alert("Veri yüklenemedi.");
-    }
-}
-
-function goBackToLevel() { 
-    document.getElementById('win-modal').style.display='none'; 
-    showScreen('level-screen'); 
-}
-
-function initGame() {
-    appState.selectedWord = null;
-    appState.cursor = { r: -1, c: -1 };
-    appState.hintsUsed = 0; // İpucu sayacını sıfırla
-    appState.totalLetters = 0; // Toplam harf sayısını sıfırla
-
-    document.getElementById('win-modal').style.display = 'none';
-    document.getElementById('hint-btn').disabled = true;
-    document.getElementById('hint-btn').style.opacity = "0.3";
-    document.getElementById('clue-text').innerText = "KUTUYA TIKLA";
-    document.getElementById('clue-text').style.color = "#b2bec3";
-
-    if (!appState.sourceWords || appState.sourceWords.length === 0) return;
-
-    const shuffled = [...appState.sourceWords].sort(() => 0.5 - Math.random());
-    const selection = shuffled.slice(0, 40).map(item => {
-        const rawAnswer = appState.mode === 'EN_TR' ? item.en : item.tr;
-        const clue = appState.mode === 'EN_TR' ? item.tr : item.en;
-        if(!rawAnswer) return null;
-        return {
-            answer: rawAnswer.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, ''),
-            clue: clue,
-            original: item
+        const GRID_SIZE = 15;
+        let appState = {
+            mode: 'EN_TR',
+            sourceWords: [],
+            currentWords: [],
+            selectedWord: null,
+            cursor: { r: -1, c: -1 },
+            gridData: [],
+            totalLetters: 0,
+            hintsUsed: 0
         };
-    }).filter(w => w && w.answer.length > 1 && w.answer.length <= GRID_SIZE);
 
-    const result = generateCrossword(selection);
-    appState.currentWords = result.placedWords;
-    
-    if (appState.currentWords.length < 4) {
-        setTimeout(initGame, 50); 
-        return;
-    }
-
-    // Toplam harf sayısını hesapla (Kesişimler dahil grid üzerindeki dolu hücreler)
-    let count = 0;
-    for(let r=0; r<GRID_SIZE; r++) {
-        for(let c=0; c<GRID_SIZE; c++) {
-            if(result.grid[r][c] !== null) count++;
+        function showScreen(id) {
+            document.querySelectorAll('.screen, #game-screen').forEach(s => {
+                s.classList.add('hidden');
+                s.style.display = 'none';
+            });
+            const el = document.getElementById(id);
+            el.classList.remove('hidden');
+            if (id === 'game-screen') el.style.display = 'flex';
+            else el.style.display = 'flex';
         }
-    }
-    appState.totalLetters = count;
 
-    appState.gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(""));
-    renderGrid(result.grid);
-}
+        function selectLang(mode) { appState.mode = mode; showScreen('level-screen'); }
+        function goBackToLang() { showScreen('lang-screen'); }
 
-function renderGrid(structure) {
-    const gridEl = document.getElementById('grid');
-    gridEl.innerHTML = '';
-    gridEl.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
-
-    for(let r=0; r<GRID_SIZE; r++) {
-        for(let c=0; c<GRID_SIZE; c++) {
-            const cell = document.createElement('div');
-            cell.dataset.r = r;
-            cell.dataset.c = c;
-            
-            if (structure[r][c]) {
-                cell.className = 'cell playable';
-                cell.onclick = () => handleCellClick(r, c);
-            } else {
-                cell.className = 'cell'; 
-            }
-            gridEl.appendChild(cell);
-        }
-    }
-}
-
-function renderKeyboard() {
-    const rows = [
-        "Q W E R T Y U I O P Ğ Ü",
-        "A S D F G H J K L Ş İ",
-        "Z X C V B N M Ö Ç"
-    ];
-    const makeRow = (str, id) => {
-        const container = document.getElementById(id);
-        container.innerHTML = '';
-        const chars = str.split(' ');
-        chars.forEach(char => {
-            const btn = document.createElement('button');
-            btn.className = 'kb-key';
-            btn.innerText = char;
-            btn.addEventListener('mousedown', (e) => { e.preventDefault(); handleVirtualKey(char); });
-            btn.addEventListener('touchstart', (e) => { e.preventDefault(); handleVirtualKey(char); });
-            container.appendChild(btn);
-        });
-        if(id === 'row3') {
-            const delBtn = document.createElement('button');
-            delBtn.className = 'kb-key wide';
-            delBtn.innerHTML = '⌫';
-            delBtn.addEventListener('mousedown', (e) => { e.preventDefault(); handleVirtualKey('BACKSPACE'); });
-            delBtn.addEventListener('touchstart', (e) => { e.preventDefault(); handleVirtualKey('BACKSPACE'); });
-            container.appendChild(delBtn);
-        }
-    };
-    makeRow(rows[0], 'row1');
-    makeRow(rows[1], 'row2');
-    makeRow(rows[2], 'row3');
-}
-
-document.addEventListener('keydown', (e) => {
-    if(document.getElementById('game-screen').classList.contains('hidden')) return;
-    const key = e.key;
-    if(key === 'Backspace') { handleVirtualKey('BACKSPACE'); return; }
-    if(key.length === 1 && /^[a-zA-ZçÇğĞıİöÖşŞüÜ]$/.test(key)) {
-        handleVirtualKey(key.toLocaleUpperCase('tr'));
-    }
-});
-
-function handleCellClick(r, c) {
-    const wordsAtCell = appState.currentWords.filter(w => {
-        if (w.dir === 'across') return r === w.row && c >= w.col && c < w.col + w.answer.length;
-        else return c === w.col && r >= w.row && r < w.row + w.answer.length;
-    });
-
-    if (wordsAtCell.length === 0) return;
-
-    let targetWord = wordsAtCell[0];
-    
-    if (appState.selectedWord && wordsAtCell.length > 1) {
-        if (appState.selectedWord.index === wordsAtCell[0].index) {
-            if(appState.cursor.r === r && appState.cursor.c === c) targetWord = wordsAtCell[1];
-            else targetWord = wordsAtCell[0];
-        } else {
-            targetWord = wordsAtCell.some(w => w.index === appState.selectedWord.index) ? appState.selectedWord : wordsAtCell[0];
-        }
-    }
-
-    if (appState.selectedWord !== targetWord) {
-        appState.selectedWord = targetWord;
-        updateClueDisplay();
-        highlightBoard();
-        
-        let foundEmpty = false;
-        for(let i=0; i<targetWord.answer.length; i++) {
-            const tr = targetWord.dir === 'across' ? targetWord.row : targetWord.row + i;
-            const tc = targetWord.dir === 'across' ? targetWord.col + i : targetWord.col;
-            if(appState.gridData[tr][tc] === "") {
-                appState.cursor = { r: tr, c: tc };
-                foundEmpty = true;
-                break;
+        async function selectLevel(filename) {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            try {
+                const response = await fetch(`./data/${filename}.json`);
+                if (!response.ok) throw new Error("Hata");
+                appState.sourceWords = await response.json();
+                document.getElementById('loading-overlay').style.display = 'none';
+                showScreen('game-screen');
+                renderKeyboard();
+                initGame();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loading-overlay').style.display = 'none';
+                alert("Veri yüklenemedi.");
             }
         }
-        if(!foundEmpty) appState.cursor = { r: targetWord.row, c: targetWord.col };
-        updateCursorUI();
-    } else {
-        appState.cursor = { r, c };
-        updateCursorUI();
-    }
-}
 
-function handleVirtualKey(key) {
-    if (!appState.selectedWord) return;
-
-    if (key === 'BACKSPACE') {
-        const { r, c } = appState.cursor;
-        if (appState.gridData[r][c] !== "") {
-            appState.gridData[r][c] = "";
-            updateCellUI(r, c);
-        } else {
-            moveCursor(-1);
-            const prev = appState.cursor;
-            appState.gridData[prev.r][prev.c] = "";
-            updateCellUI(prev.r, prev.c);
+        function goBackToLevel() {
+            document.getElementById('win-modal').style.display = 'none';
+            showScreen('level-screen');
         }
-        checkCorrectness();
-        return;
-    }
 
-    const { r, c } = appState.cursor;
-    appState.gridData[r][c] = key;
-    updateCellUI(r, c);
-    moveCursor(1);
-    checkCorrectness();
-    checkWin();
-}
+        function initGame() {
+            appState.selectedWord = null;
+            appState.cursor = { r: -1, c: -1 };
+            appState.hintsUsed = 0;
+            appState.totalLetters = 0;
 
-function moveCursor(step) {
-    const w = appState.selectedWord;
-    if (!w) return;
-    let currentIdx = (w.dir === 'across') ? appState.cursor.c - w.col : appState.cursor.r - w.row;
-    let nextIdx = currentIdx + step;
-    if (nextIdx >= 0 && nextIdx < w.answer.length) {
-        if (w.dir === 'across') appState.cursor = { r: w.row, c: w.col + nextIdx };
-        else appState.cursor = { r: w.row + nextIdx, c: w.col };
-        updateCursorUI();
-    }
-}
+            document.getElementById('win-modal').style.display = 'none';
+            document.getElementById('hint-btn').disabled = true;
+            document.getElementById('hint-btn').style.opacity = "0.3";
+            document.getElementById('clue-text').innerText = "KUTUYA TIKLA";
+            document.getElementById('clue-text').style.color = "#b2bec3";
 
-function highlightBoard() {
-    document.querySelectorAll('.cell').forEach(el => el.classList.remove('highlighted', 'active'));
-    if (!appState.selectedWord) return;
-    
-    document.getElementById('hint-btn').disabled = false;
-    document.getElementById('hint-btn').style.opacity = "1";
-    
-    const w = appState.selectedWord;
-    for(let i=0; i<w.answer.length; i++) {
-        const r = w.dir === 'across' ? w.row : w.row + i;
-        const c = w.dir === 'across' ? w.col + i : w.col;
-        const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
-        if(cell) cell.classList.add('highlighted');
-    }
-}
+            if (!appState.sourceWords || appState.sourceWords.length === 0) return;
 
-function updateCursorUI() {
-    document.querySelectorAll('.cell.active').forEach(el => el.classList.remove('active'));
-    const { r, c } = appState.cursor;
-    const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
-    if(cell) cell.classList.add('active');
-}
+            const shuffled = [...appState.sourceWords].sort(() => 0.5 - Math.random());
+            const selection = shuffled.slice(0, 40).map(item => {
+                const rawAnswer = appState.mode === 'EN_TR' ? item.en : item.tr;
+                const clue = appState.mode === 'EN_TR' ? item.tr : item.en;
+                if (!rawAnswer) return null;
+                return {
+                    answer: rawAnswer.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, ''),
+                    clue: clue,
+                    original: item
+                };
+            }).filter(w => w && w.answer.length > 1 && w.answer.length <= GRID_SIZE);
 
-function updateCellUI(r, c) {
-    const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
-    if(cell) cell.innerText = appState.gridData[r][c];
-}
+            const result = generateCrossword(selection);
+            appState.currentWords = result.placedWords;
 
-function updateClueDisplay() {
-    const txt = document.getElementById('clue-text');
-    if (appState.selectedWord) {
-        txt.innerText = appState.selectedWord.clue;
-        txt.style.color = "white";
-    } else {
-        txt.innerText = "KUTUYA TIKLA";
-        txt.style.color = "#b2bec3";
-    }
-}
+            if (appState.currentWords.length < 4) {
+                setTimeout(initGame, 50);
+                return;
+            }
 
-function checkCorrectness() {
-    if(!appState.selectedWord) return;
-    const w = appState.selectedWord;
-    let fullWord = "";
-    let isFull = true;
-    let domCells = [];
+            let count = 0;
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    if (result.grid[r][c] !== null) count++;
+                }
+            }
+            appState.totalLetters = count;
 
-    for(let i=0; i<w.answer.length; i++) {
-        const r = w.dir === 'across' ? w.row : w.row + i;
-        const c = w.dir === 'across' ? w.col + i : w.col;
-        const val = appState.gridData[r][c];
-        fullWord += val;
-        if (!val) isFull = false;
-        domCells.push(document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`));
-    }
-
-    domCells.forEach(c => c.classList.remove('correct', 'wrong'));
-    if (isFull) {
-        if (fullWord === w.answer) domCells.forEach(c => c.classList.add('correct'));
-        else domCells.forEach(c => c.classList.add('wrong'));
-    }
-}
-
-function giveHint() {
-    if(!appState.selectedWord) return;
-    const w = appState.selectedWord;
-    
-    for(let i=0; i<w.answer.length; i++) {
-        const r = w.dir === 'across' ? w.row : w.row + i;
-        const c = w.dir === 'across' ? w.col + i : w.col;
-        
-        // Eğer kutu boşsa veya yanlışsa
-        if (appState.gridData[r][c] !== w.answer[i]) {
-            appState.gridData[r][c] = w.answer[i];
-            appState.hintsUsed++; // İpucu sayacını artır
-            
-            updateCellUI(r, c);
-            appState.cursor = { r, c };
-            updateCursorUI();
-            checkCorrectness();
-            checkWin();
-            return;
+            appState.gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(""));
+            renderGrid(result.grid);
         }
-    }
-}
 
-function checkWin() {
-    let allCorrect = true;
-    appState.currentWords.forEach(w => {
-        for(let i=0; i<w.answer.length; i++) {
-            const r = w.dir === 'across' ? w.row : w.row + i;
-            const c = w.dir === 'across' ? w.col + i : w.col;
-            if (appState.gridData[r][c] !== w.answer[i]) allCorrect = false;
+        function renderGrid(structure) {
+            const gridEl = document.getElementById('grid');
+            gridEl.innerHTML = '';
+            gridEl.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.dataset.r = r;
+                    cell.dataset.c = c;
+
+                    if (structure[r][c]) {
+                        cell.className = 'cell playable';
+                        cell.onclick = (e) => {
+                            e.stopPropagation();
+                            handleCellClick(r, c);
+                        };
+                    } else {
+                        cell.className = 'cell';
+                    }
+                    gridEl.appendChild(cell);
+                }
+            }
         }
-    });
 
-    if (allCorrect) {
-        // Puan Hesapla
-        const total = appState.totalLetters;
-        const used = appState.hintsUsed;
-        // Eksi puana düşmesin diye max(0, ...)
-        const rawPercentage = ((total - used) / total) * 100;
-        const percentage = Math.max(0, Math.round(rawPercentage));
-
-        // Ekrana Yaz
-        document.getElementById('final-percentage').innerText = `%${percentage}`;
-        document.getElementById('final-stats').innerText = `${total}/${used} İpucu`;
-
-        const list = document.getElementById('summary-list');
-        list.innerHTML = '';
-        appState.currentWords.forEach(w => {
-            const li = document.createElement('li');
-            li.innerHTML = `<b>${w.original.en}</b> <span>${w.original.tr}</span>`;
-            list.appendChild(li);
+        // Board area'ya tıklayınca selection kaldır
+        document.getElementById('board-area').addEventListener('click', (e) => {
+            // Eğer cell'e tıklanmadıysa
+            if (!e.target.classList.contains('cell')) {
+                deselectWord();
+            }
         });
-        setTimeout(() => { document.getElementById('win-modal').style.display = 'flex'; }, 500);
-    }
-}
 
-// --- GRID ALGORITMASI ---
-function generateCrossword(words) {
-    words.sort((a, b) => b.answer.length - a.answer.length);
-    let grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
-    let placedWords = [];
-    if(words.length === 0) return { grid, placedWords };
+        function deselectWord() {
+            appState.selectedWord = null;
+            document.querySelectorAll('.cell').forEach(el => el.classList.remove('highlighted', 'active'));
+            document.getElementById('hint-btn').disabled = true;
+            document.getElementById('hint-btn').style.opacity = "0.3";
+            document.getElementById('clue-text').innerText = "KUTUYA TIKLA";
+            document.getElementById('clue-text').style.color = "#b2bec3";
+        }
 
-    const first = words[0];
-    const startRow = Math.floor(GRID_SIZE / 2);
-    const startCol = Math.floor((GRID_SIZE - first.answer.length) / 2);
-    if (startCol < 0) return { grid, placedWords };
+        function renderKeyboard() {
+            const rows = [
+                "Q W E R T Y U I O P Ğ Ü",
+                "A S D F G H J K L Ş İ",
+                "Z X C V B N M Ö Ç"
+            ];
+            const makeRow = (str, id) => {
+                const container = document.getElementById(id);
+                container.innerHTML = '';
+                const chars = str.split(' ');
+                chars.forEach(char => {
+                    const btn = document.createElement('button');
+                    btn.className = 'kb-key';
+                    btn.innerText = char;
+                    btn.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); handleVirtualKey(char); });
+                    btn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleVirtualKey(char); });
+                    container.appendChild(btn);
+                });
+                if (id === 'row3') {
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'kb-key wide';
+                    delBtn.innerHTML = '⌫';
+                    delBtn.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); handleVirtualKey('BACKSPACE'); });
+                    delBtn.addEventListener('touchstart', (e) => { e.preventDefault(); e.stopPropagation(); handleVirtualKey('BACKSPACE'); });
+                    container.appendChild(delBtn);
+                }
+            };
+            makeRow(rows[0], 'row1');
+            makeRow(rows[1], 'row2');
+            makeRow(rows[2], 'row3');
+        }
 
-    placeWord(grid, first, startRow, startCol, 'across');
-    placedWords.push({ ...first, row: startRow, col: startCol, dir: 'across', index: 0 });
+        // Smooth scroll to cell - SADECE mobilde!
+        function scrollToActiveCell(r, c) {
+            // KESİN ÇÖZÜM: Ekran 768px'den genişse KODU BURADA DURDUR.
+            // Alt satırlara geçmediği için scroll/zoom yapma şansı kalmaz.
+            if (window.innerWidth >= 768) return;
 
-    for (let i = 1; i < words.length; i++) {
-        const word = words[i];
-        let placed = false;
-        for (let pw of placedWords) {
-            if (placed) break;
-            for (let j = 0; j < pw.answer.length; j++) {
-                const letterOnGrid = pw.answer[j];
-                for (let k = 0; k < word.answer.length; k++) {
-                    if (word.answer[k] === letterOnGrid) {
-                        const newDir = pw.dir === 'across' ? 'down' : 'across';
-                        let newRow, newCol;
-                        if (newDir === 'down') {
-                            newRow = pw.row + (pw.dir === 'across' ? 0 : j) - k;
-                            newCol = pw.col + (pw.dir === 'across' ? j : 0);
-                        } else {
-                            newRow = pw.row + (pw.dir === 'across' ? 0 : j);
-                            newCol = pw.col + (pw.dir === 'across' ? j : 0) - k;
-                        }
-                        if (canPlace(grid, word.answer, newRow, newCol, newDir)) {
-                            placeWord(grid, word, newRow, newCol, newDir);
-                            placedWords.push({ ...word, row: newRow, col: newCol, dir: newDir, index: placedWords.length });
-                            placed = true;
-                            break;
-                        }
+            setTimeout(() => {
+                const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
+                if (cell) {
+                    cell.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                        inline: 'nearest'
+                    });
+                }
+            }, 50);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('game-screen').classList.contains('hidden')) return;
+            const key = e.key;
+            if (key === 'Backspace') { handleVirtualKey('BACKSPACE'); return; }
+            if (key.length === 1 && /^[a-zA-ZçÇğĞıİöÖşŞüÜ]$/.test(key)) {
+                handleVirtualKey(key.toLocaleUpperCase('tr'));
+            }
+        });
+
+        function handleCellClick(r, c) {
+            const wordsAtCell = appState.currentWords.filter(w => {
+                if (w.dir === 'across') return r === w.row && c >= w.col && c < w.col + w.answer.length;
+                else return c === w.col && r >= w.row && r < w.row + w.answer.length;
+            });
+
+            if (wordsAtCell.length === 0) return;
+
+            let targetWord = wordsAtCell[0];
+
+            if (appState.selectedWord && wordsAtCell.length > 1) {
+                if (appState.selectedWord.index === wordsAtCell[0].index) {
+                    if (appState.cursor.r === r && appState.cursor.c === c) targetWord = wordsAtCell[1];
+                    else targetWord = wordsAtCell[0];
+                } else {
+                    targetWord = wordsAtCell.some(w => w.index === appState.selectedWord.index) ? appState.selectedWord : wordsAtCell[0];
+                }
+            }
+
+            if (appState.selectedWord !== targetWord) {
+                appState.selectedWord = targetWord;
+                updateClueDisplay();
+                highlightBoard();
+
+                let foundEmpty = false;
+                for (let i = 0; i < targetWord.answer.length; i++) {
+                    const tr = targetWord.dir === 'across' ? targetWord.row : targetWord.row + i;
+                    const tc = targetWord.dir === 'across' ? targetWord.col + i : targetWord.col;
+                    if (appState.gridData[tr][tc] === "") {
+                        appState.cursor = { r: tr, c: tc };
+                        foundEmpty = true;
+                        break;
                     }
                 }
-                if(placed) break;
-            }
-        }
-    }
-    return { grid, placedWords };
-}
-
-function canPlace(grid, word, row, col, dir) {
-    if (row < 0 || col < 0) return false;
-    if (dir === 'across' && col + word.length > GRID_SIZE) return false;
-    if (dir === 'down' && row + word.length > GRID_SIZE) return false;
-
-    if (dir === 'across') {
-        if (col > 0 && grid[row][col-1] !== null) return false;
-        if (col + word.length < GRID_SIZE && grid[row][col + word.length] !== null) return false;
-    } else {
-        if (row > 0 && grid[row-1][col] !== null) return false;
-        if (row + word.length < GRID_SIZE && grid[row + word.length][col] !== null) return false;
-    }
-
-    for (let i = 0; i < word.length; i++) {
-        const r = dir === 'across' ? row : row + i;
-        const c = dir === 'across' ? col + i : col;
-        const currentCell = grid[r][c];
-        if (currentCell !== null) {
-            if (currentCell !== word[i]) return false;
-        } else {
-            if (dir === 'across') {
-                if (r > 0 && grid[r-1][c] !== null) return false;
-                if (r < GRID_SIZE-1 && grid[r+1][c] !== null) return false;
+                if (!foundEmpty) appState.cursor = { r: targetWord.row, c: targetWord.col };
+                updateCursorUI();
             } else {
-                if (c > 0 && grid[r][c-1] !== null) return false;
-                if (c < GRID_SIZE-1 && grid[r][c+1] !== null) return false;
+                appState.cursor = { r, c };
+                updateCursorUI();
             }
         }
-    }
-    return true;
-}
 
-function placeWord(grid, word, row, col, dir) {
-    for (let i = 0; i < word.answer.length; i++) {
-        const r = dir === 'across' ? row : row + i;
-        const c = dir === 'across' ? col + i : col;
-        grid[r][c] = word.answer[i];
-    }
-}
-</script>
+        function handleVirtualKey(key) {
+            if (!appState.selectedWord) return;
+
+            if (key === 'BACKSPACE') {
+                const { r, c } = appState.cursor;
+                if (appState.gridData[r][c] !== "") {
+                    appState.gridData[r][c] = "";
+                    updateCellUI(r, c);
+                } else {
+                    moveCursor(-1);
+                    const prev = appState.cursor;
+                    appState.gridData[prev.r][prev.c] = "";
+                    updateCellUI(prev.r, prev.c);
+                }
+                checkCorrectness();
+                return;
+            }
+
+            const { r, c } = appState.cursor;
+            appState.gridData[r][c] = key;
+            updateCellUI(r, c);
+            moveCursor(1);
+            checkCorrectness();
+            checkWin();
+        }
+
+        function moveCursor(step) {
+            const w = appState.selectedWord;
+            if (!w) return;
+            let currentIdx = (w.dir === 'across') ? appState.cursor.c - w.col : appState.cursor.r - w.row;
+            let nextIdx = currentIdx + step;
+            if (nextIdx >= 0 && nextIdx < w.answer.length) {
+                if (w.dir === 'across') appState.cursor = { r: w.row, c: w.col + nextIdx };
+                else appState.cursor = { r: w.row + nextIdx, c: w.col };
+                updateCursorUI();
+            }
+        }
+
+        function highlightBoard() {
+            document.querySelectorAll('.cell').forEach(el => el.classList.remove('highlighted', 'active'));
+            if (!appState.selectedWord) return;
+
+            document.getElementById('hint-btn').disabled = false;
+            document.getElementById('hint-btn').style.opacity = "1";
+
+            const w = appState.selectedWord;
+            for (let i = 0; i < w.answer.length; i++) {
+                const r = w.dir === 'across' ? w.row : w.row + i;
+                const c = w.dir === 'across' ? w.col + i : w.col;
+                const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
+                if (cell) cell.classList.add('highlighted');
+            }
+        }
+
+        function updateCursorUI() {
+            document.querySelectorAll('.cell.active').forEach(el => el.classList.remove('active'));
+            const { r, c } = appState.cursor;
+            const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
+            if (cell) {
+                cell.classList.add('active');
+                scrollToActiveCell(r, c);
+            }
+        }
+
+        function updateCellUI(r, c) {
+            const cell = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
+            if (cell) cell.innerText = appState.gridData[r][c];
+        }
+
+        function updateClueDisplay() {
+            const txt = document.getElementById('clue-text');
+            if (appState.selectedWord) {
+                txt.innerText = appState.selectedWord.clue;
+                txt.style.color = "white";
+            } else {
+                txt.innerText = "KUTUYA TIKLA";
+                txt.style.color = "#b2bec3";
+            }
+        }
+
+        function checkCorrectness() {
+            if (!appState.selectedWord) return;
+            const w = appState.selectedWord;
+            let fullWord = "";
+            let isFull = true;
+            let domCells = [];
+
+            for (let i = 0; i < w.answer.length; i++) {
+                const r = w.dir === 'across' ? w.row : w.row + i;
+                const c = w.dir === 'across' ? w.col + i : w.col;
+                const val = appState.gridData[r][c];
+                fullWord += val;
+                if (!val) isFull = false;
+                domCells.push(document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`));
+            }
+
+            domCells.forEach(c => c.classList.remove('correct', 'wrong'));
+            if (isFull) {
+                if (fullWord === w.answer) domCells.forEach(c => c.classList.add('correct'));
+                else domCells.forEach(c => c.classList.add('wrong'));
+            }
+        }
+
+        function giveHint() {
+            if (!appState.selectedWord) return;
+            const w = appState.selectedWord;
+
+            for (let i = 0; i < w.answer.length; i++) {
+                const r = w.dir === 'across' ? w.row : w.row + i;
+                const c = w.dir === 'across' ? w.col + i : w.col;
+
+                if (appState.gridData[r][c] !== w.answer[i]) {
+                    appState.gridData[r][c] = w.answer[i];
+                    appState.hintsUsed++;
+
+                    updateCellUI(r, c);
+                    appState.cursor = { r, c };
+                    updateCursorUI();
+                    checkCorrectness();
+                    checkWin();
+                    return;
+                }
+            }
+        }
+
+        function checkWin() {
+            let allCorrect = true;
+            appState.currentWords.forEach(w => {
+                for (let i = 0; i < w.answer.length; i++) {
+                    const r = w.dir === 'across' ? w.row : w.row + i;
+                    const c = w.dir === 'across' ? w.col + i : w.col;
+                    if (appState.gridData[r][c] !== w.answer[i]) allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                const total = appState.totalLetters;
+                const used = appState.hintsUsed;
+                const found = Math.max(0, total - used);
+                const rawPercentage = (found / total) * 100;
+                const percentage = Math.max(0, Math.round(rawPercentage));
+
+                document.getElementById('final-percentage').innerText = `%${percentage}`;
+                document.getElementById('final-stats').innerText = `${found}/${total} Bulunan Harf`;
+
+                const list = document.getElementById('summary-list');
+                list.innerHTML = '';
+                appState.currentWords.forEach(w => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<b>${w.original.en}</b> <span>${w.original.tr}</span>`;
+                    list.appendChild(li);
+                });
+                setTimeout(() => { document.getElementById('win-modal').style.display = 'flex'; }, 600);
+            }
+        }
+
+        function generateCrossword(words) {
+            words.sort((a, b) => b.answer.length - a.answer.length);
+            let grid = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
+            let placedWords = [];
+            if (words.length === 0) return { grid, placedWords };
+
+            const first = words[0];
+            const startRow = Math.floor(GRID_SIZE / 2);
+            const startCol = Math.floor((GRID_SIZE - first.answer.length) / 2);
+            if (startCol < 0) return { grid, placedWords };
+
+            placeWord(grid, first, startRow, startCol, 'across');
+            placedWords.push({ ...first, row: startRow, col: startCol, dir: 'across', index: 0 });
+
+            for (let i = 1; i < words.length; i++) {
+                const word = words[i];
+                let placed = false;
+                for (let pw of placedWords) {
+                    if (placed) break;
+                    for (let j = 0; j < pw.answer.length; j++) {
+                        const letterOnGrid = pw.answer[j];
+                        for (let k = 0; k < word.answer.length; k++) {
+                            if (word.answer[k] === letterOnGrid) {
+                                const newDir = pw.dir === 'across' ? 'down' : 'across';
+                                let newRow, newCol;
+                                if (newDir === 'down') {
+                                    newRow = pw.row + (pw.dir === 'across' ? 0 : j) - k;
+                                    newCol = pw.col + (pw.dir === 'across' ? j : 0);
+                                } else {
+                                    newRow = pw.row + (pw.dir === 'across' ? 0 : j);
+                                    newCol = pw.col + (pw.dir === 'across' ? j : 0) - k;
+                                }
+                                if (canPlace(grid, word.answer, newRow, newCol, newDir)) {
+                                    placeWord(grid, word, newRow, newCol, newDir);
+                                    placedWords.push({ ...word, row: newRow, col: newCol, dir: newDir, index: placedWords.length });
+                                    placed = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (placed) break;
+                    }
+                }
+            }
+            return { grid, placedWords };
+        }
+
+        function canPlace(grid, word, row, col, dir) {
+            if (row < 0 || col < 0) return false;
+            if (dir === 'across' && col + word.length > GRID_SIZE) return false;
+            if (dir === 'down' && row + word.length > GRID_SIZE) return false;
+
+            if (dir === 'across') {
+                if (col > 0 && grid[row][col - 1] !== null) return false;
+                if (col + word.length < GRID_SIZE && grid[row][col + word.length] !== null) return false;
+            } else {
+                if (row > 0 && grid[row - 1][col] !== null) return false;
+                if (row + word.length < GRID_SIZE && grid[row + word.length][col] !== null) return false;
+            }
+
+            for (let i = 0; i < word.length; i++) {
+                const r = dir === 'across' ? row : row + i;
+                const c = dir === 'across' ? col + i : col;
+                const currentCell = grid[r][c];
+                if (currentCell !== null) {
+                    if (currentCell !== word[i]) return false;
+                } else {
+                    if (dir === 'across') {
+                        if (r > 0 && grid[r - 1][c] !== null) return false;
+                        if (r < GRID_SIZE - 1 && grid[r + 1][c] !== null) return false;
+                    } else {
+                        if (c > 0 && grid[r][c - 1] !== null) return false;
+                        if (c < GRID_SIZE - 1 && grid[r][c + 1] !== null) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function placeWord(grid, word, row, col, dir) {
+            for (let i = 0; i < word.answer.length; i++) {
+                const r = dir === 'across' ? row : row + i;
+                const c = dir === 'across' ? col + i : col;
+                grid[r][c] = word.answer[i];
+            }
+        }
+    </script>
 </body>
+
 </html>
