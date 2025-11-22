@@ -1,0 +1,656 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+
+:root {
+  /* RENK PALETİ */
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --text-dark: #2d3436;
+  --text-gray: #636e72;
+
+  /* GRID RENKLERİ */
+  --board-bg-desktop: rgba(255, 255, 255, 0.15);
+  --board-border-desktop: rgba(255, 255, 255, 0.2);
+
+  --cell-empty: rgba(255, 255, 255, 0.15);
+  /* Boş kutular hafif beyaz */
+  --cell-filled: #ffffff;
+  /* Dolu kutular tam beyaz */
+
+  /* DURUM RENKLERİ */
+  --correct: #00b894;
+  --wrong: #ff7675;
+  --highlight: #ffeaa7;
+  /* Sarı vurgu */
+  --active-border: #fdcb6e;
+  --accent-purple: #6c5ce7;
+}
+
+* {
+  box-sizing: border-box;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+body,
+html,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Sayfa kaymasını engelle */
+}
+
+/* ANA KAPLAYICI */
+.app-container {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-gradient);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  color: var(--text-dark);
+}
+
+/* --- GİRİŞ VE MENÜ EKRANLARI --- */
+.menu-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  animation: fadeIn 0.5s ease;
+}
+
+.logo-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.app-title {
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  font-weight: 800;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.screen-title {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+.btn-main {
+  border: none;
+  padding: 18px 24px;
+  width: 100%;
+  max-width: 350px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-main:active {
+  transform: scale(0.98);
+}
+
+.btn-lang {
+  background: white;
+  color: var(--accent-purple);
+}
+
+.btn-level {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-dark);
+}
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+
+/* --- OYUN EKRANI (MOBİL ÖNCELİKLİ) --- */
+#game-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1. MOBİL ÜST BAR (Header) */
+.mobile-top-bar {
+  flex-shrink: 0;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  z-index: 20;
+}
+
+.btn-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.1s;
+}
+
+.btn-circle:active {
+  transform: scale(0.9);
+}
+
+.btn-hint {
+  background: #fdcb6e;
+  color: #2d3436;
+}
+
+/* Sarı İpucu Butonu */
+.btn-close {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-size: 1.1rem;
+}
+
+.mobile-clue-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 0 12px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-clue-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* 2. OYUN ALANI (BOARD) */
+.board-area {
+  flex: 1;
+  /* Kalan boşluğu doldur */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Dikey ortalama */
+  padding: 10px;
+  overflow: hidden;
+}
+
+.grid-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  display: grid;
+  gap: 4px;
+  width: 95vw;
+  /* Mobilde ekran genişliğine yayıl */
+  max-width: 400px;
+  /* Tablette sınırla */
+  aspect-ratio: 1 / 1;
+  /* KARE FORMU KORU */
+  grid-auto-rows: 1fr;
+  /* Satırları eşitle */
+}
+
+.cell {
+  background: var(--cell-empty);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  color: var(--text-dark);
+  cursor: pointer;
+
+  /* MOBİL UZAMA SORUNUNU ÇÖZEN KODLAR: */
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-size: clamp(0.7rem, 2.5vw, 1.3rem);
+  /* Dinamik Font */
+  line-height: 1;
+}
+
+.cell.playable {
+  background: var(--cell-filled);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cell.highlighted {
+  background: var(--highlight);
+}
+
+.cell.active {
+  background: #ffeaa7;
+  box-shadow: inset 0 0 0 3px var(--active-border);
+  z-index: 5;
+}
+
+.cell.correct {
+  background: var(--correct);
+  color: white;
+}
+
+.cell.wrong {
+  background: var(--wrong);
+  color: white;
+}
+
+
+/* 3. SAĞ PANEL (Masaüstü Bilgi + Klavye) */
+.right-panel-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* Mobilde klavye altta */
+}
+
+/* Masaüstü Bilgi Kartı (Mobilde Gizli) */
+.desktop-info-card {
+  display: none;
+}
+
+/* KLAVYE */
+.keyboard-container {
+  background: #f1f2f6;
+  padding: 8px 5px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.kb-key {
+  background: white;
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  height: 48px;
+  flex: 1;
+  max-width: 45px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #dcdde1;
+}
+
+.kb-key:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
+
+.kb-key.wide {
+  flex: 1.5;
+  max-width: 65px;
+  background: #dfe6e9;
+}
+
+
+/* --- MASAÜSTÜ VE TABLET TASARIMI (1024px üzeri) --- */
+@media (min-width: 1024px) {
+
+  #game-screen {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    grid-template-areas: "board panel";
+    padding: 40px;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100vh;
+    /* Tam yükseklik */
+  }
+
+  .mobile-top-bar {
+    display: none;
+  }
+
+  /* SOL: Grid Alanı (Cam Efekti) */
+  .board-area {
+    grid-area: board;
+    background: var(--board-bg-desktop);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--board-border-desktop);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    height: 100%;
+    max-height: 90vh;
+    /* Maksimum yükseklik */
+  }
+
+  .grid-wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .grid {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .cell {
+    border-radius: 8px;
+    font-size: 1.4rem;
+    font-size: clamp(1rem, 1.5vw, 1.8rem);
+    /* Dinamik font boyutu */
+  }
+
+  /* SAĞ: Panel Alanı */
+  .right-panel-container {
+    grid-area: panel;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    max-height: 90vh;
+    /* Maksimum yükseklik */
+    justify-content: space-between;
+  }
+
+  /* Masaüstü Bilgi Kartını Göster */
+  .desktop-info-card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .desk-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .desk-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-dark);
+  }
+
+  .btn-close-desk {
+    background: #f1f2f6;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .btn-close-desk:hover {
+    background: var(--wrong);
+    color: white;
+  }
+
+  .desk-clue-area {
+    background: #f8f9fa;
+    border: 2px solid #f1f2f6;
+    border-radius: 16px;
+    padding: 30px 20px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .desk-icon {
+    font-size: 2.5rem;
+    background: var(--accent-purple);
+    color: white;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .desk-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .btn-hint-pill {
+    background: #fff7d1;
+    color: #e58e26;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 1rem;
+    transition: transform 0.2s;
+  }
+
+  .btn-hint-pill:hover {
+    transform: scale(1.05);
+  }
+
+  .btn-hint-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Klavye Masaüstü Ayarı */
+  .keyboard-container {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin-top: auto;
+  }
+
+  .kb-key {
+    background: #f1f2f6;
+    height: 55px;
+    font-size: 1.2rem;
+  }
+
+  .kb-key:hover {
+    background: #dfe6e9;
+  }
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  backdrop-filter: blur(5px);
+}
+
+.modal-box {
+  background: white;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 24px;
+  padding: 40px 30px;
+  text-align: center;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- App.css EN ALTINA EKLEYİN --- */
+
+/* Skor Detayı (30/50 Bilinen Harf) */
+.score-detail {
+  background: #f1f2f6;
+  color: #2d3436;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+/* Kelime Listesi Kapsayıcı */
+.word-review-list {
+  width: 100%;
+  background: #f8f9fa;
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Kaydırılabilir Alan */
+.review-scroll {
+  max-height: 150px;
+  /* Liste çok uzarsa scroll çıksın */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Scrollbar tasarımı (Opsiyonel - Webkit tarayıcılar için) */
+.review-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.review-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.review-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+/* Liste Elemanı */
+.review-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.lang-en {
+  font-weight: 700;
+  color: var(--accent-purple);
+  flex: 1;
+  text-align: right;
+}
+
+.divider {
+  margin: 0 8px;
+  color: #ccc;
+}
+
+.lang-tr {
+  font-weight: 600;
+  color: var(--text-dark);
+  flex: 1;
+  text-align: left;
+}
+
+.modal-buttons {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
