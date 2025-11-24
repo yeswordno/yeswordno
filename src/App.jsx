@@ -25,6 +25,38 @@ function App() {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [totalLetters, setTotalLetters] = useState(0);
 
+  // --- SESLİ OKUMA MOTORU (TTS) ---
+  const speakText = (text) => {
+    if (!window.speechSynthesis) return;
+
+    // Varsa eski konuşmayı durdur
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US'; // Daima İngilizce okuyacak
+    utterance.rate = 0.9;     // Tane tane okunması için hız ayarı
+    utterance.pitch = 1;
+
+    // En kaliteli sesi bulma (Google, Siri vb.)
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(voice =>
+      (voice.lang === 'en-US' || voice.lang === 'en_US') && (
+        voice.name.includes('Google') ||
+        voice.name.includes('Samantha') ||
+        voice.name.includes('Daniel') ||
+        voice.name.includes('Premium')
+      )
+    );
+
+    if (preferredVoice) utterance.voice = preferredVoice;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Sesleri önceden yüklemeyi tetikle
+  useEffect(() => {
+    if (window.speechSynthesis) window.speechSynthesis.getVoices();
+  }, []);
+
   // Klavye Tuşları
   const getKeyboardLayout = () => {
     if (mode === 'TR_EN') { // Hedef İngilizce
@@ -254,6 +286,21 @@ function App() {
 
     return () => window.removeEventListener('resize', handleResize);
   }, [screen]);
+  // Kelimenin tamamlanıp tamamlanmadığını kontrol eden yardımcı değişken
+  const isWordFinished = () => {
+    if (!selectedWord) return false;
+    for (let i = 0; i < selectedWord.answer.length; i++) {
+      const r = selectedWord.dir === 'across' ? selectedWord.row : selectedWord.row + i;
+      const c = selectedWord.dir === 'across' ? selectedWord.col + i : selectedWord.col;
+      // Eğer griddeki harf, cevap anahtarıyla uyuşmuyorsa bitmemiş demektir
+      if (gridData[r][c] !== selectedWord.answer[i]) return false;
+    }
+    return true;
+  };
+
+  // Ses butonu aktif mi?
+  // Kural: Mod EN_TR ise her zaman aktif. Mod TR_EN ise sadece kelime bitince aktif.
+  const canPlayAudio = selectedWord && (mode === 'EN_TR' || isWordFinished());
 
   return (
     <div className="app-container">
@@ -287,6 +334,24 @@ function App() {
           <div className="mobile-top-bar">
             <button className="btn-circle btn-hint" onClick={giveHint} disabled={!selectedWord}>💡</button>
             <div className="mobile-clue-box">
+              {/* YENİ EKLENEN HOPARLÖR BUTONU */}
+              <button
+                className="btn-speak-mobile"
+                onClick={(e) => {
+                  e.stopPropagation(); // Kutuya tıklamayı engelle
+                  if (canPlayAudio) {
+
+                    const textToRead = mode === 'EN_TR' ? selectedWord.clue : selectedWord.answer;
+                    speakText(textToRead);
+                  }
+                }}
+                disabled={!canPlayAudio}
+                style={{ opacity: canPlayAudio ? 1 : 0.3 }}
+              >
+                🔊
+              </button>
+              {/* YENİ EKLENEN HOPARLÖR BUTONU BİTİŞ */}
+
               <span className="mobile-clue-text">
                 {selectedWord ? selectedWord.clue : "Kelime Seç"}
               </span>
@@ -319,8 +384,33 @@ function App() {
               <div className="desk-clue-area">
                 <div className="desk-icon">{selectedWord ? '💡' : '👆'}</div>
                 <div className="desk-text">
+
+
                   {selectedWord ? selectedWord.clue : "BAŞLAMAK İÇİN KUTUYA TIKLA"}
                 </div>
+                {selectedWord && (
+                  <button
+                    className="btn-speak-desk"
+                    // Buton aktif değilse tıklamayı engelle
+                    disabled={!canPlayAudio}
+                    onClick={() => {
+                      const textToRead = mode === 'EN_TR' ? selectedWord.clue : selectedWord.answer;
+                      speakText(textToRead);
+                    }}
+                    // Görsel olarak kilitli olduğunu hissettir (CSS'e gitmeden buradan stil verelim)
+                    style={{
+                      opacity: canPlayAudio ? 1 : 0.6,
+                      cursor: canPlayAudio ? 'pointer' : 'not-allowed',
+                      filter: canPlayAudio ? 'none' : 'grayscale(100%)',
+                      borderColor: canPlayAudio ? 'var(--accent-purple)' : '#ccc',
+                      color: canPlayAudio ? 'var(--accent-purple)' : '#999'
+                    }}
+                  >
+                    {/* Eğer kilitliyse Kilit İkonu, değilse Hoparlör göster */}
+                    {!canPlayAudio && mode === 'TR_EN' ? '🔒 Önce Çöz' : '🔊 Telaffuzu Dinle'}
+                  </button>
+                )}
+
                 <button className="btn-hint-pill" onClick={giveHint} disabled={!selectedWord}>
                   İpucu Kullan ({hintsUsed})
                 </button>
@@ -332,7 +422,21 @@ function App() {
               {keyboardRows.map((row, i) => (
                 <div key={i} className="kb-row">
                   {row.map(k => (
-                    <button key={k} className="kb-key" onClick={(e) => { e.currentTarget.blur(); handleKeyInput(k); }}>
+                    <button
+                      key={k}
+                      className="kb-key notranslate" /* Çeviriyi engellemek için kritik */
+                      onClick={(e) => {
+                        e.preventDefault(); // Varsayılan davranışı durdur
+                        e.currentTarget.blur(); // Odaklanmayı kaldır (klavye açılmasın diye)
+                        handleKeyInput(k);
+                      }}
+                      /* Tarayıcı müdahalelerini kapatan özellikler */
+                      translate="no"
+                      spellCheck="false"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                    >
                       {k}
                     </button>
                   ))}

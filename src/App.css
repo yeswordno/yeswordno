@@ -228,10 +228,13 @@ html,
   /* Mobilde ekran genişliğine yayıl */
   max-width: 400px;
   /* Tablette sınırla */
+  /* Yükseklik kısıtlaması ekliyoruz ki klavyenin altında kalmasın */
+  max-height: 55dvh;
   aspect-ratio: 1 / 1;
   /* KARE FORMU KORU */
   grid-auto-rows: 1fr;
   /* Satırları eşitle */
+  margin: 0 auto;
 }
 
 .cell {
@@ -654,3 +657,105 @@ html,
   align-items: center;
 }
 
+/* Sadece yüksekliği 700px'den az olan telefonlarda çalışır */
+@media (max-height: 700px) {
+
+  /* Üst barı biraz sıkıştır */
+  .mobile-top-bar {
+    padding: 5px 10px;
+  }
+
+  .btn-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+
+  .mobile-clue-box {
+    height: 36px;
+  }
+
+  /* Grid'i biraz daha ufalt */
+  .grid {
+    max-height: 50dvh;
+  }
+
+  /* Tuşları biraz kısalt */
+  .kb-key {
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .keyboard-container {
+    padding-bottom: 5px;
+    gap: 4px;
+  }
+
+  /* Menüdeki logoyu biraz ufalt */
+  .logo-icon {
+    font-size: 3rem;
+    margin-bottom: 5px;
+  }
+
+  .app-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
+}
+
+/* 1. MOBİL SES BUTONU */
+.btn-speak-mobile {
+  background: transparent;
+  border: none;
+  font-size: 1.3rem;
+  margin-right: 2px;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-purple);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  /* İsim uzunsa buton ezilmesin */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-speak-mobile:active {
+  transform: scale(0.8);
+}
+
+.btn-speak-mobile:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 2. MASAÜSTÜ SES BUTONU */
+.btn-speak-desk {
+  margin-top: 15px;
+  background: white;
+  border: 2px solid var(--accent-purple);
+  color: var(--accent-purple);
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(108, 92, 231, 0.15);
+}
+
+.btn-speak-desk:hover {
+  background: var(--accent-purple);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(108, 92, 231, 0.3);
+}
+
+.btn-speak-desk:active {
+  transform: scale(0.97);
+}
