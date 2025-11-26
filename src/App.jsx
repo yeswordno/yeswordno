@@ -100,7 +100,11 @@ function App() {
     const shuffled = [...wordsData].sort(() => 0.5 - Math.random());
     const selection = shuffled.slice(0, 40).map(item => {
       const rawAnswer = mode === 'EN_TR' ? item.tr : item.en;
-      const clue = mode === 'EN_TR' ? item.en : item.tr;
+      const rawClue = mode === 'EN_TR' ? item.en : item.tr;
+      const clue = mode === 'TR_EN'
+        ? rawClue.toLocaleUpperCase('tr') // Türkçe İpucu: i -> İ olur
+        : rawClue.toUpperCase();          // İngilizce İpucu: i -> I olur
+
       if (!rawAnswer) return null;
 
       let clean = mode === 'TR_EN'
@@ -109,6 +113,7 @@ function App() {
 
       return { answer: clean, clue: clue, original: item };
     }).filter(w => w && w.answer.length > 1 && w.answer.length <= GRID_SIZE);
+
 
     const result = generateCrossword(selection);
     if (result.placedWords.length < 4) { startGame(wordsData); return; } // Yeniden dene
@@ -378,42 +383,65 @@ function App() {
             {/* Masaüstü Bilgi Kartı (CSS ile Mobilde gizlenir) */}
             <div className="desktop-info-card">
               <div className="desk-header">
-                <h3>Kelime Avcısı</h3>
+                <h3>Kelime Kartı</h3> {/* Başlığı değiştirdik */}
                 <button className="btn-close-desk" onClick={() => setScreen('level')}>✕</button>
               </div>
+
               <div className="desk-clue-area">
-                <div className="desk-icon">{selectedWord ? '💡' : '👆'}</div>
-                <div className="desk-text">
 
-
-                  {selectedWord ? selectedWord.clue : "BAŞLAMAK İÇİN KUTUYA TIKLA"}
+                {/* 1. KISIM: İKON VE YÖNLENDİRME */}
+                <div className="desk-flag-icon">
+                  {!selectedWord ? (
+                    <span style={{ fontSize: '3rem' }}>👆</span>
+                  ) : (
+                    <img
+                      src={mode === 'EN_TR' ? "https://flagcdn.com/w160/tr.png" : "https://flagcdn.com/w160/gb.png"}
+                      alt="Bayrak"
+                      className="real-flag"
+                    />
+                  )}
                 </div>
+
+                <div className="desk-instruction">
+                  {!selectedWord
+                    ? "Bir kutuya tıkla"
+                    : (mode === 'EN_TR' ? "TÜRKÇESİNİ YAZ" : "İNGİLİZCESİNİ YAZ")
+                  }
+                </div>
+
+                {/* 2. KISIM: SORU (İPUCU) */}
+                <div className="desk-text">
+                  {selectedWord ? selectedWord.clue : "..."}
+                </div>
+
+                {/* 3. KISIM: SES BUTONU */}
                 {selectedWord && (
                   <button
                     className="btn-speak-desk"
-                    // Buton aktif değilse tıklamayı engelle
                     disabled={!canPlayAudio}
                     onClick={() => {
                       const textToRead = mode === 'EN_TR' ? selectedWord.clue : selectedWord.answer;
                       speakText(textToRead);
                     }}
-                    // Görsel olarak kilitli olduğunu hissettir (CSS'e gitmeden buradan stil verelim)
                     style={{
                       opacity: canPlayAudio ? 1 : 0.6,
                       cursor: canPlayAudio ? 'pointer' : 'not-allowed',
                       filter: canPlayAudio ? 'none' : 'grayscale(100%)',
                       borderColor: canPlayAudio ? 'var(--accent-purple)' : '#ccc',
-                      color: canPlayAudio ? 'var(--accent-purple)' : '#999'
+                      color: canPlayAudio ? 'var(--accent-purple)' : '#999',
+                      marginTop: '10px',
+                      marginBottom: '10px'
                     }}
                   >
-                    {/* Eğer kilitliyse Kilit İkonu, değilse Hoparlör göster */}
                     {!canPlayAudio && mode === 'TR_EN' ? '🔒 Önce Çöz' : '🔊 Telaffuzu Dinle'}
                   </button>
                 )}
 
-                <button className="btn-hint-pill" onClick={giveHint} disabled={!selectedWord}>
-                  İpucu Kullan ({hintsUsed})
+                {/* 4. KISIM: İPUCU BUTONU (Daha minimal) */}
+                <button className="btn-hint-text" onClick={giveHint} disabled={!selectedWord}>
+                  💡 Harf İpucu Al ({hintsUsed})
                 </button>
+
               </div>
             </div>
 

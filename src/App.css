@@ -759,3 +759,95 @@ html,
 .btn-speak-desk:active {
   transform: scale(0.97);
 }
+
+/* --- YENİ MASAÜSTÜ KART TASARIMI --- */
+
+/* Bayrak İkonu */
+.desk-flag-icon {
+  margin-bottom: 10px;
+  height: 60px;
+  /* Sabit yükseklik, zıplamayı önler */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gerçek Bayrak Görseli */
+.real-flag {
+  width: 60px;
+  /* Genişlik */
+  height: auto;
+  border-radius: 6px;
+  /* Hafif yuvarlak köşe */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Gölge */
+  transition: transform 0.2s;
+  object-fit: cover;
+}
+
+/* Üzerine gelince hafif büyüsün */
+.desk-flag-icon:hover .real-flag {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+/* Bayrak biraz zıplasın seçince */
+.desk-flag-icon:hover {
+  transform: scale(1.1);
+}
+
+/* "İngilizcesini Yaz" Metni */
+.desk-instruction {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #b2bec3;
+  /* Gri ton */
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+/* Soru Metni (Daha büyük ve belirgin) */
+.desk-text {
+  font-size: 1.6rem;
+  /* Biraz büyüttük */
+  font-weight: 800;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin-bottom: 5px;
+  min-height: 60px;
+  /* Metin değişince zıplamayı önler */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Yeni Minimal İpucu Butonu (Hap şeklinde değil, yazı şeklinde) */
+.btn-hint-text {
+  background: transparent;
+  border: none;
+  color: #fdcb6e;
+  /* Sarı ton */
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: auto;
+  /* En alta it */
+  padding: 10px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-hint-text:hover {
+  background: #fff7d1;
+  color: #e58e26;
+}
+
+.btn-hint-text:disabled {
+  color: #dfe6e9;
+  cursor: default;
+  background: transparent;
+}
