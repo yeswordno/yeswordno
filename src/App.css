@@ -703,32 +703,42 @@ html,
   }
 }
 
-/* 1. MOBİL SES BUTONU */
-.btn-speak-mobile {
-  background: transparent;
-  border: none;
-  font-size: 1.3rem;
-  margin-right: 2px;
-  cursor: pointer;
-  padding: 0 8px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-purple);
-  transition: transform 0.2s;
-  flex-shrink: 0;
-  /* İsim uzunsa buton ezilmesin */
-  -webkit-tap-highlight-color: transparent;
+/* YENİ MOBİL SES BUTONU */
+.btn-audio-mobile {
+  background: white;        /* Beyaz zemin */
+  color: var(--accent-purple); /* Mor İkon */
+  font-weight: bold;
+  font-size: 1rem;          /* Kilit ikonu için boyut */
+  border: 2px solid transparent; /* Sınır */
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-speak-mobile:active {
-  transform: scale(0.8);
+/* Tıklanabilir olduğunda daha belirgin olsun */
+.btn-audio-mobile:not(:disabled) {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Hafif gölge */
 }
 
-.btn-speak-mobile:disabled {
-  opacity: 0;
-  pointer-events: none;
+/* Aktif (Basılınca) */
+.btn-audio-mobile:active {
+  transform: scale(0.9);
+  background: var(--accent-purple); /* Basınca mor olsun */
+  color: white; /* İkon beyaz olsun */
+}
+
+/* Devre Dışı (Disabled) Durumu */
+.btn-audio-mobile:disabled {
+  background: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+}
+
+/* SVG İkon Ayarı */
+.btn-audio-mobile svg {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 /* 2. MASAÜSTÜ SES BUTONU */

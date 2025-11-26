@@ -7,6 +7,8 @@ import a1_a2 from './data/a1_a2.json';
 import b1_b2 from './data/b1_b2.json';
 import c1_c2 from './data/c1_c2.json';
 import academic from './data/academic.json';
+import { TrFlag, GbFlag } from './utils/FlagIcons';
+import { SpeakerIcon } from './utils/SpeakerIcon';
 
 function App() {
   // --- STATE YÖNETİMİ ---
@@ -336,31 +338,40 @@ function App() {
         <div id="game-screen">
 
           {/* MOBİL ÜST BAR (Masaüstünde CSS ile gizlenir) */}
+          {/* MOBİL ÜST BAR */}
           <div className="mobile-top-bar">
-            <button className="btn-circle btn-hint" onClick={giveHint} disabled={!selectedWord}>💡</button>
-            <div className="mobile-clue-box">
-              {/* YENİ EKLENEN HOPARLÖR BUTONU */}
-              <button
-                className="btn-speak-mobile"
-                onClick={(e) => {
-                  e.stopPropagation(); // Kutuya tıklamayı engelle
-                  if (canPlayAudio) {
 
+            {/* SOL GRUP: Butonlar */}
+            <div style={{ display: 'flex', gap: '8px' }}>
+
+              {/* 1. İpucu Butonu */}
+              <button className="btn-circle btn-hint" onClick={giveHint} disabled={!selectedWord}>💡</button>
+
+              {/* 2. YENİ SES BUTONU (Artık kutunun dışında) */}
+              <button
+                className="btn-circle btn-audio-mobile" // Yeni sınıf adı verdik
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (canPlayAudio) {
                     const textToRead = mode === 'EN_TR' ? selectedWord.clue : selectedWord.answer;
                     speakText(textToRead);
                   }
                 }}
-                disabled={!canPlayAudio}
-                style={{ opacity: canPlayAudio ? 1 : 0.3 }}
+                disabled={!canPlayAudio} // Eğer dinlenemiyorsa disabled olsun
               >
-                🔊
+                {/* Kilitliyse Kilit, değilse Hoparlör İkonu */}
+                {!canPlayAudio && mode === 'TR_EN' ? '🔒' : <SpeakerIcon />}
               </button>
-              {/* YENİ EKLENEN HOPARLÖR BUTONU BİTİŞ */}
+            </div>
 
+            {/* ORTA: Metin Kutusu (Artık içi temiz) */}
+            <div className="mobile-clue-box">
               <span className="mobile-clue-text">
                 {selectedWord ? selectedWord.clue : "Kelime Seç"}
               </span>
             </div>
+
+            {/* SAĞ: Kapat Butonu */}
             <button className="btn-circle btn-close" onClick={() => setScreen('level')}>✕</button>
           </div>
 
@@ -394,11 +405,9 @@ function App() {
                   {!selectedWord ? (
                     <span style={{ fontSize: '3rem' }}>👆</span>
                   ) : (
-                    <img
-                      src={mode === 'EN_TR' ? "https://flagcdn.com/w160/tr.png" : "https://flagcdn.com/w160/gb.png"}
-                      alt="Bayrak"
-                      className="real-flag"
-                    />
+                    // Eğer EN_TR ise (İngilizceden Türkçeye) -> Hedef dil Türkçe Bayrağı
+                    // Eğer TR_EN ise (Türkçeden İngilizceye) -> Hedef dil İngiliz Bayrağı
+                    mode === 'EN_TR' ? <TrFlag /> : <GbFlag />
                   )}
                 </div>
 
