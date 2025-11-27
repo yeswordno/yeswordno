@@ -761,9 +761,17 @@ html,
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   transition: all 0.2s ease;
   box-shadow: 0 4px 10px rgba(108, 92, 231, 0.15);
+}
+
+.btn-speak-desk svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  /* Butonun yazı rengini alır */
 }
 
 .btn-speak-desk:hover {
@@ -1087,4 +1095,44 @@ html,
   color: #86868b;
   padding-top: 50px;
   font-weight: 500;
+}
+
+/* Dil Seçim Butonları İçin Ayarlar */
+.btn-lang {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Ortala */
+  gap: 12px;
+  /* Elemanlar arası boşluk */
+  padding: 15px 20px;
+}
+
+/* Bayrakları saran kutu (Boyutlandırma için) */
+.lang-icon-wrapper {
+  width: 28px;
+  /* Bayrak genişliği */
+  height: 20px;
+  /* Bayrak yüksekliği */
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  overflow: hidden;
+  /* Köşeler yuvarlak kalsın */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Hafif gölge */
+}
+
+/* Butonun içindeki SVG bayraklar, wrapper'a sığsın */
+.lang-icon-wrapper svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Ok işareti */
+.arrow {
+  color: #b2bec3;
+  font-weight: 300;
+  font-size: 1.2rem;
 }

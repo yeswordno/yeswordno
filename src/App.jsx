@@ -142,14 +142,17 @@ function App() {
 
   // --- OYUN MANTIĞI ---
   const handleCellClick = (r, c) => {
+    // 1. Geçersiz alan kontrolü (AYNI)
     if (solutionGrid[r][c] === null) { setSelectedWord(null); setCursor({ r: -1, c: -1 }); return; }
 
+    // 2. O kutudaki kelimeleri bul (AYNI)
     const wordsAtCell = placedWords.filter(w => {
       if (w.dir === 'across') return r === w.row && c >= w.col && c < w.col + w.answer.length;
       else return c === w.col && r >= w.row && r < w.row + w.answer.length;
     });
     if (wordsAtCell.length === 0) return;
 
+    // 3. Hedef kelimeyi seç (AYNI)
     let target = wordsAtCell[0];
     if (selectedWord && wordsAtCell.length > 1) {
       if (selectedWord.index === wordsAtCell[0].index) {
@@ -158,6 +161,20 @@ function App() {
         target = wordsAtCell.some(w => w.index === selectedWord.index) ? selectedWord : wordsAtCell[0];
       }
     }
+
+    // --- DEĞİŞİKLİK BURADA BAŞLIYOR ---
+
+    // Eğer zaten seçili olan kelimenin bir harfine tıklıyorsak:
+    // Otomatik olarak ilk boşluğa gitme, direkt kullanıcının tıkladığı yere git.
+    if (selectedWord && selectedWord.index === target.index) {
+      setSelectedWord(target);
+      setCursor({ r, c }); // Tıklanan koordinat
+      return; // Fonksiyonu burada bitir, aşağıya (otomatik aramaya) inme
+    }
+
+    // --- DEĞİŞİKLİK BURADA BİTİYOR ---
+
+    // Eğer kelime YENİ seçiliyorsa: İlk boş kutuyu bul (ESKİ MANTIK DEVAM EDİYOR)
     setSelectedWord(target);
 
     let foundEmpty = false;
@@ -357,8 +374,24 @@ function App() {
         <div className="menu-screen">
           <div className="logo-icon">🧩</div>
           <h1 className="app-title">Kelime Avcısı</h1>
-          <button className="btn-main btn-lang" onClick={() => handleLangSelect('EN_TR')}>🇬🇧 İngilizce ➔ 🇹🇷 Türkçe</button>
-          <button className="btn-main btn-lang" onClick={() => handleLangSelect('TR_EN')}>🇹🇷 Türkçe ➔ 🇬🇧 İngilizce</button>
+
+          {/* BUTON 1: İngilizce -> Türkçe */}
+          <button className="btn-main btn-lang" onClick={() => handleLangSelect('EN_TR')}>
+            <div className="lang-icon-wrapper"><GbFlag /></div>
+            <span>İngilizce</span>
+            <span className="arrow">➔</span>
+            <div className="lang-icon-wrapper"><TrFlag /></div>
+            <span>Türkçe</span>
+          </button>
+
+          {/* BUTON 2: Türkçe -> İngilizce */}
+          <button className="btn-main btn-lang" onClick={() => handleLangSelect('TR_EN')}>
+            <div className="lang-icon-wrapper"><TrFlag /></div>
+            <span>Türkçe</span>
+            <span className="arrow">➔</span>
+            <div className="lang-icon-wrapper"><GbFlag /></div>
+            <span>İngilizce</span>
+          </button>
         </div>
       )}
 
@@ -486,7 +519,14 @@ function App() {
                       marginBottom: '10px'
                     }}
                   >
-                    {!canPlayAudio && mode === 'TR_EN' ? '🔒 Önce Çöz' : '🔊 Telaffuzu Dinle'}
+                    {!canPlayAudio && mode === 'TR_EN' ? (
+                      <>🔒 Önce Çöz</>
+                    ) : (
+                      <>
+                        <SpeakerIcon />
+                        <span>Telaffuzu Dinle</span>
+                      </>
+                    )}
                   </button>
                 )}
 
