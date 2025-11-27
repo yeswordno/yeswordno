@@ -307,27 +307,7 @@ function App() {
     window.addEventListener('keydown', kd); return () => window.removeEventListener('keydown', kd);
   }, [screen, cursor, selectedWord, gridData, mode]);
 
-  // App.jsx'e ekleyin
-  useEffect(() => {
-    const handleResize = () => {
-      if (screen === 'game' && window.innerWidth >= 1024) {
-        // Masaüstü görünümünde grid'i yeniden boyutlandır
-        const gridElement = document.querySelector('.grid');
-        if (gridElement) {
-          const container = gridElement.parentElement;
-          const containerSize = Math.min(container.clientWidth, container.clientHeight);
-          gridElement.style.width = `${containerSize - 60}px`; // Padding'i çıkar
-          gridElement.style.height = `${containerSize - 60}px`;
-        }
-      }
-    };
 
-    window.addEventListener('resize', handleResize);
-    // İlk yüklemede de çalıştır
-    setTimeout(handleResize, 100);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, [screen]);
   // Kelimenin tamamlanıp tamamlanmadığını kontrol eden yardımcı değişken
   const isWordFinished = () => {
     if (!selectedWord) return false;

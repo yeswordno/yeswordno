@@ -369,25 +369,28 @@ html,
 
 
 /* --- MASAÜSTÜ VE TABLET TASARIMI (1024px üzeri) --- */
+/* --- MASAÜSTÜ VE TABLET TASARIMI (1024px üzeri) --- */
 @media (min-width: 1024px) {
 
   #game-screen {
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 400px;
+    /* Sol taraf esnek, sağ panel 400px */
     grid-template-areas: "board panel";
-    padding: 40px;
+    padding: 30px;
     gap: 30px;
     max-width: 1400px;
     margin: 0 auto;
     height: 100vh;
-    /* Tam yükseklik */
+    align-items: center;
+    /* Dikeyde ortala */
   }
 
   .mobile-top-bar {
     display: none;
   }
 
-  /* SOL: Grid Alanı (Cam Efekti) */
+  /* SOL: Grid Alanı */
   .board-area {
     grid-area: board;
     background: var(--board-bg-desktop);
@@ -396,33 +399,52 @@ html,
     border: 1px solid var(--board-border-desktop);
     border-radius: 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    padding: 30px;
+
+    /* İçeriği Ortala */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px;
     height: 100%;
     max-height: 90vh;
-    /* Maksimum yükseklik */
+    /* Ekranın %90'ını geçmesin */
   }
 
   .grid-wrapper {
-    height: 100%;
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
   .grid {
-    width: auto;
+    /* --- GÜNCELLEME --- */
+
+    /* Genişliği ekranın yüksekliğinin %85'ine kadar çıkartalım (Önceden 70'ti) */
+    /* Ama aynı zamanda yatayda da taşmasın diye max-width %100 diyelim */
+    width: 100%;
+    max-width: 85vh;
+
+    /* Grid'in kendini kutunun içinde olabildiğince büyütmesini sağla */
     height: auto;
-    max-width: 100%;
-    max-height: 100%;
+    max-height: 85vh;
+
     aspect-ratio: 1 / 1;
+    display: grid;
+    gap: 5px;
+    grid-auto-rows: 1fr;
+
+    /* Önemli: Eğer ekran çok darsa (mobil değil ama dar pencere), yine de taşma */
+    flex-shrink: 0;
   }
 
   .cell {
     border-radius: 8px;
-    font-size: 1.4rem;
-    font-size: clamp(1rem, 1.5vw, 1.8rem);
-    /* Dinamik font boyutu */
+    /* Font boyutu kutuya göre dinamik değişsin */
+    font-size: clamp(1rem, 2.5cqw, 2.2rem);
+    font-weight: 700;
   }
 
   /* SAĞ: Panel Alanı */
@@ -430,11 +452,15 @@ html,
     grid-area: panel;
     background: white;
     border-radius: 24px;
-    padding: 30px;
+    padding: 35px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
     height: 100%;
     max-height: 90vh;
-    /* Maksimum yükseklik */
+    /* Sol tarafla aynı yükseklik sınırı */
+
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
   }
 
@@ -443,6 +469,7 @@ html,
     display: flex;
     flex-direction: column;
     flex: 1;
+    /* Boş alanı doldur */
   }
 
   .desk-header {
@@ -454,33 +481,56 @@ html,
 
   .desk-header h3 {
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 800;
     color: var(--text-dark);
+    letter-spacing: -0.5px;
   }
 
   .btn-close-desk {
     background: #f1f2f6;
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
     font-weight: bold;
+    font-size: 1.1rem;
+    transition: all 0.2s;
   }
 
   .btn-close-desk:hover {
     background: var(--wrong);
     color: white;
+    transform: rotate(90deg);
+  }
+
+  /* Bayrak İkonu Kapsayıcısı (Tekrarları temizledik) */
+  .desk-flag-icon {
+    margin-bottom: 10px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .desk-instruction {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #b2bec3;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
   }
 
   .desk-clue-area {
     background: #f8f9fa;
     border: 2px solid #f1f2f6;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 30px 20px;
     text-align: center;
     flex: 1;
+    /* Kartın geri kalanını kapla */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -488,46 +538,17 @@ html,
     margin-bottom: 20px;
   }
 
-  .desk-icon {
-    font-size: 2.5rem;
-    background: var(--accent-purple);
-    color: white;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-
   .desk-text {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-dark);
     text-transform: uppercase;
-    line-height: 1.4;
-  }
-
-  .btn-hint-pill {
-    background: #fff7d1;
-    color: #e58e26;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 50px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 15px;
-    font-size: 1rem;
-    transition: transform 0.2s;
-  }
-
-  .btn-hint-pill:hover {
-    transform: scale(1.05);
-  }
-
-  .btn-hint-pill:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Klavye Masaüstü Ayarı */
@@ -536,16 +557,25 @@ html,
     padding: 0;
     border-radius: 0;
     margin-top: auto;
+    /* En alta it */
+    gap: 8px;
   }
 
   .kb-key {
     background: #f1f2f6;
     height: 55px;
     font-size: 1.2rem;
+    border-radius: 10px;
+    transition: background 0.1s;
   }
 
   .kb-key:hover {
     background: #dfe6e9;
+    transform: translateY(-2px);
+  }
+
+  .kb-key:active {
+    transform: translateY(0);
   }
 }
 
