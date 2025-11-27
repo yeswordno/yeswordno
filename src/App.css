@@ -118,13 +118,40 @@ html,
   color: var(--text-dark);
 }
 
+/* App.css */
+
 .btn-back {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+  /* Cam efekti */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  /* İnce beyaz sınır */
+  color: white;
+  padding: 12px 28px;
+  /* Daha geniş ve orantılı */
+  border-radius: 30px;
+  /* Tam yuvarlak köşeler */
   font-weight: 600;
-  margin-top: 20px;
+  font-size: 1rem;
+  margin-top: 25px;
   cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  /* Ok ile yazı arası boşluk */
+  backdrop-filter: blur(5px);
+  /* Arka planı bulanıklaştır */
+}
+
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.btn-back:active {
+  transform: scale(0.96);
 }
 
 
@@ -787,37 +814,29 @@ html,
 
 /* --- YENİ MASAÜSTÜ KART TASARIMI --- */
 
-/* Bayrak İkonu */
+/* Bayrak İkonu Kapsayıcısı */
 .desk-flag-icon {
   margin-bottom: 10px;
   height: 60px;
-  /* Sabit yükseklik, zıplamayı önler */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Gerçek Bayrak Görseli */
+/* Gerçek Bayrak Görseli (SVG/IMG) */
 .real-flag {
   width: 60px;
-  /* Genişlik */
   height: auto;
   border-radius: 6px;
-  /* Hafif yuvarlak köşe */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* Gölge */
-  transition: transform 0.2s;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Daha havalı zıplama efekti */
   object-fit: cover;
 }
 
-/* Üzerine gelince hafif büyüsün */
+/* Üzerine gelince sadece bayrak hareket etsin */
 .desk-flag-icon:hover .real-flag {
   transform: scale(1.1) rotate(-3deg);
-}
-
-/* Bayrak biraz zıplasın seçince */
-.desk-flag-icon:hover {
-  transform: scale(1.1);
 }
 
 /* "İngilizcesini Yaz" Metni */
@@ -972,18 +991,154 @@ html,
   padding: 20px;
 }
 
-.stat-card {
+/* --- KOLEKSİYON EKRANI (iOS STYLE) --- */
+
+/* Sekme Alanı */
+.tab-area {
+  padding: 10px 20px;
+  background: transparent;
+}
+
+/* --- KOLEKSİYON EKRANI (PASTEL STYLE) --- */
+
+/* Sekme Kutusu (Arka Plan) */
+.segmented-control {
+  background: #f1f2f4;
+  /* Çok açık gri zemin */
+  padding: 4px;
+  /* Kenar boşluğu */
+  border-radius: 50px;
+  /* Tam yuvarlak (Hap şekli) */
+  display: flex;
+  position: relative;
+  height: 60px;
+  /* İdeal yükseklik */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+  /* Çok hafif iç gölge */
+}
+
+/* Sekme Butonları (Pasif Hali) */
+.segment-btn {
   flex: 1;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  /* Koyu gri yazı (Okunabilir) */
+  font-weight: 600;
+  /* Orta kalınlıkta yazı */
+  font-size: 0.95rem;
+  border-radius: 40px;
+  /* İç butonlar da yuvarlak */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Aktif Sekme (Resimdeki Tarz: Mor Zemin, Siyah Yazı) */
+.segment-btn.active {
+  background-color: #c4b5fd;
+  /* Yumuşak Pastel Mor */
+  color: #000000;
+  /* Siyah Yazı */
+  font-weight: 700;
+  /* Seçili olan biraz daha kalın */
+  box-shadow: 0 2px 8px rgba(167, 139, 250, 0.25);
+  /* Morumsu hafif gölge */
+}
+
+/* Üzerine gelince (Hover) */
+.segment-btn:not(.active):hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  /* Hafif grileşsin */
+}
+
+/* Liste Alanı */
+.coll-list-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 20px 40px 20px;
+}
+
+/* Tek Parça Liste Kartı */
+.unified-list {
   background: white;
-  padding: 20px;
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  text-align: center;
+  border-radius: 16px;
+  padding: 0 10px;
+  /* Kenarlardan hafif boşluk */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+/* Liste Satırı */
+.list-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 10px;
+  border-bottom: 1px solid #f4f4f5;
+  /* İnce çizgi */
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.list-row:last-child {
+  border-bottom: none;
+  /* Son satırda çizgi olmasın */
+}
+
+.list-row:active {
+  background-color: #fcfcfc;
+}
+
+/* Metinler */
+.row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.row-en {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.row-tr {
+  font-size: 0.9rem;
+  color: #a1a1aa;
+  /* Soluk gri */
+  font-weight: 500;
+}
+
+/* Ses Butonu (Resimdeki gibi mor daire) */
+.row-speak-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f3e8ff;
+  /* Çok açık mor zemin */
+  color: var(--accent-purple);
+  /* Koyu mor ikon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   transition: transform 0.2s;
 }
 
-.stat-card:active {
-  transform: scale(0.98);
+.row-speak-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.row-speak-btn:active {
+  transform: scale(0.9);
+  background: var(--accent-purple);
+  color: white;
 }
 
 .stat-num {
@@ -1000,9 +1155,7 @@ html,
   color: #86868b;
 }
 
-.stat-card.review .stat-num {
-  color: #ff7675;
-}
+
 
 /* Liste Alanı */
 .coll-list-container {
@@ -1019,23 +1172,7 @@ html,
   letter-spacing: 1px;
 }
 
-/* Kelime Kartı */
-.word-card {
-  background: white;
-  padding: 16px 20px;
-  border-radius: 16px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
-  cursor: pointer;
-  transition: background 0.2s;
-}
 
-.word-card:active {
-  background: #f5f5f7;
-}
 
 .wc-left {
   display: flex;

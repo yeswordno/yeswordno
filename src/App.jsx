@@ -33,9 +33,9 @@ function App() {
     const saved = localStorage.getItem('wordHunter_collection');
     return saved ? JSON.parse(saved) : { known: [], review: [] };
   });
+  const [activeTab, setActiveTab] = useState('review');
 
-  // Koleksiyon ekranını açmak için
-  const [showCollection, setShowCollection] = useState(false);
+
 
   // --- SESLİ OKUMA MOTORU (TTS) ---
   const speakText = (text) => {
@@ -270,7 +270,11 @@ function App() {
       }
       if (!win) break;
     }
-    if (win) setTimeout(() => setShowWinModal(true), 500);
+    if (win) {
+
+      processGameResult(); // 1. Önce verileri arka planda kaydet
+      setTimeout(() => setShowWinModal(true), 500); // 2. Sonra tebrik ekranını aç
+    }
   };
 
   const getCellClass = (r, c) => {
@@ -341,30 +345,35 @@ function App() {
   const canPlayAudio = selectedWord && (mode === 'EN_TR' || isWordFinished());
 
   // --- KAYIT FONKSİYONU ---
-  const saveToCollection = () => {
-    const newCollection = { ...collection };
+  const processGameResult = () => {
+    // Mevcut koleksiyonun kopyasını al
+    setCollection(prevCollection => {
+      const newCollection = { ...prevCollection };
+      let hasChanges = false;
 
-    placedWords.forEach(word => {
-      // Kelime zaten listede var mı kontrol et (Tekrar eklemeyelim)
-      const isInKnown = newCollection.known.some(w => w.en === word.original.en);
-      const isInReview = newCollection.review.some(w => w.en === word.original.en);
+      placedWords.forEach(word => {
+        // Kelime zaten var mı?
+        const isInKnown = newCollection.known.some(w => w.en === word.original.en);
+        const isInReview = newCollection.review.some(w => w.en === word.original.en);
 
-      if (!isInKnown && !isInReview) {
-        // İpucu kullanıldıysa 'review', kullanılmadıysa 'known' listesine
-        if (hintedWordsSet.has(word.answer)) {
-          newCollection.review.push(word.original);
-        } else {
-          newCollection.known.push(word.original);
+        if (!isInKnown && !isInReview) {
+          hasChanges = true;
+          // İpucu kullanıldıysa 'review', kullanılmadıysa 'known' listesine
+          if (hintedWordsSet.has(word.answer)) {
+            newCollection.review.push(word.original);
+          } else {
+            newCollection.known.push(word.original);
+          }
         }
+      });
+
+      // Sadece değişiklik varsa LocalStorage'a yaz (Performans için)
+      if (hasChanges) {
+        localStorage.setItem('wordHunter_collection', JSON.stringify(newCollection));
       }
+
+      return newCollection;
     });
-
-    setCollection(newCollection);
-    localStorage.setItem('wordHunter_collection', JSON.stringify(newCollection));
-
-    // Ana ekrana dön
-    setShowWinModal(false);
-    setScreen('level');
   };
 
   return (
@@ -403,7 +412,7 @@ function App() {
           <button className="btn-main btn-level" onClick={() => handleLevelSelect('b1_b2')}>🚀 B1 & B2</button>
           <button className="btn-main btn-level" onClick={() => handleLevelSelect('c1_c2')}>🔥 C1 & C2</button>
           <button className="btn-main btn-level" onClick={() => handleLevelSelect('academic')}>🎓 Akademik</button>
-          <button className="btn-main btn-collection" onClick={() => { setShowCollection(true); setScreen('collection'); }}>
+          <button className="btn-main btn-collection" onClick={() => setScreen('collection')}>
             🗂 Kelime Koleksiyonum
           </button>
           <button className="btn-back" onClick={() => setScreen('lang')}>⬅ Geri Dön</button>
@@ -612,86 +621,89 @@ function App() {
               <button className="btn-main btn-lang" onClick={() => startGame(sourceWords)} style={{ justifyContent: 'center', width: '100%', margin: '0' }}>
                 Tekrar Oyna
               </button>
-              <button className="btn-back" style={{ color: '#636e72', marginTop: '10px', fontSize: '0.9rem' }} onClick={saveToCollection}
+              <button
+                className="btn-back"
+                style={{
+                  color: '#636e72',
+                  marginTop: '15px',
+                  fontSize: '0.9rem',
+                  background: '#f1f2f6', // Modaldaki buton beyaz üstünde olduğu için hafif gri olsun
+                  border: 'none',
+                  color: '#2d3436'
+                }}
+                onClick={() => {
+                  setShowWinModal(false);
+                  setScreen('level'); // Direkt menüye dön, zaten kaydedildi.
+                }}
               >
-                Kaydet ve Çık
+                Ana Menüye Dön
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 4. KOLEKSİYON EKRANI (Jony Ive Style) */}
+      {/* 4. KOLEKSİYON EKRANI (iOS Style) */}
       {screen === 'collection' && (
         <div className="collection-screen">
 
+          {/* Header */}
           <div className="collection-header">
             <h2 className="coll-title">Koleksiyonum</h2>
             <button className="btn-close-coll" onClick={() => setScreen('lang')}>✕</button>
           </div>
 
-          <div className="coll-stats">
-            <div className="stat-card">
-              <div className="stat-num">{collection.known.length}</div>
-              <div className="stat-label">Hafızamda</div>
-            </div>
-            <div className="stat-card review">
-              <div className="stat-num">{collection.review.length}</div>
-              <div className="stat-label">Geliştirilecek</div>
+          {/* Sekmeler (Segmented Control) */}
+          <div className="tab-area">
+            <div className="segmented-control">
+              <button
+                className={`segment-btn ${activeTab === 'known' ? 'active' : ''}`}
+                onClick={() => setActiveTab('known')}
+              >
+                Hafızamda ({collection.known.length})
+              </button>
+              <button
+                className={`segment-btn ${activeTab === 'review' ? 'active' : ''}`}
+                onClick={() => setActiveTab('review')}
+              >
+                Geliştirilecek ({collection.review.length})
+              </button>
             </div>
           </div>
 
+          {/* Liste Alanı */}
           <div className="coll-list-container">
-            {/* HİÇ KELİME YOKSA */}
-            {collection.known.length + collection.review.length === 0 && (
+
+            {/* Seçili liste boşsa gösterilecek mesaj */}
+            {collection[activeTab].length === 0 ? (
               <div className="empty-state">
-                <div style={{ fontSize: '3rem' }}>📭</div>
-                <p>Henüz bir kelime biriktirmedin.<br />Oyun oynadıkça burası dolacak.</p>
+                <div style={{ fontSize: '3rem', marginBottom: '10px' }}>
+                  {activeTab === 'known' ? '🧠' : '🎯'}
+                </div>
+                <p>
+                  {activeTab === 'known'
+                    ? "Henüz hafızana attığın kelime yok."
+                    : "Harika! Geliştirilecek kelime kalmadı."}
+                </p>
               </div>
-            )}
-
-            {/* GELİŞTİRİLECEKLER LİSTESİ (Varsa) */}
-            {collection.review.length > 0 && (
-              <div className="list-section">
-                <h3 className="section-title" style={{ color: '#ff7675' }}>Geliştirilecekler</h3>
-                {collection.review.map((item, i) => (
-                  <div key={i} className="word-card" onClick={() => speakText(item.en)}>
-                    <div className="wc-left">
-                      <span className="wc-en">{item.en}</span>
-                      <span className="wc-tr">{item.tr}</span>
+            ) : (
+              /* Dolu Liste (Tek bir beyaz kart içinde satırlar) */
+              <div className="unified-list">
+                {collection[activeTab].map((item, i) => (
+                  <div key={i} className="list-row" onClick={() => speakText(item.en)}>
+                    <div className="row-text">
+                      <span className="row-en">{item.en}</span>
+                      <span className="row-tr">{item.tr}</span>
                     </div>
+
                     <button
-                      className="wc-speak-btn"
+                      className="row-speak-btn"
                       onClick={(e) => {
-                        e.stopPropagation(); // Karta tıklamayı engelle, sadece butona basılsın
+                        e.stopPropagation();
                         speakText(item.en);
                       }}
                     >
-                      <SpeakerIcon /> {/* SVG İkonu Çağırıyoruz */}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* HAFIZAMDAKİLER LİSTESİ */}
-            {collection.known.length > 0 && (
-              <div className="list-section">
-                <h3 className="section-title" style={{ color: '#00b894' }}>Hafızamda</h3>
-                {collection.known.map((item, i) => (
-                  <div key={i} className="word-card" onClick={() => speakText(item.en)}>
-                    <div className="wc-left">
-                      <span className="wc-en">{item.en}</span>
-                      <span className="wc-tr">{item.tr}</span>
-                    </div>
-                    <button
-                      className="wc-speak-btn"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Karta tıklamayı engelle, sadece butona basılsın
-                        speakText(item.en);
-                      }}
-                    >
-                      <SpeakerIcon /> {/* SVG İkonu Çağırıyoruz */}
+                      <SpeakerIcon />
                     </button>
                   </div>
                 ))}
