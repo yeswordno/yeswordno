@@ -28,6 +28,18 @@ function App() {
   const [totalLetters, setTotalLetters] = useState(0);
   const [hintedWordsSet, setHintedWordsSet] = useState(new Set());
 
+  const [timer, setTimer] = useState(0); // Süre sayacı
+  const [isGameActive, setIsGameActive] = useState(false); // Oyun başladı mı?
+  const [currentScore, setCurrentScore] = useState(0); // O anki puan
+  const [isNewRecord, setIsNewRecord] = useState(false); // Rekor kırıldı mı?
+  const [currentLevelKey, setCurrentLevelKey] = useState(''); // Hangi leveldayız?
+
+  // Rekorları LocalStorage'dan çek
+  const [highScores, setHighScores] = useState(() => {
+    const saved = localStorage.getItem('wordHunter_highScores');
+    return saved ? JSON.parse(saved) : {};
+  });
+
   // Koleksiyon Verisi (LocalStorage'dan çekeceğiz)
   const [collection, setCollection] = useState(() => {
     const saved = localStorage.getItem('wordHunter_collection');
@@ -92,6 +104,7 @@ function App() {
 
   const handleLevelSelect = (lvl) => {
     let data;
+    setCurrentLevelKey(lvl);
     switch (lvl) {
       case 'a1_a2': data = a1_a2; break;
       case 'b1_b2': data = b1_b2; break;
@@ -109,6 +122,9 @@ function App() {
     setHintedWordsSet(new Set());
     setSelectedWord(null);
     setCursor({ r: -1, c: -1 });
+    setTimer(0); // Süreyi sıfırla
+    setIsGameActive(true); // Sayacı başlat
+    setIsNewRecord(false); // Yeni oyun, rekor bayrağını indir
 
     const shuffled = [...wordsData].sort(() => 0.5 - Math.random());
     const selection = shuffled.slice(0, 40).map(item => {
@@ -262,6 +278,7 @@ function App() {
 
   const checkWin = (currentGrid) => {
     let win = true;
+
     for (let w of placedWords) {
       for (let i = 0; i < w.answer.length; i++) {
         const r = w.dir === 'across' ? w.row : w.row + i;
@@ -270,10 +287,24 @@ function App() {
       }
       if (!win) break;
     }
-    if (win) {
 
-      processGameResult(); // 1. Önce verileri arka planda kaydet
-      setTimeout(() => setShowWinModal(true), 500); // 2. Sonra tebrik ekranını aç
+    if (win) {
+      setIsGameActive(false); // ✅ DOĞRUSU BURADA: Sadece kazanınca durdur.
+
+      let rawScore = 1000 + (totalLetters * 10) - (timer * 1) - (hintsUsed * 15);
+      if (rawScore < 0) rawScore = 0;
+
+      setCurrentScore(rawScore);
+
+      const oldBest = highScores[currentLevelKey] || 0;
+      if (rawScore > oldBest) {
+        setIsNewRecord(true);
+        const newScores = { ...highScores, [currentLevelKey]: rawScore };
+        setHighScores(newScores);
+        localStorage.setItem('wordHunter_highScores', JSON.stringify(newScores));
+      }
+      processGameResult();
+      setTimeout(() => setShowWinModal(true), 500);
     }
   };
 
@@ -306,6 +337,25 @@ function App() {
     };
     window.addEventListener('keydown', kd); return () => window.removeEventListener('keydown', kd);
   }, [screen, cursor, selectedWord, gridData, mode]);
+
+  useEffect(() => {
+    let interval = null;
+    if (isGameActive && screen === 'game') {
+      interval = setInterval(() => {
+        setTimer((t) => t + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isGameActive, screen]);
+
+  // Süreyi 01:23 formatına çeviren yardımcı fonksiyon
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
 
 
   // Kelimenin tamamlanıp tamamlanmadığını kontrol eden yardımcı değişken
@@ -388,10 +438,47 @@ function App() {
       {screen === 'level' && (
         <div className="menu-screen">
           <h2 className="screen-title">Zorluk Seç</h2>
-          <button className="btn-main btn-level" onClick={() => handleLevelSelect('a1_a2')}>⭐️ A1 & A2</button>
-          <button className="btn-main btn-level" onClick={() => handleLevelSelect('b1_b2')}>🚀 B1 & B2</button>
-          <button className="btn-main btn-level" onClick={() => handleLevelSelect('c1_c2')}>🔥 C1 & C2</button>
-          <button className="btn-main btn-level" onClick={() => handleLevelSelect('academic')}>🎓 Akademik</button>
+
+          {/* A1 & A2 BUTONU */}
+          <button className="btn-main btn-level" onClick={() => handleLevelSelect('a1_a2')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.2' }}>
+              <span>⭐️ A1 & A2</span>
+              {highScores['a1_a2'] > 0 && (
+                <span className="highscore-badge">En İyi: {highScores['a1_a2']}</span>
+              )}
+            </div>
+          </button>
+
+          {/* B1 & B2 BUTONU */}
+          <button className="btn-main btn-level" onClick={() => handleLevelSelect('b1_b2')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.2' }}>
+              <span>🚀 B1 & B2</span>
+              {highScores['b1_b2'] > 0 && (
+                <span className="highscore-badge">En İyi: {highScores['b1_b2']}</span>
+              )}
+            </div>
+          </button>
+
+          {/* C1 & C2 BUTONU */}
+          <button className="btn-main btn-level" onClick={() => handleLevelSelect('c1_c2')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.2' }}>
+              <span>🔥 C1 & C2</span>
+              {highScores['c1_c2'] > 0 && (
+                <span className="highscore-badge">En İyi: {highScores['c1_c2']}</span>
+              )}
+            </div>
+          </button>
+
+          {/* AKADEMİK BUTONU */}
+          <button className="btn-main btn-level" onClick={() => handleLevelSelect('academic')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: '1.2' }}>
+              <span>🎓 Akademik</span>
+              {highScores['academic'] > 0 && (
+                <span className="highscore-badge">En İyi: {highScores['academic']}</span>
+              )}
+            </div>
+          </button>
+
           <button className="btn-main btn-collection" onClick={() => setScreen('collection')}>
             🗂 Kelime Koleksiyonum
           </button>
@@ -428,6 +515,8 @@ function App() {
                 {/* Kilitliyse Kilit, değilse Hoparlör İkonu */}
                 {!canPlayAudio && mode === 'TR_EN' ? '🔒' : <SpeakerIcon />}
               </button>
+              <div className="timer-badge">⏱ {formatTime(timer)}</div>
+
             </div>
 
             {/* ORTA: Metin Kutusu (Artık içi temiz) */}
@@ -460,7 +549,13 @@ function App() {
             {/* Masaüstü Bilgi Kartı (CSS ile Mobilde gizlenir) */}
             <div className="desktop-info-card">
               <div className="desk-header">
-                <h3>Kelime Kartı</h3> {/* Başlığı değiştirdik */}
+                <div>
+                  <h3 style={{ margin: 0 }}>Kelime Kartı</h3>
+                  {/* --- YENİ EKLENEN SÜRE BİLGİSİ --- */}
+                  <span style={{ fontSize: '0.85rem', color: '#636e72', fontWeight: '600' }}>
+                    Süre: {formatTime(timer)}
+                  </span>
+                </div>
                 <button className="btn-close-desk" onClick={() => setScreen('level')}>✕</button>
               </div>
 
@@ -561,138 +656,160 @@ function App() {
 
           </div>
         </div>
-      )}
+      )
+      }
 
       {/* KAZANMA MODALI */}
-      {showWinModal && (
-        <div className="modal">
-          <div className="modal-box">
-            <h2 style={{ color: 'var(--correct)', marginBottom: '5px' }}>Tebrikler! 🎉</h2>
+      {
+        showWinModal && (
+          <div className="modal">
+            <div className="modal-box">
+              <h2 style={{ color: 'var(--correct)', marginBottom: '15px' }}>Tebrikler! 🎉</h2>
 
-            {/* Yüzdelik Skor */}
-            <div style={{ fontSize: '3rem', fontWeight: '800', color: '#2d3436', lineHeight: '1' }}>
-              %{Math.round((Math.max(0, totalLetters - hintsUsed) / totalLetters) * 100)}
-            </div>
-            <p style={{ color: '#636e72', fontWeight: '600', fontSize: '0.9rem', marginBottom: '5px' }}>
-              Başarı Skoru
-            </p>
+              {/* --- 1. YENİ BÖLÜM: PUAN KARTI --- */}
+              <div className="score-card-hero">
+                <div className="score-label">TOPLAM PUAN</div>
+                <div className="score-number">{currentScore}</div>
 
-            {/* İstenen 1. Özellik: Harf Sayısı */}
-            <div className="score-detail">
-              {Math.max(0, totalLetters - hintsUsed)} / {totalLetters} Bilinen Harf
-            </div>
+                {/* Rekor Kırıldıysa Göster */}
+                {isNewRecord && <div className="new-record-badge">🏆 YENİ REKOR!</div>}
 
-            {/* İstenen 2. Özellik: Kelime Listesi */}
-            <div className="word-review-list">
-              <h4 style={{ margin: '10px 0 5px 0', color: '#2d3436' }}>Kelime Listesi</h4>
-              <div className="review-scroll">
-                {placedWords.map((w, index) => (
-                  <div key={index} className="review-item">
-                    <span className="lang-en">{w.original.en}</span>
-                    <span className="divider">=</span>
-                    <span className="lang-tr">{w.original.tr}</span>
+                {/* Süre Bilgisi */}
+                <div className="score-time">⏱ Süre: {formatTime(timer)}</div>
+              </div>
+
+              {/* --- 2. MEVCUT BÖLÜM: DETAYLAR (Yan Yana Kutular Halinde) --- */}
+              <div className="stats-grid">
+                {/* Yüzdelik Kutu */}
+                <div className="stat-box">
+                  <div className="stat-value">
+                    %{Math.round((Math.max(0, totalLetters - hintsUsed) / totalLetters) * 100)}
                   </div>
-                ))}
+                  <div className="stat-label">Doğruluk</div>
+                </div>
+
+                {/* Harf Sayısı Kutusu */}
+                <div className="stat-box">
+                  <div className="stat-value">
+                    {Math.max(0, totalLetters - hintsUsed)}/{totalLetters}
+                  </div>
+                  <div className="stat-label">Harf</div>
+                </div>
+              </div>
+
+              {/* --- 3. MEVCUT BÖLÜM: KELİME LİSTESİ (Aynı kalıyor) --- */}
+              <div className="word-review-list">
+                <h4 style={{ margin: '10px 0 5px 0', color: '#2d3436' }}>Kelime Listesi</h4>
+                <div className="review-scroll">
+                  {placedWords.map((w, index) => (
+                    <div key={index} className="review-item">
+                      <span className="lang-en">{w.original.en}</span>
+                      <span className="divider">=</span>
+                      <span className="lang-tr">{w.original.tr}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Butonlar (Aynı kalıyor) */}
+              <div className="modal-buttons">
+                <button className="btn-main btn-lang" onClick={() => startGame(sourceWords)} style={{ justifyContent: 'center', width: '100%', margin: '0' }}>
+                  Tekrar Oyna
+                </button>
+                <button
+                  className="btn-back"
+                  style={{
+                    marginTop: '15px',
+                    fontSize: '0.9rem',
+                    background: '#f1f2f6',
+                    border: 'none',
+                    color: '#2d3436'
+                  }}
+                  onClick={() => {
+                    setShowWinModal(false);
+                    setScreen('level');
+                  }}
+                >
+                  Ana Menüye Dön
+                </button>
               </div>
             </div>
-
-            {/* Butonlar */}
-            <div className="modal-buttons">
-              <button className="btn-main btn-lang" onClick={() => startGame(sourceWords)} style={{ justifyContent: 'center', width: '100%', margin: '0' }}>
-                Tekrar Oyna
-              </button>
-              <button
-                className="btn-back"
-                style={{
-                  color: '#636e72',
-                  marginTop: '15px',
-                  fontSize: '0.9rem',
-                  background: '#f1f2f6', // Modaldaki buton beyaz üstünde olduğu için hafif gri olsun
-                  border: 'none',
-                  color: '#2d3436'
-                }}
-                onClick={() => {
-                  setShowWinModal(false);
-                  setScreen('level'); // Direkt menüye dön, zaten kaydedildi.
-                }}
-              >
-                Ana Menüye Dön
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* 4. KOLEKSİYON EKRANI (iOS Style) */}
-      {screen === 'collection' && (
-        <div className="collection-screen">
+      {
+        screen === 'collection' && (
+          <div className="collection-screen">
 
-          {/* Header */}
-          <div className="collection-header">
-            <h2 className="coll-title">Koleksiyonum</h2>
-            <button className="btn-close-coll" onClick={() => setScreen('lang')}>✕</button>
-          </div>
+            {/* Header */}
+            <div className="collection-header">
+              <h2 className="coll-title">Koleksiyonum</h2>
+              <button className="btn-close-coll" onClick={() => setScreen('lang')}>✕</button>
+            </div>
 
-          {/* Sekmeler (Segmented Control) */}
-          <div className="tab-area">
-            <div className="segmented-control">
-              <button
-                className={`segment-btn ${activeTab === 'known' ? 'active' : ''}`}
-                onClick={() => setActiveTab('known')}
-              >
-                Hafızamda ({collection.known.length})
-              </button>
-              <button
-                className={`segment-btn ${activeTab === 'review' ? 'active' : ''}`}
-                onClick={() => setActiveTab('review')}
-              >
-                Geliştirilecek ({collection.review.length})
-              </button>
+            {/* Sekmeler (Segmented Control) */}
+            <div className="tab-area">
+              <div className="segmented-control">
+                <button
+                  className={`segment-btn ${activeTab === 'known' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('known')}
+                >
+                  Hafızamda ({collection.known.length})
+                </button>
+                <button
+                  className={`segment-btn ${activeTab === 'review' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('review')}
+                >
+                  Geliştirilecek ({collection.review.length})
+                </button>
+              </div>
+            </div>
+
+            {/* Liste Alanı */}
+            <div className="coll-list-container">
+
+              {/* Seçili liste boşsa gösterilecek mesaj */}
+              {collection[activeTab].length === 0 ? (
+                <div className="empty-state">
+                  <div style={{ fontSize: '3rem', marginBottom: '10px' }}>
+                    {activeTab === 'known' ? '🧠' : '🎯'}
+                  </div>
+                  <p>
+                    {activeTab === 'known'
+                      ? "Henüz hafızana attığın kelime yok."
+                      : "Harika! Geliştirilecek kelime kalmadı."}
+                  </p>
+                </div>
+              ) : (
+                /* Dolu Liste (Tek bir beyaz kart içinde satırlar) */
+                <div className="unified-list">
+                  {collection[activeTab].map((item, i) => (
+                    <div key={i} className="list-row" onClick={() => speakText(item.en)}>
+                      <div className="row-text">
+                        <span className="row-en">{item.en}</span>
+                        <span className="row-tr">{item.tr}</span>
+                      </div>
+
+                      <button
+                        className="row-speak-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          speakText(item.en);
+                        }}
+                      >
+                        <SpeakerIcon />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Liste Alanı */}
-          <div className="coll-list-container">
-
-            {/* Seçili liste boşsa gösterilecek mesaj */}
-            {collection[activeTab].length === 0 ? (
-              <div className="empty-state">
-                <div style={{ fontSize: '3rem', marginBottom: '10px' }}>
-                  {activeTab === 'known' ? '🧠' : '🎯'}
-                </div>
-                <p>
-                  {activeTab === 'known'
-                    ? "Henüz hafızana attığın kelime yok."
-                    : "Harika! Geliştirilecek kelime kalmadı."}
-                </p>
-              </div>
-            ) : (
-              /* Dolu Liste (Tek bir beyaz kart içinde satırlar) */
-              <div className="unified-list">
-                {collection[activeTab].map((item, i) => (
-                  <div key={i} className="list-row" onClick={() => speakText(item.en)}>
-                    <div className="row-text">
-                      <span className="row-en">{item.en}</span>
-                      <span className="row-tr">{item.tr}</span>
-                    </div>
-
-                    <button
-                      className="row-speak-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        speakText(item.en);
-                      }}
-                    >
-                      <SpeakerIcon />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 }
 
