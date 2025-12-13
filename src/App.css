@@ -293,10 +293,24 @@ html,
   background: var(--highlight);
 }
 
+
+
 .cell.active {
-  background: #ffeaa7;
-  box-shadow: inset 0 0 0 3px var(--active-border);
-  z-index: 5;
+  background: #ffffff;
+  /* Zemin bembeyaz */
+
+  /* Kenarlık: Çok koyu gri / Siyah (#2d3436). En yüksek kontrast budur. */
+  box-shadow: inset 0 0 0 4px #2d3436;
+
+  /* Kutuyu diğerlerinin üstüne çıkar ve belirgin şekilde büyüt */
+  z-index: 50;
+  transform: scale(1.15);
+
+  /* Köşeleri biraz daha yumuşat */
+  border-radius: 8px;
+
+  /* Geçiş efekti */
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .cell.correct {

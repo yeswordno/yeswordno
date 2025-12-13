@@ -214,53 +214,75 @@ function App() {
     if (!selectedWord || screen !== 'game') return;
     const { r, c } = cursor;
 
-    // --- BACKSPACE DÜZELTMESİ BAŞLANGIÇ ---
+    // --- 1. SİLME İŞLEMİ (AYNEN KORUNDU) ---
     if (key === 'BACKSPACE') {
       const n = [...gridData.map(row => [...row])];
       const w = selectedWord;
 
-      // Durum 1: Mevcut kutu doluysa, sadece içeriği sil ve imleç orada kalsın
+      // Eğer kutu doluysa sadece içini sil
       if (n[r][c] !== "") {
         n[r][c] = "";
         setGridData(n);
       }
-      // Durum 2: Mevcut kutu boşsa, bir önceki kutuya git ve orayı sil
+      // Eğer kutu boşsa bir önceki kutuya git ve orayı sil
       else {
         let prevR = r;
         let prevC = c;
+        // Kelimenin yönüne göre bir geriye git
+        if (w.dir === 'across') prevC = c - 1;
+        else prevR = r - 1;
 
-        // Yöne göre bir önceki koordinatı belirle
-        if (w.dir === 'across') {
-          prevC = c - 1;
-        } else {
-          prevR = r - 1;
-        }
-
-        // Sınır Kontrolü: Kelimenin başlangıç noktasından daha geriye gitmemeli
+        // Kelimenin dışına çıkmıyorsak işlemi yap
         const canMoveBack = (w.dir === 'across' && prevC >= w.col) ||
           (w.dir === 'down' && prevR >= w.row);
 
         if (canMoveBack) {
-          // Önceki kutuyu temizle
-          n[prevR][prevC] = "";
+          n[prevR][prevC] = ""; // Önceki kutuyu temizle
           setGridData(n);
-          // İmleci geriye taşı
-          setCursor({ r: prevR, c: prevC });
+          setCursor({ r: prevR, c: prevC }); // İmleci oraya taşı
         }
       }
       return;
     }
-    // --- BACKSPACE DÜZELTMESİ BİTİŞ ---
 
+    // --- 2. HARF YAZMA VE AKILLI ATLAMA (BURASI YENİLENDİ) ---
     const n = [...gridData.map(row => [...row])];
-    n[r][c] = key; setGridData(n);
+    n[r][c] = key; // Harfi yaz
+    setGridData(n);
 
     const w = selectedWord;
-    let idx = (w.dir === 'across') ? cursor.c - w.col : cursor.r - w.row;
-    if (idx + 1 < w.answer.length) {
-      if (w.dir === 'across') setCursor({ r: w.row, c: w.col + idx + 1 });
-      else setCursor({ r: w.row + idx + 1, c: w.col });
+
+    // Şu anki harfin kelime içindeki sırasını bul (0, 1, 2...)
+    let currentIdx = (w.dir === 'across') ? cursor.c - w.col : cursor.r - w.row;
+
+    // Bir sonraki harfe bakmaya başla
+    let nextIdx = currentIdx + 1;
+
+    // --- AKILLI DÖNGÜ: Zaten doğru olanları atla ---
+    while (nextIdx < w.answer.length) {
+      // Hedeflenen sonraki kutunun koordinatları
+      const nextR = w.dir === 'across' ? w.row : w.row + nextIdx;
+      const nextC = w.dir === 'across' ? w.col + nextIdx : w.col;
+
+      // Bu kutuda zaten DOĞRU harf var mı? (Cevap anahtarına bakıyoruz)
+      const isAlreadyCorrect = gridData[nextR][nextC] === solutionGrid[nextR][nextC];
+
+      if (isAlreadyCorrect) {
+        // Evet doğru harf var, o zaman bunu geç (nextIdx'i artır)
+        nextIdx++;
+      } else {
+        // Hayır, burası ya boş ya da yanlış. O zaman BURADA DUR.
+        break;
+      }
     }
+    // --------------------------------------------------
+
+    // Eğer kelime bitmediyse hesaplanan yeni konuma git
+    if (nextIdx < w.answer.length) {
+      if (w.dir === 'across') setCursor({ r: w.row, c: w.col + nextIdx });
+      else setCursor({ r: w.row + nextIdx, c: w.col });
+    }
+
     checkWin(n);
   };
 
