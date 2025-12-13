@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { generateCrossword, GRID_SIZE } from './utils/gameLogic';
+import { Analytics } from "@vercel/analytics/react"
 
 // JSON Verilerini İçe Aktar (Dosya yollarının senin projene uygun olduğundan emin ol)
 import a1_a2 from './data/a1_a2.json';
@@ -16,6 +17,12 @@ function App() {
   const [showWinModal, setShowWinModal] = useState(false);
   const [mode, setMode] = useState('EN_TR');
   const [sourceWords, setSourceWords] = useState([]);
+
+  // Hangi kelimelerin görsel ipucu gösterildi? (Tekrar göstermemek için)
+  const [shownVisualsSet, setShownVisualsSet] = useState(new Set());
+
+  // Geçici görsel popup state'i (Bunu zaten eklemiştin)
+  const [tempVisual, setTempVisual] = useState(null);
 
   // Oyun Alanı Verileri
   const [solutionGrid, setSolutionGrid] = useState([]); // Cevap anahtarı
@@ -120,6 +127,7 @@ function App() {
     setShowWinModal(false);
     setHintsUsed(0);
     setHintedWordsSet(new Set());
+    setShownVisualsSet(new Set());
     setSelectedWord(null);
     setCursor({ r: -1, c: -1 });
     setTimer(0); // Süreyi sıfırla
@@ -258,6 +266,21 @@ function App() {
 
   const giveHint = () => {
     if (!selectedWord) return;
+
+    const visualFile = selectedWord.original.visual;
+
+
+    // Görsel yoksa bu bloğa hiç girmez, direkt harfi açar.
+    if (visualFile && !shownVisualsSet.has(selectedWord.answer)) {
+
+      setTempVisual(visualFile); // Görseli göster
+      setShownVisualsSet(prev => new Set(prev).add(selectedWord.answer)); // Listeye ekle
+
+      // 2.5 saniye sonra kapat
+      setTimeout(() => {
+        setTempVisual(null);
+      }, 2500);
+    }
     if (!hintedWordsSet.has(selectedWord.answer)) {
       setHintedWordsSet(prev => new Set(prev).add(selectedWord.answer));
     }
@@ -408,6 +431,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <Analytics />
       {/* 1. DİL EKRANI */}
       {screen === 'lang' && (
         <div className="menu-screen">
@@ -809,6 +833,18 @@ function App() {
           </div>
         )
       }
+      {/* --- GEÇİCİ GÖRSEL KATMANI (Overlay) --- */}
+      {tempVisual && (
+        <div className="visual-overlay">
+          <div className="visual-popup-content">
+            <img
+              src={`/assets/${tempVisual}`}
+              alt="Hint"
+              className="visual-popup-img"
+            />
+          </div>
+        </div>
+      )}
     </div >
   );
 }

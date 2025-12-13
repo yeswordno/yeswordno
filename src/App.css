@@ -1425,3 +1425,103 @@ html,
   font-weight: 600;
   margin-top: 4px;
 }
+
+/* --- GEÇİCİ GÖRSEL OVERLAY (Daha koyu arka plan) --- */
+.visual-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  /* Arkadaki oyunu daha çok kararttık */
+  backdrop-filter: blur(8px);
+  /* Daha güçlü bulanıklık */
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* --- ORTADAKİ KUTU (Beyaz Çerçeve) --- */
+.visual-popup-content {
+  background: white;
+  padding: 30px;
+  /* İç boşluğu artırdık */
+  border-radius: 35px;
+  /* Daha yuvarlak köşeler */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  /* Derin gölge */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* Zıplama Animasyonu */
+  animation: popUpBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- RESİM AYARLARI (MASAÜSTÜ İÇİN BÜYÜK) --- */
+.visual-popup-img {
+  width: 450px;
+  /* Masaüstünde kocaman olsun */
+  height: 450px;
+  object-fit: contain;
+
+  /* Resme hafif derinlik verelim ki havada duruyor gibi görünsün */
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+}
+
+/* --- MOBİL İÇİN AYARLAR --- */
+@media (max-width: 768px) {
+  .visual-popup-content {
+    padding: 20px;
+    /* Mobilde kenar boşluğunu biraz kısalım */
+    border-radius: 25px;
+    width: 90%;
+    /* Ekranın %90'ını kaplasın */
+    max-width: 350px;
+    /* Ama çok da devleşmesin */
+  }
+
+  .visual-popup-img {
+    width: 100%;
+    /* Kutunun içini doldursun */
+    height: auto;
+    /* Oran bozulmasın */
+    max-height: 350px;
+    /* Mobilde dikey taşmayı önle */
+    min-height: 250px;
+    /* Çok da küçülmesin */
+  }
+}
+
+/* ÇOK KISA TELEFONLAR İÇİN (Yatay mod vs) */
+@media (max-height: 600px) {
+  .visual-popup-img {
+    max-height: 200px;
+  }
+}
+
+/* --- ANİMASYONLAR --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popUpBounce {
+  0% {
+    transform: scale(0.5) translateY(50px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
