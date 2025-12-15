@@ -54,6 +54,13 @@ function App() {
   });
   const [activeTab, setActiveTab] = useState('review');
 
+  // Backspace (Silme) İkonu (SVG)
+  const BackspaceIcon = () => (
+    <svg viewBox="0 0 24 24" width="24" height="24">
+      <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"></path>
+    </svg>
+  );
+
 
 
   // --- SESLİ OKUMA MOTORU (TTS) ---
@@ -89,18 +96,25 @@ function App() {
   }, []);
 
   // Klavye Tuşları
+  // Klavye Düzeni
   const getKeyboardLayout = () => {
-    if (mode === 'TR_EN') { // Hedef İngilizce
+    // Mode 'TR_EN' ise (Türkçeden İngilizceye çeviri) -> Klavye İNGİLİZCE (QWERTY)
+    // Mode 'EN_TR' ise (İngilizceden Türkçeye çeviri) -> Klavye TÜRKÇE (QWERTY + TR Karakterler)
+
+    if (mode === 'TR_EN') {
+      // Standart İngilizce QWERTY
       return [
-        "Q W E R T Y U I O P".split(" "),
-        "A S D F G H J K L".split(" "),
-        "Z X C V B N M".split(" ")
+        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
+        ["Z", "X", "C", "V", "B", "N", "M"] // Backspace render kısmında eklenecek
       ];
-    } else { // Hedef Türkçe
+    } else {
+      // Türkçe Klavye Düzeni (Wordle TR standardı: Q,W,X genelde olmaz ama klavye bütünlüğü için tutulabilir veya çıkarılabilir. 
+      // Burada TR karakterlerin yoğunluğundan dolayı en uygun mobil düzeni kullanıyoruz)
       return [
-        "E R T Y U I O P Ğ Ü".split(" "),
-        "A S D F G H J K L Ş İ".split(" "),
-        "Z C V B N M Ö Ç".split(" ")
+        ["E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü"], // Q ve W genelde TR kelime oyunlarında elenir ama yer açmak için çıkardık
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ"],
+        ["Z", "C", "V", "B", "N", "M", "Ö", "Ç"] // Backspace render kısmında eklenecek
       ];
     }
   };
@@ -669,35 +683,86 @@ function App() {
             </div>
 
             {/* Klavye (Her yerde görünür) */}
+            {/* Klavye */}
+            {/* --- App.jsx KLAVYE BÖLÜMÜ --- */}
+
             <div className="keyboard-container">
-              {keyboardRows.map((row, i) => (
-                <div key={i} className="kb-row">
-                  {row.map(k => (
-                    <button
-                      key={k}
-                      className="kb-key notranslate" /* Çeviriyi engellemek için kritik */
-                      onClick={(e) => {
-                        e.preventDefault(); // Varsayılan davranışı durdur
-                        e.currentTarget.blur(); // Odaklanmayı kaldır (klavye açılmasın diye)
-                        handleKeyInput(k);
-                      }}
-                      /* Tarayıcı müdahalelerini kapatan özellikler */
-                      translate="no"
-                      spellCheck="false"
-                      autoComplete="off"
-                      autoCorrect="off"
-                      autoCapitalize="off"
-                    >
-                      {k}
-                    </button>
-                  ))}
-                  {i === 2 && (
-                    <button className="kb-key wide" onClick={(e) => { e.currentTarget.blur(); handleKeyInput('BACKSPACE'); }}>
-                      ⌫
-                    </button>
-                  )}
-                </div>
-              ))}
+              {keyboardRows.map((row, rowIndex) => {
+
+                // --- İÇERİ GİRİNTİ (INDENTATION) MANTIĞI ---
+                // Klasik klavye hissi için satır başlarına boşluk ekliyoruz.
+
+                let leftSpacer = null;
+                let rightSpacer = null;
+
+                // İNGİLİZCE KLAVYE (QWERTY)
+                if (mode === 'TR_EN') {
+                  // 2. Satır (A-L): Yarım tuş içeriden başlasın (Klasik görünüm)
+                  if (rowIndex === 1) {
+                    leftSpacer = <div className="kb-spacer" />;
+                    rightSpacer = <div className="kb-spacer" />;
+                  }
+                  // 3. Satır (Z-M): Sol tarafı Backspace kadar boşlukla dengele
+                  if (rowIndex === 2) {
+                    leftSpacer = <div className="kb-spacer-wide" />;
+                  }
+                }
+
+                // TÜRKÇE KLAVYE (TR)
+                else {
+                  // Türkçe'de 2. Satır (A-İ) 11 tuşla çok geniş olduğu için,
+                  // 1. Satırı (E-Ü) yarım tuş içeri itiyoruz ki 'A', 'E' ile 'R' arasına denk gelsin.
+                  if (rowIndex === 0) {
+                    leftSpacer = <div className="kb-spacer" />;
+                    rightSpacer = <div className="kb-spacer" />;
+                  }
+                  // 3. Satır (Z-Ç): Sol tarafı Backspace kadar boşlukla dengele
+                  if (rowIndex === 2) {
+                    leftSpacer = <div className="kb-spacer-wide" />;
+                  }
+                }
+
+                return (
+                  <div key={rowIndex} className="kb-row">
+
+                    {/* Sol Boşluk (Varsa) */}
+                    {leftSpacer}
+
+                    {/* Tuşlar */}
+                    {row.map((k) => (
+                      <button
+                        key={k}
+                        className="kb-key"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                          handleKeyInput(k);
+                        }}
+                        translate="no"
+                      >
+                        {k}
+                      </button>
+                    ))}
+
+                    {/* 3. Satırın Sonuna Backspace Ekle */}
+                    {rowIndex === 2 && (
+                      <button
+                        className="kb-key wide"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                          handleKeyInput('BACKSPACE');
+                        }}
+                      >
+                        <BackspaceIcon />
+                      </button>
+                    )}
+
+                    {/* Sağ Boşluk (Varsa) */}
+                    {rightSpacer}
+                  </div>
+                );
+              })}
             </div>
 
           </div>

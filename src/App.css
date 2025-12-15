@@ -338,51 +338,95 @@ html,
   display: none;
 }
 
-/* KLAVYE */
+
+
+/* KLAVYE ALANI */
 .keyboard-container {
-  background: #f1f2f6;
-  padding: 8px 5px;
+  width: 100%;
+  max-width: 600px; /* Tablette de çok yayılmasın */
+  margin: 0 auto;
+  padding: 5px;
   padding-bottom: max(10px, env(safe-area-inset-bottom));
-  border-radius: 20px 20px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  width: 100%;
+  gap: 8px; /* Satırlar arası dikey boşluk */
+  background: transparent;
 }
 
+/* SATIRLAR */
 .kb-row {
   display: flex;
-  justify-content: center;
-  gap: 4px;
+  width: 100%;
+  justify-content: center; /* Ortala */
+  gap: 5px; /* Tuşlar arası yatay boşluk */
 }
 
+/* BOŞLUKLAYICILAR (Hizalama için kritik) */
+.kb-spacer {
+  flex: 0.5; /* Yarım tuş genişliği */
+  pointer-events: none; /* Tıklanamaz */
+}
+.kb-spacer-wide {
+  flex: 1.5; /* 1.5 tuş genişliği (Backspace dengelemesi için) */
+  pointer-events: none;
+}
+
+/* TUŞLAR */
 .kb-key {
-  background: white;
-  color: var(--text-dark);
-  border: none;
-  border-radius: 8px;
+  font-family: inherit;
   font-weight: 700;
-  font-size: 1.1rem;
-  height: 48px;
-  flex: 1;
-  max-width: 45px;
+  border: 0;
+  margin: 0;
+  height: 58px; /* Yükseklik */
+  border-radius: 5px;
   cursor: pointer;
-  box-shadow: 0 3px 0 #dcdde1;
+  user-select: none;
+  background-color: #d3d6da; /* Klavye gri */
+  color: #1a1a1b;
+  
+  flex: 1; /* Esnek genişlik */
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  
+  transition: all 0.1s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2); /* Hafif gölge */
 }
 
+/* Tıklanma Efekti */
 .kb-key:active {
+  background-color: #bbb;
   transform: translateY(2px);
   box-shadow: none;
 }
 
+/* BACKSPACE TUŞU */
 .kb-key.wide {
-  flex: 1.5;
-  max-width: 65px;
-  background: #dfe6e9;
+  flex: 1.5; /* Harflerden 1.5 kat geniş */
+  background-color: #a6aab0; /* Fonksiyon tuşu rengi */
+  color: #fff;
 }
 
+/* Backspace İkonu */
+.kb-key svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
 
-/* --- MASAÜSTÜ VE TABLET TASARIMI (1024px üzeri) --- */
+/* ÇOK DAR EKRANLAR İÇİN (iPhone SE vb.) */
+@media (max-width: 380px) {
+  .kb-row { gap: 3px; }
+  .kb-key { 
+    height: 50px; 
+    font-size: 1.1rem;
+    border-radius: 4px;
+  }
+}
+
 /* --- MASAÜSTÜ VE TABLET TASARIMI (1024px üzeri) --- */
 @media (min-width: 1024px) {
 
