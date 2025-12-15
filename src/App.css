@@ -367,7 +367,7 @@ html,
   pointer-events: none; /* Tıklanamaz */
 }
 .kb-spacer-wide {
-  flex: 1.5; /* 1.5 tuş genişliği (Backspace dengelemesi için) */
+  flex: 0.5; /* 1.5 tuş genişliği (Backspace dengelemesi için) */
   pointer-events: none;
 }
 
@@ -405,7 +405,7 @@ html,
 
 /* BACKSPACE TUŞU */
 .kb-key.wide {
-  flex: 1.5; /* Harflerden 1.5 kat geniş */
+  flex: 1.7; /* Harflerden 1.5 kat geniş */
   background-color: #a6aab0; /* Fonksiyon tuşu rengi */
   color: #fff;
 }
