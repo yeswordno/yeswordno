@@ -1,16 +1,22 @@
-# React + Vite
+# 🔤 WordTR — İngilizce Kelime Bulmacası
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Türkçe-İngilizce çapraz kelime bulmacası ile İngilizce öğren.
+Yatay ve dikey kesişen harflerle hem eğlen hem öğren!
 
-Currently, two official plugins are available:
+🎮 **Oyna:** https://wordtr.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Özellikler
+- 4 seviye: A1/A2, B1/B2, C1/C2, Akademik
+- İNG→TR ve TR→İNG modları
+- Sesli kelime okuma (TTS)
+- Kelime koleksiyonu (Hafızamda / Geliştirilecek)
+- Puan sistemi ve kişisel rekor takibi
 
-## React Compiler
+## Teknolojiler
+React · Vercel
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## Kurulum
+npm install && npm start
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Lisans
+MIT
