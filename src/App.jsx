@@ -10,6 +10,7 @@ import c1_c2 from './data/c1_c2.json';
 import academic from './data/academic.json';
 import { TrFlag, GbFlag } from './utils/FlagIcons';
 import { SpeakerIcon } from './utils/SpeakerIcon';
+import CengelGame from './CengelGame';
 
 function App() {
   // --- STATE YÖNETİMİ ---
@@ -491,7 +492,18 @@ function App() {
             <div className="lang-icon-wrapper"><GbFlag /></div>
             <span>İngilizce</span>
           </button>
+
+          {/* BUTON 3: Günlük Çengel Bulmaca */}
+          <button className="btn-main btn-lang" onClick={() => setScreen('daily')}>
+            <span style={{ fontSize: '1.3rem' }}>🧩</span>
+            <span>Günlük Bulmaca</span>
+          </button>
         </div>
+      )}
+
+      {/* GÜNLÜK ÇENGEL BULMACA EKRANI */}
+      {screen === 'daily' && (
+        <CengelGame onBack={() => setScreen('lang')} />
       )}
 
       {/* 2. SEVİYE EKRANI */}

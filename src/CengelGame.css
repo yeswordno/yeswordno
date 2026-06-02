@@ -1,0 +1,698 @@
+.cengel-root {
+  /* Rams × Ive — tek nötr sistem, tek anlamlı vurgu */
+  --bg-color: #f5f5f3;        /* hafif sıcak beyaz zemin */
+  --clue-bg: #eceae6;         /* nötr açık gri: soru hücresi */
+  --empty-bg: #dddbd5;        /* biraz koyu nötr: boş/pasif hücre */
+  --letter-bg: #ffffff;       /* harf hücresi */
+  --grid-line: #d8dadd;       /* yumuşak ızgara çizgisi */
+
+  --text-dark: #1f2937;       /* antrasit: tüm yazılar */
+  --ink-soft: #374151;        /* yumuşak antrasit: ikincil */
+
+  --tile-bg: #f7f8f9;         /* raftaki konmamış taş zemini */
+  --tile-ink: #1f2937;        /* taş harfi */
+  --placed-bg: #1f2937;       /* tahtaya konmuş ama onaylanmamış: koyu dolu */
+  --confirmed-bg: #f3f4f6;    /* onaylanıp doğrulanmış: hafif açık gri */
+  --confirmed-border: #e5e7eb;
+
+  --accent: #1f2937;          /* %100 monokrom: vurgu da antrasit */
+  --selected-bg: #e5e7eb;     /* seçili taş: nötr gri */
+  --danger-color: #b91c1c;    /* yalnızca hata geri bildirimi */
+
+  /* Geriye dönük uyumluluk için eski adlar yeni sisteme bağlandı */
+  --primary-color: #1f2937;
+  --tile-color: #f7f8f9;
+  --tile-dark: #1f2937;
+  --opp-color: #1f2937;
+}
+
+.cengel-root * {
+  box-sizing: border-box;
+}
+
+.cengel-root {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  /* Mobilde çift tıklama zoom'unu engelle, tepkiyi hızlandır */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 12px 12px env(safe-area-inset-bottom, 12px);
+}
+
+/* ─── HEADER ─── */
+.game-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-size: 1.7rem;
+  margin: 0;
+  color: var(--text-dark);
+  letter-spacing: 3px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.logo-accent {
+  color: var(--text-dark);
+  font-weight: 800;
+}
+
+/* ─── SEN vs RAKİP TABLOSU ─── */
+.versus-board {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.vs-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #d0d3d4;
+}
+
+.vs-you {
+  justify-content: flex-start;
+}
+
+.vs-rival {
+  justify-content: flex-end;
+}
+
+.vs-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.vs-score {
+  font-size: 1.25rem;
+  font-weight: 800;
+  min-width: 22px;
+  text-align: center;
+}
+
+.vs-you .vs-score {
+  color: var(--text-dark);
+}
+
+.vs-rival .vs-score {
+  color: #9ca3af;
+}
+
+.vs-mid {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #95a5a6;
+  flex-shrink: 0;
+}
+
+/* ─── BULMACA IZGARASI ─── */
+.puzzle-grid {
+  display: grid;
+  gap: 1px;
+  background-color: var(--grid-line);
+  padding: 1px;
+  border-radius: 8px;
+  /* Izgara kalan dikey alanı doldursun (mobilde referans gibi oturur) */
+  width: 100%;
+  margin-bottom: 14px;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Tamamlanan kelime kutuları için mutlak konumlu katman */
+.word-overlay {
+  position: absolute;
+  inset: 3px;
+  display: grid;
+  gap: 2px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.cg-cell {
+  background-color: var(--letter-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.cg-cell.empty {
+  background-color: var(--empty-bg);
+}
+
+.cg-cell.clue {
+  background-color: var(--clue-bg);
+  flex-direction: column;
+  text-align: center;
+  padding: 2px 2px 11px;
+  color: #111;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+/* Dokunulan soru hücresi: kare ve içindeki yazı bir miktar büyür */
+.cg-cell.clue.clue-active {
+  transform: scale(1.42);
+  z-index: 30;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
+.clue-text {
+  font-size: clamp(0.46rem, 1.7vw, 0.78rem);
+  font-weight: 800;
+  word-break: break-word;
+  line-height: 1.12;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
+/* Masaüstünde (geniş ekran) hücreler büyüdüğü için sorular biraz inceltilir */
+@media (min-width: 560px) {
+  .clue-text {
+    font-weight: 600;
+  }
+}
+
+.arrow-right {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+  color: var(--ink-soft);
+  line-height: 1;
+  z-index: 4;
+}
+
+.arrow-down {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.55rem, 1.5vw, 0.8rem);
+  color: var(--ink-soft);
+  line-height: 1;
+  z-index: 4;
+}
+
+/* ─── ÇİFT YÖN (X) SORU HÜCRESİ ─── */
+.clue-both {
+  flex-direction: column !important;
+  padding: 1px !important;
+  gap: 0 !important;
+}
+
+.clue-half {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  padding: 1px 2px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.clue-half-top {
+  align-items: flex-start;
+}
+
+.clue-half-bottom {
+  align-items: flex-start;
+}
+
+.clue-divider {
+  width: 90%;
+  height: 1px;
+  background-color: var(--grid-line);
+  flex-shrink: 0;
+}
+
+.arrow-right-both {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(0.5rem, 1.3vw, 0.7rem);
+  color: var(--ink-soft);
+  line-height: 1;
+  z-index: 4;
+}
+
+.arrow-down-both {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.5rem, 1.3vw, 0.7rem);
+  color: var(--ink-soft);
+  line-height: 1;
+  z-index: 4;
+}
+
+.cg-cell.letter-box {
+  cursor: pointer;
+}
+
+.cg-cell.letter-box.locked {
+  background-color: var(--letter-bg);
+  cursor: default;
+}
+
+.cg-cell.letter-box.opp-locked {
+  background-color: var(--letter-bg);
+}
+
+
+.letter-tile {
+  width: 90%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--placed-bg);
+  border: 1px solid var(--placed-bg);
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  color: #ffffff;
+  font-size: clamp(1.2rem, 4.2vw, 1.8rem);
+  font-weight: 600;
+  touch-action: none;
+}
+
+/* Rakibin koyduğu harf (her zaman onaylanmış → açık gri) */
+.letter-tile.opp-tile {
+  background-color: var(--confirmed-bg);
+  border-color: var(--confirmed-border);
+  color: var(--text-dark);
+}
+
+/* Sürüklenen taşın parmağı/ imleci takip eden görseli.
+   Parmağın hafif sağ-üst çaprazında durur ki harf parmakla örtülmeden görünsün. */
+.drag-ghost {
+  position: fixed;
+  width: 54px;
+  height: 54px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--placed-bg);
+  color: #ffffff;
+  font-size: 1.7rem;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  opacity: 1;
+  z-index: 1000;
+}
+
+.cg-cell.locked .letter-tile,
+.letter-tile.opp-tile {
+  background-color: var(--confirmed-bg);
+  border-color: var(--confirmed-border);
+  border-radius: 6px;
+  box-shadow: none;
+  color: var(--text-dark);
+  text-shadow: none;
+}
+
+/* ─── TAMAMLANAN KELİME KUTUSU ─── */
+.word-box {
+  pointer-events: none;
+  border: 2px solid var(--text-dark);
+  border-radius: 6px;
+  margin: 1px;
+  position: relative;
+  z-index: 6;
+  box-shadow: none;
+  /* Belir, kısa süre dur, sonra kaybol */
+  animation: boxFlash 1.3s ease-out forwards;
+}
+
+@keyframes boxFlash {
+  0%   { transform: scale(1.12); opacity: 0; }
+  15%  { transform: scale(1);    opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* +N rozeti: yukarı süzülerek kaybolur (+1 gibi) */
+.word-box-amber {
+  border-color: var(--text-dark);
+  box-shadow: none;
+}
+
+.word-box-amber .word-bonus-float {
+  background: var(--text-dark);
+}
+
+.word-bonus-float {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--text-dark);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding: 2px 9px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  animation: wordFloatUp 1.3s ease-out forwards;
+}
+
+@keyframes wordFloatUp {
+  0%   { opacity: 0; transform: translate(-50%, -10%) scale(0.7); }
+  20%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  70%  { opacity: 1; transform: translate(-50%, -90%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -160%) scale(1.2); }
+}
+
+/* ─── RAF (RACK) ─── */
+.bottom-panel {
+  margin-top: 0;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.rack {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 64px;
+  background-color: #ffffff;
+  border: 1px solid var(--grid-line);
+  padding: 12px 10px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.rack-tile {
+  width: 54px;
+  height: 54px;
+  background-color: var(--tile-bg);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  color: var(--tile-ink);
+  transition: transform 0.12s, box-shadow 0.12s, background-color 0.12s;
+  /* Sürükleme sırasında sayfa kaymasın */
+  touch-action: none;
+}
+
+.rack-tile:active {
+  transform: scale(0.93);
+}
+
+/* Seçili taş stili (tap-to-select) */
+.rack-tile.selected {
+  background-color: var(--selected-bg);
+  transform: translateY(-6px) scale(1.08);
+  box-shadow: none;
+  border: 1px solid var(--accent);
+}
+
+.empty-rack-msg {
+  font-size: 1.1rem;
+  color: #7f8c8d;
+}
+
+/* ─── BUTONLAR ─── */
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px 6px;
+  font-size: 1rem;
+  border: 1px solid var(--grid-line);
+  border-radius: 8px;
+  color: var(--text-dark);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.1s;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: scale(0.96);
+}
+
+/* İkincil butonlar: nötr, sessiz */
+.undo-btn,
+.shuffle-btn {
+  background-color: #ffffff;
+  color: var(--ink-soft);
+}
+
+/* GERİ ikonu: ince kalmasın, belirgin dursun */
+.undo-icon {
+  display: inline-block;
+  font-size: 1.4em;
+  font-weight: 900;
+  line-height: 1;
+  vertical-align: -0.12em;
+  margin-right: 2px;
+}
+
+.undo-btn:disabled {
+  background-color: #f3f4f6;
+  color: #b8bcc2;
+  cursor: not-allowed;
+  opacity: 1;
+  transform: none !important;
+}
+
+/* Birincil eylem: tek vurgu rengi yalnızca burada */
+.submit-btn {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+/* PAS durumu (hiç taş konmamış): vurgu yok, nötr */
+.submit-btn.pass-btn {
+  background-color: #ffffff;
+  border-color: var(--grid-line);
+  color: var(--ink-soft);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Rakip oynarken üstte küçük durum yazısı */
+.turn-indicator {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  min-height: 1.1em;
+  margin-top: 4px;
+}
+
+/* ─── ANİMASYONLAR ─── */
+/* Yanlış harfin rafa geri uçan taşı (koyu, harfli) */
+.flying-tile {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--placed-bg);
+  color: #ffffff;
+  font-size: 1.6rem;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 1100;
+}
+
+/* Hücreden skor tablosuna uçan puan */
+.fly-point {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  pointer-events: none;
+  z-index: 1200;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* −1 puanı: +1'den ayrışsın diye orta tonlu gri */
+.fly-point.fly-neg {
+  color: #6b7280;
+}
+
+.floating-text {
+  position: absolute;
+  font-size: 1.6rem;
+  font-weight: bold;
+  animation: floatUp 1.6s ease-out forwards;
+  z-index: 10;
+  pointer-events: none;
+  text-shadow: 1px 1px 2px white;
+}
+
+.floating-text.green  { color: var(--text-dark); }
+.floating-text.red    { color: #9ca3af; }
+.floating-text.orange { color: var(--text-dark); }
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.5); }
+}
+
+.anim-minus1 { background-color: #ededed !important; }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+/* ─── MOBİL (≤ 480px) ─── */
+@media (max-width: 480px) {
+  .game-container {
+    padding: 8px 8px env(safe-area-inset-bottom, 10px);
+  }
+
+  .logo-text {
+    font-size: 1.35rem;
+  }
+
+  .score-board {
+    font-size: 0.95rem;
+    padding: 4px 10px;
+  }
+
+  .game-header {
+    margin-bottom: 7px;
+  }
+
+  .puzzle-grid {
+    gap: 1px;
+    padding: 2px;
+    margin-bottom: 10px;
+  }
+
+  .word-overlay {
+    inset: 2px;
+    gap: 1px;
+  }
+
+  .rack {
+    padding: 8px 6px;
+    gap: 6px;
+    min-height: 56px;
+    margin-bottom: 8px;
+  }
+
+  .rack-tile {
+    width: 48px;
+    height: 48px;
+    font-size: 1.45rem;
+  }
+
+  .controls {
+    gap: 6px;
+  }
+
+  .btn {
+    padding: 13px 4px;
+    font-size: 0.82rem;
+  }
+}
+
+/* ─── ÇOK KÜÇÜK EKRANLAR (≤ 360px) ─── */
+@media (max-width: 360px) {
+  .rack-tile {
+    width: 42px;
+    height: 42px;
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    padding: 11px 2px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── MENÜYE DÖN BUTONU ─── */
+.cengel-root .game-header {
+  position: relative;
+}
+.cengel-back {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  border: 1px solid var(--grid-line);
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 40;
+}
+.cengel-back:active {
+  transform: scale(0.96);
+}

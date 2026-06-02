@@ -1,0 +1,617 @@
+/* ═══════════════════════════════════════════════════════
+   DuelGame.css  —  CrossUp Oyun Stilleri  v6
+   ═══════════════════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Ana Ekran ── */
+.cu-screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: #e0e8d8;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── Yüklenme ── */
+.cu-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  gap: 16px;
+  font-size: 14px;
+  color: #555;
+  background: #e0e8d8;
+}
+
+.cu-spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #c0d8b8;
+  border-top-color: #2e7d32;
+  border-radius: 50%;
+  animation: cu-spin .8s linear infinite;
+}
+
+@keyframes cu-spin { to { transform: rotate(360deg); } }
+
+/* ── Üst Bar ── */
+.cu-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.cu-xbtn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #555;
+  cursor: pointer;
+  padding: 3px 7px;
+  border-radius: 6px;
+}
+.cu-xbtn:active { background: #f0f0f0; }
+
+.cu-logo {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 900;
+  color: #111;
+  letter-spacing: 0.5px;
+}
+.cu-lsq {
+  display: inline-block;
+  width: 11px; height: 11px;
+  background: #2e7d32;
+  border-radius: 3px;
+  margin-right: 3px;
+}
+.cu-lup {
+  background: #2e7d32;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-left: 2px;
+}
+.cu-topbar-icons { display: flex; gap: 6px; }
+.cu-ticon {
+  width: 28px; height: 28px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── Skor Barı ── */
+.cu-scorebar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  gap: 8px;
+}
+.cu-stog {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  background: #edf5ed;
+  border-radius: 24px;
+  padding: 5px 9px;
+  border: 2px solid #2e7d32;
+  transition: background .2s, border-color .2s;
+}
+.cu-stog.off {
+  background: #f5f5f5;
+  border-color: #ddd;
+}
+.cu-sdot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #2e7d32;
+  flex-shrink: 0;
+}
+.cu-sdot.g { background: #bbb; }
+.cu-sname { font-size: 11px; font-weight: 700; color: #2e7d32; }
+.cu-sname.g { color: #aaa; }
+.cu-snum { font-size: 17px; font-weight: 900; color: #1b5e20; margin-left: auto; }
+.cu-snum.g { color: #999; }
+.cu-smid { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.cu-svs  { font-size: 11px; font-weight: 700; color: #ccc; }
+.cu-stur { font-size: 10px; color: #aaa; font-weight: 600; }
+
+/* ── Seçili Kelime Bilgi Barı ── */
+.cu-clue-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #f0f8ec;
+  border-bottom: 1px solid #c8dfc0;
+  min-height: 32px;
+}
+.cu-clue-dir {
+  font-size: 12px;
+  color: #2e7d32;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.cu-clue-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a4a1e;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.cu-clue-len {
+  font-size: 10px;
+  color: #888;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ── Tahta ── */
+.cu-board-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 3px;
+  min-height: 0;
+}
+.cu-board-scroll::-webkit-scrollbar { width: 3px; height: 3px; }
+.cu-board-scroll::-webkit-scrollbar-thumb { background: #bbb; border-radius: 2px; }
+
+.cu-table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* ── Köşe ── */
+.cu-corner {
+  width: 62px;
+  min-width: 62px;
+  height: 62px;
+  background: #c8d8c0;
+  border: 1px solid #9ab098;
+}
+
+/* ── Üst Kenar — Sütun ipucu ── */
+.cu-th-col {
+  height: 62px;
+  border: 1px solid #9ab098;
+  background: #c8e0bc;
+  vertical-align: bottom;
+  cursor: pointer;
+  padding: 0;
+  transition: background .15s;
+  position: relative;
+}
+.cu-th-col.sel    { background: #9ed090; border: 2px solid #2e7d32; }
+.cu-th-col.done   { opacity: .5; }
+.cu-th-col.empty  { background: #d4e8cc; cursor: default; }
+.cu-th-col:hover:not(.empty):not(.done) { background: #b4d8a4; }
+
+.cu-col-qi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 3px 2px 3px;
+  justify-content: space-between;
+}
+.cu-col-qt {
+  font-size: 6px;
+  font-weight: 800;
+  color: #1a4a1e;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.25;
+  overflow: hidden;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  flex: 1;
+}
+.cu-col-arr { font-size: 9px; color: #2e7d32; font-weight: 900; line-height: 1; }
+
+/* ── Sol Kenar — Satır ipucu ── */
+.cu-th-row {
+  width: 62px;
+  min-width: 62px;
+  border: 1px solid #9ab098;
+  background: #c8e0bc;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 0;
+  transition: background .15s;
+}
+.cu-th-row.sel   { background: #9ed090; border: 2px solid #2e7d32; }
+.cu-th-row.done  { opacity: .5; }
+.cu-th-row.empty { background: #d4e8cc; cursor: default; }
+.cu-th-row:hover:not(.empty):not(.done) { background: #b4d8a4; }
+
+.cu-row-qi {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 100%;
+  padding: 3px 4px 3px 2px;
+  gap: 2px;
+}
+.cu-row-qt {
+  font-size: 6px;
+  font-weight: 800;
+  color: #1a4a1e;
+  text-align: right;
+  text-transform: uppercase;
+  line-height: 1.25;
+  overflow: hidden;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  flex: 1;
+}
+.cu-row-arr { font-size: 9px; color: #2e7d32; font-weight: 900; flex-shrink: 0; }
+
+/* ── İç Hücreler ── */
+.cu-blk {
+  background: #9aaa92;
+  border: 1px solid #7a8a74;
+  cursor: default;
+  height: 44px;
+}
+
+/* Boş beyaz hücre */
+.cu-wh {
+  border: 1px solid #a8bca0;
+  background: #fff;
+  cursor: pointer;
+  height: 44px;
+  position: relative;
+}
+.cu-wh:active { background: #f0f8ec; }
+
+/* Seçili kelime vurgusu */
+.cu-wh.hl     { background: #d0ecc8; }
+.cu-qcell.hl  { background: #b8e0b0; }
+.cu-conf.hl   { background: #c0e8d0; }
+
+/* İç ipucu hücresi (bir kelimenin başladığı yer) */
+.cu-qcell {
+  border: 1px solid #9ab090;
+  background: #c8e0bc;
+  cursor: pointer;
+  height: 44px;
+  vertical-align: top;
+  position: relative;
+}
+.cu-qcell:active { background: #acd4a0; }
+
+/* Geçici yerleştirilmiş taş */
+.cu-placed {
+  background: #fff8e0;
+  outline: 2.5px solid #f9a825;
+  outline-offset: -1px;
+  height: 44px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Onaylanmış hücre */
+.cu-conf {
+  background: #e4f4dc;
+  height: 44px;
+  position: relative;
+  cursor: default;
+  border: 1px solid #9ab098;
+}
+
+/* ── İç İpucu İçeriği ── */
+.cu-inner-qi {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 2px 2px 1px;
+  gap: 1px;
+}
+.cu-inner-qt {
+  font-size: 7px;
+  font-weight: 800;
+  color: #1a4a1e;
+  line-height: 1.2;
+  overflow: hidden;
+  text-transform: uppercase;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  flex: 1;
+}
+.cu-inner-qa { display: flex; gap: 2px; flex-shrink: 0; }
+.cu-inner-ar { font-size: 8px; color: #2e7d32; font-weight: 900; }
+
+/* ── Harf Gösterimi ── */
+.cu-ltr {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111;
+  pointer-events: none;
+  line-height: 1;
+}
+.cu-ltr.pend   { color: #8a5500; }
+.cu-ltr.conf-l { color: #1a6a20; }
+
+/* ── Puan Balonları ── */
+.cu-pop {
+  position: absolute;
+  top: 0; right: 2px;
+  font-size: 9px;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 10;
+  animation: cu-popfade 1.3s forwards;
+}
+.cu-pop.pos { color: #1a7a20; }
+.cu-pop.neg { color: #c0392b; }
+
+@keyframes cu-popfade {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-18px); }
+}
+
+/* ── Kelime Tamamlama Bildirimi ── */
+.cu-word-bonus {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2e7d32;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 22px;
+  font-weight: 900;
+  font-size: 15px;
+  z-index: 500;
+  animation: cu-popfade 2s forwards;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Alt Alan ── */
+.cu-bottom {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 2px solid #ddd;
+  padding: 8px 10px 14px;
+}
+.cu-trow {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+/* ── Scrabble Taşları ── */
+.cu-tile {
+  width: 50px;
+  height: 54px;
+  background: linear-gradient(175deg, #f6e8c2, #e8d090);
+  border: 2px solid #c8a84a;
+  border-bottom: 4px solid #a07820;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 900;
+  color: #2c1810;
+  cursor: grab;
+  flex-shrink: 0;
+  transition: transform .12s, box-shadow .12s, background .12s;
+  position: relative;
+}
+.cu-tile:active { cursor: grabbing; }
+
+/* Seçili taş */
+.cu-tile.sl {
+  transform: translateY(-12px) scale(1.15);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  background: linear-gradient(175deg, #ffe97a, #f5c830);
+  border-color: #d4930a;
+  border-bottom-color: #a06800;
+  z-index: 5;
+}
+
+/* Kullanılmış taş */
+.cu-tile.used {
+  opacity: .28;
+  cursor: default;
+  background: #e0e0d8;
+  border-color: #bbb;
+  border-bottom-color: #aaa;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Aksiyon Butonları ── */
+.cu-acts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cu-abt {
+  width: 50px;
+  height: 50px;
+  border: 1.5px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+  color: #666;
+  gap: 1px;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+.cu-abt:active { background: #f0f0f0; }
+.cu-aico { font-size: 16px; }
+
+/* Büyük onay butonu */
+.cu-obtn {
+  flex: 1;
+  height: 50px;
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: .5px;
+  animation: cu-pulse 1.8s ease-in-out infinite;
+  transition: transform .1s;
+}
+.cu-obtn.pas {
+  background: #9e9e9e;
+  animation: none;
+}
+.cu-obtn:active { transform: scale(.97); }
+
+@keyframes cu-pulse {
+  0%,100% { box-shadow: 0 3px 10px rgba(46,125,50,.4); }
+  50%      { box-shadow: 0 5px 22px rgba(46,125,50,.7); }
+}
+
+/* ── Rakip Oynuyor ── */
+.cu-waiting {
+  flex-shrink: 0;
+  background: #fff;
+  border-top: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 88px;
+  font-size: 13px;
+  color: #888;
+  padding-bottom: 12px;
+}
+.cu-dots { display: flex; gap: 6px; }
+.cu-dots span {
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: #2e7d32;
+  animation: cu-dot 1.2s ease-in-out infinite;
+}
+.cu-dots span:nth-child(2) { animation-delay: .2s; background: #f9a825; }
+.cu-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes cu-dot {
+  0%,80%,100% { opacity: .25; transform: scale(.65); }
+  40%         { opacity: 1;   transform: scale(1); }
+}
+
+/* ── Sonuç Ekranı ── */
+.cu-result {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  gap: 16px;
+  overflow-y: auto;
+}
+.cu-result-icon  { font-size: 52px; }
+.cu-result-title { font-size: 22px; font-weight: 900; color: #111; }
+.cu-result-scores { display: flex; align-items: center; gap: 14px; }
+.cu-result-box {
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 12px 22px;
+  text-align: center;
+  min-width: 80px;
+}
+.cu-result-box.cu-winner { border-color: #2e7d32; background: #f0f9f0; }
+.cu-result-name { font-size: 12px; font-weight: 700; color: #888; margin-bottom: 4px; }
+.cu-result-num  { font-size: 32px; font-weight: 900; color: #111; line-height: 1; }
+.cu-result-box.cu-winner .cu-result-num { color: #2e7d32; }
+.cu-result-vs   { font-size: 13px; font-weight: 900; color: #bbb; }
+.cu-result-words {
+  width: 100%; max-width: 320px; max-height: 220px;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cu-result-word {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #666;
+  padding: 3px 0;
+}
+.cu-result-word.done { color: #2e7d32; }
+.cu-result-dir   { font-weight: 900; color: #2e7d32; flex-shrink: 0; }
+.cu-result-clue  { flex: 1; font-weight: 600; }
+.cu-result-eq    { color: #ccc; }
+.cu-result-ans   { font-weight: 900; color: #111; font-size: 13px; }
+.cu-result-word.done .cu-result-ans { text-decoration: line-through; opacity: .6; }
+
+.cu-back-btn {
+  background: #2e7d32;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 36px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+  max-width: 280px;
+}
+.cu-back-btn:active { transform: scale(.98); }
