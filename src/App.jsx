@@ -475,6 +475,12 @@ function App() {
           <div className="logo-icon">🧩</div>
           <h1 className="app-title">Kelime Avcısı</h1>
 
+          {/* YENİ MOD: Günlük Çengel Düellosu (Sen vs Rakip) */}
+          <button className="btn-main btn-lang" onClick={() => setScreen('daily')}>
+            <span style={{ fontSize: '1.35rem' }}>⚔️</span>
+            <span>Günlük Düello</span>
+          </button>
+
           {/* BUTON 1: İngilizce -> Türkçe */}
           <button className="btn-main btn-lang" onClick={() => handleLangSelect('EN_TR')}>
             <div className="lang-icon-wrapper"><GbFlag /></div>
@@ -493,11 +499,6 @@ function App() {
             <span>İngilizce</span>
           </button>
 
-          {/* BUTON 3: Günlük Çengel Bulmaca */}
-          <button className="btn-main btn-lang" onClick={() => setScreen('daily')}>
-            <span style={{ fontSize: '1.3rem' }}>🧩</span>
-            <span>Günlük Bulmaca</span>
-          </button>
         </div>
       )}
 

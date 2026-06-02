@@ -6,7 +6,10 @@ import './CengelGame.css';
 const DRAG_OFFSET_X = 14;
 const DRAG_OFFSET_Y = -46;
 
-const CengelGame = ({ onBack }) => {
+// Günlük ilerlemeyi tarayıcıda saklamak için anahtar öneki
+const STORAGE_PREFIX = 'cengel_save_';
+
+const CengelGame = ({ onBack } = {}) => {
   const [puzzle, setPuzzle] = useState(null);
   const [gridState, setGridState] = useState({});
   const [lockedCells, setLockedCells] = useState([]);
@@ -34,6 +37,10 @@ const CengelGame = ({ onBack }) => {
   const [moveHistory, setMoveHistory] = useState([]);
   // Dokunulunca büyüyen soru hücresi
   const [activeClue, setActiveClue] = useState(null);
+  // Oyun bitti mi (tüm hücreler dolu) — bitince tekrar oynanamaz
+  const [gameOver, setGameOver] = useState(false);
+  // localStorage'a kayıt yapılabilsin mi (ilk yükleme bitmeden yazma)
+  const restoredRef = useRef(false);
 
   useEffect(() => {
     fetch('/puzzles/daily.json')
@@ -43,16 +50,54 @@ const CengelGame = ({ onBack }) => {
       })
       .then(data => {
         setPuzzle(data);
-        const initialPool = [...data.letterPool];
-        const initialRack = initialPool.splice(0, 5).map((letter, idx) => ({ id: `r-${idx}`, letter }));
-        setRack(initialRack);
-        setPool(initialPool);
+        // Bugünün ilerlemesi kayıtlıysa geri yükle (kapatıp gelince devam)
+        let saved = null;
+        try { saved = JSON.parse(localStorage.getItem(STORAGE_PREFIX + data.id)); } catch { saved = null; }
+        if (saved) {
+          setGridState(saved.gridState || {});
+          setLockedCells(saved.lockedCells || []);
+          setOpponentLockedCells(saved.opponentLockedCells || []);
+          setScore(saved.score || 0);
+          setOpponentScore(saved.opponentScore || 0);
+          setCompletedWords(saved.completedWords || []);
+          setRack(saved.rack || []);
+          setPool(saved.pool || []);
+          setGameOver(!!saved.gameOver);
+        } else {
+          const initialPool = [...data.letterPool];
+          const initialRack = initialPool.splice(0, 5).map((letter, idx) => ({ id: `r-${idx}`, letter }));
+          setRack(initialRack);
+          setPool(initialPool);
+        }
+        restoredRef.current = true;
       })
       .catch(err => {
         console.error("Bulmaca yüklenirken hata:", err);
         setError(true);
       });
   }, []);
+
+  // İlerlemeyi sürekli kaydet (taşlar, skorlar, kilitler yerinde kalsın)
+  useEffect(() => {
+    if (!puzzle || !restoredRef.current) return;
+    try {
+      localStorage.setItem(STORAGE_PREFIX + puzzle.id, JSON.stringify({
+        gridState, lockedCells, opponentLockedCells, score, opponentScore,
+        completedWords, rack, pool, gameOver,
+      }));
+    } catch { /* kota dolu vb. — sessiz geç */ }
+  }, [puzzle, gridState, lockedCells, opponentLockedCells, score, opponentScore, completedWords, rack, pool, gameOver]);
+
+  // Tüm harf hücreleri dolunca oyunu bitir (skor uçuşları insin diye kısa gecikme)
+  useEffect(() => {
+    if (!puzzle || gameOver) return;
+    const total = puzzle.cells.filter(c => c.type === 'letter').length;
+    const lockedTotal = new Set([...lockedCells, ...opponentLockedCells]).size;
+    if (total > 0 && lockedTotal >= total) {
+      const t = setTimeout(() => setGameOver(true), 1900);
+      return () => clearTimeout(t);
+    }
+  }, [puzzle, lockedCells, opponentLockedCells, gameOver]);
 
   // Harf yerleştirme (hem drag-drop hem tap için ortak)
   const placeItem = (rackItem, cellId) => {
@@ -247,7 +292,7 @@ const CengelGame = ({ onBack }) => {
   }, [flyingTiles]);
 
   const beginDrag = (e, item, from, cellId) => {
-    if (busy) return;
+    if (busy || gameOver) return;
     setActiveClue(null);
     if (e.button != null && e.button !== 0) return;
     const startX = e.clientX, startY = e.clientY;
@@ -312,7 +357,7 @@ const CengelGame = ({ onBack }) => {
 
   const handleCellClick = (cellId) => {
     if (suppressClickRef.current) return;
-    if (busy || isLockedCell(cellId)) return;
+    if (gameOver || busy || isLockedCell(cellId)) return;
     if (selectedRackItem) {
       placeItem(selectedRackItem, cellId);
     } else if (gridState[cellId]) {
@@ -346,7 +391,7 @@ const CengelGame = ({ onBack }) => {
   };
 
   const submitTurn = () => {
-    if (busy) return;
+    if (busy || gameOver) return;
     setBusy(true);
 
     let delta = 0;
@@ -393,11 +438,20 @@ const CengelGame = ({ onBack }) => {
 
     // Raf, taşların uçuşu rafa varınca dolar (doğrular zaten kilitli kaldı).
     const finalizeRack = () => {
+      // Kalan boş hücre sayısı: her hücre ya kilitli ya boş (bekleyen kalmadı)
+      const totalLetters = puzzle.cells.filter(c => c.type === 'letter').length;
+      const emptyAfter = totalLetters - newLocked.length - opponentLockedCells.length;
+      const cap = Math.min(5, Math.max(0, emptyAfter));
       let nextRack = [...rack, ...wrongEntries.map(w => w.placed)];
       let nextPool = [...pool];
-      while (nextRack.length < 5 && nextPool.length > 0) {
+      // Boş hücre kadar taş ver (5'i geçme)
+      while (nextRack.length < cap && nextPool.length > 0) {
         const l = nextPool.shift();
         nextRack.push({ id: `p-${Date.now()}-${Math.random()}`, letter: l });
+      }
+      // Boş hücreden fazla taş varsa fazlasını havuza geri koy
+      while (nextRack.length > cap && nextRack.length > 0) {
+        nextPool.push(nextRack.pop().letter);
       }
       setRack(nextRack);
       setPool(nextPool);
@@ -449,6 +503,16 @@ const CengelGame = ({ onBack }) => {
     picked.forEach((c) => {
       triggerAnimation(c.id, 'anim-opp');
       flyFromCell(c.id, '+1', 'rival', 0, 1);
+    });
+
+    // Rakibin doldurduğu hücrelerin harflerini oyuncu havuzundan düş (taş sayısı tutarlı kalsın)
+    setPool(prev => {
+      const np = [...prev];
+      picked.forEach(c => {
+        const i = np.indexOf(c.expected);
+        if (i !== -1) np.splice(i, 1);
+      });
+      return np;
     });
 
     // Rakibin tamamladığı kelimeler
@@ -690,6 +754,42 @@ const CengelGame = ({ onBack }) => {
           {fp.text}
         </div>
       ))}
+
+      {/* OYUN SONU EKRANI (İngilizce, sade) */}
+      {gameOver && (() => {
+        const won = score > opponentScore;
+        const lost = score < opponentScore;
+        return (
+          <div className="result-overlay">
+            <div className="result-card">
+              <div className="result-emoji">{won ? '🏆' : lost ? '🙃' : '🤝'}</div>
+              <h2 className="result-title">
+                {won ? 'You won!' : lost ? 'Not this time' : "It's a tie!"}
+              </h2>
+              <p className="result-sub">
+                {won ? 'Beautifully played. See you tomorrow.'
+                  : lost ? 'So close — come back tomorrow.'
+                  : 'Evenly matched. Try again tomorrow.'}
+              </p>
+              <div className="result-scores">
+                <div className="result-score you">
+                  <span>You</span>
+                  <strong>{score}</strong>
+                </div>
+                <div className="result-vs">–</div>
+                <div className="result-score rival">
+                  <span>Rival</span>
+                  <strong>{opponentScore}</strong>
+                </div>
+              </div>
+              <p className="result-note">A new puzzle arrives every day at midnight.</p>
+              {onBack && (
+                <button className="result-btn" onClick={onBack}>Back to menu</button>
+              )}
+            </div>
+          </div>
+        );
+      })()}
     </div>
     </div>
   );
