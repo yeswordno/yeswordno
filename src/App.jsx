@@ -10,11 +10,13 @@ import c1_c2 from './data/c1_c2.json';
 import academic from './data/academic.json';
 import { TrFlag, GbFlag } from './utils/FlagIcons';
 import { SpeakerIcon } from './utils/SpeakerIcon';
+import { PuzzleIcon, DuelIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
 
 function App() {
   // --- STATE YÖNETİMİ ---
   const [screen, setScreen] = useState('lang'); // 'lang', 'level', 'game'
+  const [dailyLevel, setDailyLevel] = useState(null); // Günlük Düello zorluğu: 'easy'|'medium'|'hard'
   const [showWinModal, setShowWinModal] = useState(false);
   const [mode, setMode] = useState('EN_TR');
   const [sourceWords, setSourceWords] = useState([]);
@@ -472,12 +474,12 @@ function App() {
       {/* 1. DİL EKRANI */}
       {screen === 'lang' && (
         <div className="menu-screen">
-          <div className="logo-icon">🧩</div>
+          <div className="logo-icon"><PuzzleIcon size={72} color="#ffffff" /></div>
           <h1 className="app-title">Kelime Avcısı</h1>
 
           {/* YENİ MOD: Günlük Çengel Düellosu (Sen vs Rakip) */}
-          <button className="btn-main btn-lang" onClick={() => setScreen('daily')}>
-            <span style={{ fontSize: '1.35rem' }}>⚔️</span>
+          <button className="btn-main btn-lang" onClick={() => { setDailyLevel(null); setScreen('daily'); }}>
+            <DuelIcon size={24} color="var(--accent-purple)" />
             <span>Günlük Düello</span>
           </button>
 
@@ -502,9 +504,50 @@ function App() {
         </div>
       )}
 
-      {/* GÜNLÜK ÇENGEL BULMACA EKRANI */}
-      {screen === 'daily' && (
-        <CengelGame onBack={() => setScreen('lang')} />
+      {/* GÜNLÜK ÇENGEL — ZORLUK SEÇİMİ */}
+      {screen === 'daily' && !dailyLevel && (
+        <div className="menu-screen">
+          <div className="logo-icon"><DuelIcon size={72} color="#ffffff" /></div>
+          <h2 className="screen-title">Günlük Düello</h2>
+          <p style={{ marginTop: '-4px', marginBottom: '16px', textAlign: 'center', lineHeight: 1.2 }}>
+            <span style={{ display: 'block', fontSize: '1.15rem', fontWeight: 800, color: '#2d3436' }}>
+              Zorluk Seç
+            </span>
+            <span style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#8a93a0' }}>
+              Choose Difficulty
+            </span>
+          </p>
+
+          <button className="btn-main btn-level" onClick={() => setDailyLevel('easy')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
+              <span>😊 Kolay</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Easy</span>
+            </div>
+          </button>
+          <button className="btn-main btn-level" onClick={() => setDailyLevel('medium')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
+              <span>🙂 Orta</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Medium</span>
+            </div>
+          </button>
+          <button className="btn-main btn-level" onClick={() => setDailyLevel('hard')}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
+              <span>🔥 Zor</span>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Hard</span>
+            </div>
+          </button>
+
+          <button className="btn-back" onClick={() => setScreen('lang')}>⬅ Geri Dön</button>
+        </div>
+      )}
+
+      {/* GÜNLÜK ÇENGEL — OYUN (seviye seçilince) */}
+      {screen === 'daily' && dailyLevel && (
+        <CengelGame
+          key={dailyLevel}
+          level={dailyLevel}
+          onBack={() => setDailyLevel(null)}
+        />
       )}
 
       {/* 2. SEVİYE EKRANI */}

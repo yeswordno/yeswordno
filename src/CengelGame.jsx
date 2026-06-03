@@ -9,7 +9,7 @@ const DRAG_OFFSET_Y = -46;
 // Günlük ilerlemeyi tarayıcıda saklamak için anahtar öneki
 const STORAGE_PREFIX = 'cengel_save_';
 
-const CengelGame = ({ onBack } = {}) => {
+const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const [puzzle, setPuzzle] = useState(null);
   const [gridState, setGridState] = useState({});
   const [lockedCells, setLockedCells] = useState([]);
@@ -28,6 +28,8 @@ const CengelGame = ({ onBack } = {}) => {
   const [flyingPoints, setFlyingPoints] = useState([]);
   // Yanlış harfin rafa geri uçan taşı: [{id, letter, x0, y0, dx, dy}]
   const [flyingTiles, setFlyingTiles] = useState([]);
+  // Rakibin skor tablosundan hücreye uçan taşı: [{id, letter, x0, y0, dx, dy}]
+  const [flyingOppTiles, setFlyingOppTiles] = useState([]);
   // Sürüklenen taşın parmağı takip eden görseli: {letter, x, y}
   const [dragView, setDragView] = useState(null);
   const [error, setError] = useState(false);
@@ -42,8 +44,20 @@ const CengelGame = ({ onBack } = {}) => {
   // localStorage'a kayıt yapılabilsin mi (ilk yükleme bitmeden yazma)
   const restoredRef = useRef(false);
 
+  // Rakip hamlesi setTimeout ile gecikmeli çalıştığı için kapanışta (closure)
+  // bayatlamış state okumasın diye güncel değerleri ref'te tutuyoruz.
+  const poolRef = useRef([]);
+  const gridStateRef = useRef({});
+  const oppLockedRef = useRef([]);
+  useEffect(() => { poolRef.current = pool; }, [pool]);
+  useEffect(() => { gridStateRef.current = gridState; }, [gridState]);
+  useEffect(() => { oppLockedRef.current = opponentLockedCells; }, [opponentLockedCells]);
+
+  // Bu seviyenin kayıt anahtarı: cengel_save_<seviye>_<tarih>
+  const saveKey = (id) => `${STORAGE_PREFIX}${level}_${id}`;
+
   useEffect(() => {
-    fetch('/puzzles/daily.json')
+    fetch(`/puzzles/daily-${level}.json`)
       .then(response => {
         if (!response.ok) throw new Error("JSON bulunamadı");
         return response.json();
@@ -52,7 +66,7 @@ const CengelGame = ({ onBack } = {}) => {
         setPuzzle(data);
         // Bugünün ilerlemesi kayıtlıysa geri yükle (kapatıp gelince devam)
         let saved = null;
-        try { saved = JSON.parse(localStorage.getItem(STORAGE_PREFIX + data.id)); } catch { saved = null; }
+        try { saved = JSON.parse(localStorage.getItem(saveKey(data.id))); } catch { saved = null; }
         if (saved) {
           setGridState(saved.gridState || {});
           setLockedCells(saved.lockedCells || []);
@@ -81,7 +95,7 @@ const CengelGame = ({ onBack } = {}) => {
   useEffect(() => {
     if (!puzzle || !restoredRef.current) return;
     try {
-      localStorage.setItem(STORAGE_PREFIX + puzzle.id, JSON.stringify({
+      localStorage.setItem(saveKey(puzzle.id), JSON.stringify({
         gridState, lockedCells, opponentLockedCells, score, opponentScore,
         completedWords, rack, pool, gameOver,
       }));
@@ -223,6 +237,22 @@ const CengelGame = ({ onBack } = {}) => {
     }, delayMs);
   };
 
+  // Rakip taşı: rakip skor tablosundan hedef hücreye uçar (oraya "yerleşir")
+  const flyOppTileToCell = (cellId, letter, delayMs = 0) => {
+    setTimeout(() => {
+      const el = document.querySelector(`[data-cell-id="${cellId}"]`);
+      const scoreEl = oppScoreRef.current;
+      if (!el || !scoreEl) return;
+      const r = el.getBoundingClientRect();
+      const s = scoreEl.getBoundingClientRect();
+      const x0 = s.left + s.width / 2, y0 = s.top + s.height / 2;
+      const x1 = r.left + r.width / 2, y1 = r.top + r.height / 2;
+      const id = `otile-${Date.now()}-${Math.random()}`;
+      setFlyingOppTiles(prev => [...prev, { id, letter, x0, y0, dx: x1 - x0, dy: y1 - y0 }]);
+      setTimeout(() => setFlyingOppTiles(prev => prev.filter(p => p.id !== id)), 1200);
+    }, delayMs);
+  };
+
   // Tamamlanan kelimenin +N puanını, kelime kutusunun sağ üst köşesinden skora uçur
   const flyFromWord = (cellIds, text, who, value) => {
     const rects = cellIds
@@ -290,6 +320,22 @@ const CengelGame = ({ onBack } = {}) => {
       }
     });
   }, [flyingTiles]);
+
+  // Rakip taşının skordan hücreye yavaşça uçuşu (yerleşme hissi)
+  useEffect(() => {
+    flyingOppTiles.forEach(ft => {
+      const el = document.querySelector(`[data-otile-id="${ft.id}"]`);
+      if (el && !el.dataset.animated) {
+        el.dataset.animated = '1';
+        el.animate([
+          { transform: 'translate(-50%, -50%) scale(0.55)', opacity: 0, offset: 0 },
+          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.18 },
+          { transform: `translate(calc(-50% + ${ft.dx}px), calc(-50% + ${ft.dy}px)) scale(1)`, opacity: 1, offset: 0.9 },
+          { transform: `translate(calc(-50% + ${ft.dx}px), calc(-50% + ${ft.dy}px)) scale(0.95)`, opacity: 0.85, offset: 1 },
+        ], { duration: 880, easing: 'cubic-bezier(.35,0,.25,1)', fill: 'forwards' });
+      }
+    });
+  }, [flyingOppTiles]);
 
   const beginDrag = (e, item, from, cellId) => {
     if (busy || gameOver) return;
@@ -477,13 +523,18 @@ const CengelGame = ({ onBack } = {}) => {
     setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3500);
   };
 
-  // Rakip: orta seviye — her el 0–3 doğru harf koyar (hep 5 değil)
+  // Rakip: orta seviye — her el 1–3 doğru harf koyar
   const runOpponentTurn = (playerLocked, completedSoFar) => {
+    // Güncel state'i ref'ten oku (setTimeout closure'ı bayatlamasın)
+    const curPool = poolRef.current;
+    const curGrid = gridStateRef.current;
+    const curOppLocked = oppLockedRef.current;
+
     const available = puzzle.cells.filter(c =>
       c.type === "letter" &&
       !playerLocked.includes(c.id) &&
-      !opponentLockedCells.includes(c.id) &&
-      !gridState[c.id]
+      !curOppLocked.includes(c.id) &&
+      !curGrid[c.id]
     );
 
     if (available.length === 0) {
@@ -491,49 +542,78 @@ const CengelGame = ({ onBack } = {}) => {
       return;
     }
 
-    // Orta seviye dağılım — asla pas geçmez, en az 1: 1:%50, 2:%35, 3:%15
+    // RAKİBİN TAŞLARI = HAVUZDAKİ HARFLER (oyuncunun elindekiler hariç).
+    // Yalnızca harfi havuzda mevcut olan hücreleri doldur → oyuncunun eli
+    // asla "alakasız taş"a dönüşmez ve oyuncu+rakip = boş hücre tutarlı kalır.
+    const poolCounts = {};
+    curPool.forEach(l => { poolCounts[l] = (poolCounts[l] || 0) + 1; });
+
+    // Orta seviye dağılım: 1:%50, 2:%35, 3:%15
     const r = Math.random();
     let count = r < 0.50 ? 1 : r < 0.85 ? 2 : 3;
     count = Math.min(count, available.length);
 
-    const picked = [...available].sort(() => Math.random() - 0.5).slice(0, count);
-
-    let delta = picked.length;
-    const newOppLocked = [...opponentLockedCells, ...picked.map(c => c.id)];
-    picked.forEach((c) => {
-      triggerAnimation(c.id, 'anim-opp');
-      flyFromCell(c.id, '+1', 'rival', 0, 1);
-    });
-
-    // Rakibin doldurduğu hücrelerin harflerini oyuncu havuzundan düş (taş sayısı tutarlı kalsın)
-    setPool(prev => {
-      const np = [...prev];
-      picked.forEach(c => {
-        const i = np.indexOf(c.expected);
-        if (i !== -1) np.splice(i, 1);
-      });
-      return np;
-    });
-
-    // Rakibin tamamladığı kelimeler
-    const allLocked = new Set([...playerLocked, ...newOppLocked]);
-    const newCompleted = [...completedSoFar];
-    const oppCompleted = [];
-    Object.keys(puzzle.words).forEach(wid => {
-      if (!newCompleted.includes(wid)) {
-        if (puzzle.words[wid].cells.every(cId => allLocked.has(cId))) {
-          delta += puzzle.words[wid].length;
-          newCompleted.push(wid);
-          oppCompleted.push(wid);
-        }
+    // Karıştır, sonra harfi havuzda kalan hücreleri sırayla seç
+    const shuffled = [...available].sort(() => Math.random() - 0.5);
+    const picked = [];
+    const remainCounts = { ...poolCounts };
+    for (const c of shuffled) {
+      if (picked.length >= count) break;
+      if (remainCounts[c.expected] > 0) {
+        remainCounts[c.expected]--;
+        picked.push(c);
       }
-    });
-    oppCompleted.forEach((wid, idx) => showWordBonus(wid, idx, 'amber'));
+    }
 
-    setOpponentLockedCells(newOppLocked);
-    // Rakip skoru da anında değil, uçan puanlar vardıkça (landScore) işlenir.
-    setCompletedWords(newCompleted);
-    setBusy(false);
+    // Rakibin oynanabilir taşı yok (kalan harflerin hepsi oyuncuda) → pas
+    if (picked.length === 0) {
+      setBusy(false);
+      return;
+    }
+
+    // 1) Taşları rakip skorundan hücrelere uçur (yavaşça yerleşme hissi)
+    const STAGGER = 280;   // taşlar arası gecikme
+    const FLY = 880;       // tek uçuş süresi
+    picked.forEach((c, idx) => flyOppTileToCell(c.id, c.expected, idx * STAGGER));
+
+    // 2) Uçuşlar inince: hücreleri kilitle, +1 skora uçur, havuzdan düş, kelime kontrolü
+    const landDelay = (picked.length - 1) * STAGGER + FLY;
+    setTimeout(() => {
+      const newOppLocked = [...curOppLocked, ...picked.map(c => c.id)];
+      picked.forEach((c) => {
+        triggerAnimation(c.id, 'anim-opp');
+        flyFromCell(c.id, '+1', 'rival', 0, 1);
+      });
+
+      // Doldurulan hücrelerin harflerini havuzdan düş (artık güvenli: hepsi havuzdaydı)
+      setPool(prev => {
+        const np = [...prev];
+        picked.forEach(c => {
+          const i = np.indexOf(c.expected);
+          if (i !== -1) np.splice(i, 1);
+        });
+        return np;
+      });
+
+      // Rakibin tamamladığı kelimeler
+      const allLocked = new Set([...playerLocked, ...newOppLocked]);
+      const newCompleted = [...completedSoFar];
+      const oppCompleted = [];
+      Object.keys(puzzle.words).forEach(wid => {
+        if (!newCompleted.includes(wid)) {
+          if (puzzle.words[wid].cells.every(cId => allLocked.has(cId))) {
+            newCompleted.push(wid);
+            oppCompleted.push(wid);
+          }
+        }
+      });
+      oppCompleted.forEach((wid, idx) => showWordBonus(wid, idx, 'amber'));
+
+      setOpponentLockedCells(newOppLocked);
+      // Rakip skoru anında değil, uçan +1'ler skora vardıkça (landScore) işlenir.
+      setCompletedWords(newCompleted);
+      setBusy(false);
+    }, landDelay);
   };
 
   if (error) return (
@@ -552,7 +632,7 @@ const CengelGame = ({ onBack } = {}) => {
     >
       <header className="game-header" onClick={e => e.stopPropagation()}>
         {onBack && (
-          <button className="cengel-back" onClick={onBack}>← Menü</button>
+          <button className="cengel-back" onClick={onBack}>← Geri</button>
         )}
         <h1 className="logo-text">WORD <span className="logo-accent">TR</span></h1>
         <div className="versus-board">
@@ -590,13 +670,14 @@ const CengelGame = ({ onBack } = {}) => {
                 >
                   <div className="clue-half clue-half-top">
                     <span className="clue-text">{cell.textRight}</span>
-                    <span className="arrow-right-both">{'▶︎'}</span>
                   </div>
                   <div className="clue-divider" />
                   <div className="clue-half clue-half-bottom">
                     <span className="clue-text">{cell.textDown}</span>
-                    <span className="arrow-down-both">{'▼︎'}</span>
                   </div>
+                  {/* Oklar hücrenin doğrudan çocuğu — yarım-kutu overflow'u kırpmasın */}
+                  <span className="arrow-right-both">{'▶︎'}</span>
+                  <span className="arrow-down-both">{'▼︎'}</span>
                 </div>
               );
             }
@@ -737,6 +818,18 @@ const CengelGame = ({ onBack } = {}) => {
           key={ft.id}
           data-tile-id={ft.id}
           className="flying-tile"
+          style={{ left: ft.x0, top: ft.y0 }}
+        >
+          {ft.letter}
+        </div>
+      ))}
+
+      {/* Rakibin skordan hücreye uçan taşı */}
+      {flyingOppTiles.map(ft => (
+        <div
+          key={ft.id}
+          data-otile-id={ft.id}
+          className="flying-tile flying-tile-opp"
           style={{ left: ft.x0, top: ft.y0 }}
         >
           {ft.letter}

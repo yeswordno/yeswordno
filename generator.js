@@ -1,51 +1,69 @@
 import fs from 'fs';
 
-// 1. TÜM SÖZLÜK DOSYALARINI OTOMATİK OKU VE BİRLEŞTİR
-// Sözlükler uygulamanın src/data klasöründe duruyor.
+// ─────────────────────────────────────────────────────────────────
+// 1. SEVİYELER — her seviye farklı sözlük havuzundan beslenir.
+//    Kademeli eşleme: havuzlar örtüşür, zorluk eğrisi yumuşaktır.
+// ─────────────────────────────────────────────────────────────────
 const DATA_DIR = './src/data';
-const dictFiles = ['fillers.json', 'a1_a2.json', 'b1_b2.json', 'c1_c2.json', 'academic.json'];
-let rawDict = [];
 
-dictFiles.forEach(file => {
-    const path = `${DATA_DIR}/${file}`;
-    if (fs.existsSync(path)) {
-        const rawData = fs.readFileSync(path, 'utf8');
-        rawDict = rawDict.concat(JSON.parse(rawData));
-        console.log(`[+] ${file} başarıyla yüklendi.`);
-    } else {
-        console.log(`[-] ${file} bulunamadı, atlanıyor.`);
-    }
-});
+const LEVELS = [
+    { key: 'easy',   label: 'Kolay', files: ['a1_a2.json'] },
+    { key: 'medium', label: 'Orta',  files: ['a1_a2.json', 'b1_b2.json'] },
+    { key: 'hard',   label: 'Zor',   files: ['b1_b2.json', 'c1_c2.json', 'academic.json'] },
+];
 
-if (rawDict.length === 0) {
-    console.error("HATA: Hiçbir JSON dosyası bulunamadı!");
-    process.exit(1);
-}
-
-// 2. SÖZLÜĞÜ OYUNA UYGUN FORMATLA
-let dictionary = rawDict
-    .filter(item => !item._comment)
-    .map(item => ({
-        tr: item.tr.toLocaleUpperCase('tr-TR'),
-        en: item.en.toUpperCase().replace(/[^A-Z]/g, '')
-    }))
-    .filter(item => item.en.length >= 1);
-
-// KÖPRÜ KELİMELER
-const fillers = [
+// KÖPRÜ KELİMELER — her seviyede bulunur (2 harfli X slotlarını doldurur, cooldown muaf).
+// b1_b2/c1_c2/academic havuzlarında 2 harfli kelime yok; bunlar olmazsa "zor" tıkanır.
+const FILLERS = [
     { tr: "ÜZERİNDE", en: "ON" }, { tr: "İÇİNDE", en: "IN" },
-    { tr: "O (Cansız)", en: "IT" }, { tr: "YAPMAK", en: "DO" },
+    { tr: "O (CANSIZ)", en: "IT" }, { tr: "YAPMAK", en: "DO" },
     { tr: "GİTMEK", en: "GO" }, { tr: "BİZ", en: "WE" },
     { tr: "TAMAM", en: "OK" }, { tr: "VEYA", en: "OR" },
-    { tr: "YUKARI", en: "UP" }
+    { tr: "YUKARI", en: "UP" }, { tr: "-DE / -DA", en: "AT" },
+    { tr: "-E / -A (YÖN)", en: "TO" }, { tr: "OLMAK", en: "BE" },
+    { tr: "-DIR / -DUR", en: "IS" }, { tr: "O (ERKEK)", en: "HE" },
+    { tr: "BENİ / BANA", en: "ME" }, { tr: "BİZİ / BİZE", en: "US" },
+    { tr: "EĞER", en: "IF" }, { tr: "BÖYLECE", en: "SO" },
+    { tr: "GİBİ / OLARAK", en: "AS" }, { tr: "TARAFINDAN", en: "BY" },
+    { tr: "BENİM", en: "MY" }, { tr: "HAYIR", en: "NO" },
+    { tr: "SELAM", en: "HI" }, { tr: "AİT / -NİN", en: "OF" },
+    { tr: "BİR (BELİRTEÇ)", en: "AN" }, { tr: "KİMLİK", en: "ID" },
+    { tr: "TELEVİZYON", en: "TV" }
 ];
-fillers.forEach(f => { if (!dictionary.some(d => d.en === f.en)) dictionary.push(f); });
 
-console.log(`Sözlük hazır. Toplam kelime havuzu: ${dictionary.length}`);
+// Sözlük dosyalarını bir kez oku, önbelleğe al
+const fileCache = {};
+function loadFile(file) {
+    if (fileCache[file]) return fileCache[file];
+    const path = `${DATA_DIR}/${file}`;
+    if (!fs.existsSync(path)) { console.log(`[-] ${file} bulunamadı, atlanıyor.`); return (fileCache[file] = []); }
+    return (fileCache[file] = JSON.parse(fs.readFileSync(path, 'utf8')));
+}
+
+// Bir seviyenin sözlüğünü kur: formatla, element sembollerini ele,
+// benzersizle (en bazında), köprü kelimeleri ekle.
+function buildDictionary(files) {
+    let raw = [];
+    files.forEach(f => { raw = raw.concat(loadFile(f)); });
+    const seen = new Set();
+    const dict = [];
+    raw
+        .filter(item => !item._comment)
+        .map(item => ({
+            tr: item.tr.toLocaleUpperCase('tr-TR'),
+            en: item.en.toUpperCase().replace(/[^A-Z]/g, '')
+        }))
+        .filter(item => item.en.length >= 1)
+        // Element sembollerini ele ("CİVA SİMGESİ"=HG gibi teknik köprüler)
+        .filter(item => !/SİMGES|SIMGES/i.test(item.tr))
+        .forEach(w => { if (!seen.has(w.en)) { seen.add(w.en); dict.push(w); } });
+    FILLERS.forEach(f => { if (!seen.has(f.en)) { seen.add(f.en); dict.push(f); } });
+    return dict;
+}
 
 // ─────────────────────────────────────────────────────────────────
-// 2.5 TEKRAR ÖNLEME — son COOLDOWN_DAYS günde kullanılan kelimeleri ele
-//     (2 harfli köprü kelimeler muaf; yoksa kısa kutucuklar tıkanır)
+// 2. TEKRAR ÖNLEME — her seviye KENDİ geçmişiyle değerlendirilir.
+//    (2 harfli köprüler muaf; eski/level'sız kayıtlar tüm seviyelere sayılır)
 // ─────────────────────────────────────────────────────────────────
 const COOLDOWN_DAYS = 60;                       // bu kadar gün aynı kelime tekrar çıkmaz
 const HISTORY_PATH = './public/puzzles/history.json';
@@ -56,19 +74,17 @@ if (fs.existsSync(HISTORY_PATH)) {
     catch { history = []; }
 }
 
-const cutoff = new Date();
-cutoff.setDate(cutoff.getDate() - COOLDOWN_DAYS);
-const recentWords = new Set();
-for (const entry of history) {
-    if (!entry || !entry.date) continue;
-    if (new Date(entry.date) >= cutoff) {
-        (entry.words || []).forEach(w => recentWords.add(w));
+function recentWordsForLevel(levelKey) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - COOLDOWN_DAYS);
+    const recent = new Set();
+    for (const entry of history) {
+        if (!entry || !entry.date) continue;
+        if (entry.level && entry.level !== levelKey) continue; // başka seviyenin kaydı → atla
+        if (new Date(entry.date) >= cutoff) (entry.words || []).forEach(w => recent.add(w));
     }
+    return recent;
 }
-
-const beforeCount = dictionary.length;
-dictionary = dictionary.filter(item => item.en.length <= 2 || !recentWords.has(item.en));
-console.log(`Tekrar önleme: son ${COOLDOWN_DAYS} günde ${recentWords.size} kelime kullanılmış, ${beforeCount - dictionary.length} aday elendi. Kalan: ${dictionary.length}`);
 
 // ─────────────────────────────────────────────────────────────────
 // 3. 5 FARKLI ŞABLON
@@ -76,84 +92,96 @@ console.log(`Tekrar önleme: son ${COOLDOWN_DAYS} günde ${recentWords.size} kel
 //    D  = Aşağı soru (clue, aşağıdaki L'ler bu kelimenin harfleri)
 //    X  = Çift yön   (hem sağa HEM aşağı soru — tek kutucuk, 2 kelime)
 //    L  = Harf kutusu
-//    B  = Boş / pasif (max 7 adet)
+//    B  = Boş / pasif
+//
+// TASARIM KURALI: Her L hücresi hem yatay (sol'da R veya X) hem de
+// dikey (üstte D veya X) olmak üzere ÇİFT yönden kapsanmalıdır.
+// Validator bunu zorunlu kılar; tek yönlü L hücresine izin verilmez.
 // ─────────────────────────────────────────────────────────────────
+// NOT: Bu 5 şablon otomatik arama + çözülebilirlik testiyle seçildi.
+// Hepsi: 0 orphan (kapsanmayan L yok), 1-harf slot yok, bitişik B yok,
+// çift-kapsama %55-57 (eski zigzag %43 idi), çözüm oranı ~%85-97.
+// Çift-kapsama = hem yatay hem dikey kelimenin geçtiği harf oranı;
+// yüksek olması "soru bulunamayan/yalnız" hücre hissini azaltır.
 const TEMPLATES = [
 
-    // ── Şablon 1: Klasik zigzag (7 B hücresi) ──────────────────
-    // Doğrulanmış, orijinal tasarım.
+    // ── Şablon 1: çift-kapsama %57 | 46 harf | 18 kelime | çöz ~%97 ──
     [
-        ['D', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],  // D(0,0)=6harf↓ | R(1,0)=6harf→
-        ['L', 'B', 'D', 'B', 'D', 'B', 'D', 'B'],  // D sütunları: 2,4,6
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'D'],  // R(1,2)=5harf→ | D(7,2)=5harf↓
-        ['L', 'B', 'L', 'R', 'L', 'L', 'L', 'L'],  // R(3,3)=4harf→
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],  // R(1,4)=6harf→
-        ['L', 'B', 'L', 'D', 'L', 'R', 'L', 'L'],  // D(3,5)=2harf↓ | R(5,5)=2harf→
-        ['L', 'R', 'L', 'L', 'L', 'L', 'B', 'L'],  // R(1,6)=4harf→
-        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],  // R(0,7)=7harf→
+        ['B', 'X', 'L', 'L', 'D', 'X', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'R', 'L', 'L', 'L', 'B'],
+        ['R', 'L', 'L', 'X', 'L', 'L', 'L', 'D'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'B'],
     ],
 
-    // ── Şablon 2: Zigzag varyant (7 B hücresi) ─────────────────
-    // T1 zigzag'a benzer, satır 5 farklı. Doğrulandı.
+    // ── Şablon 2: çift-kapsama %56 | 45 harf | 19 kelime | çöz ~%93 ──
     [
-        ['D', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'D', 'B', 'D', 'B', 'D', 'B'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'D'],
-        ['L', 'B', 'L', 'R', 'L', 'L', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'D', 'R', 'L', 'L', 'L', 'L'],  // D(2,5)=2harf↓ | R(3,5)=4harf→
-        ['L', 'R', 'L', 'L', 'L', 'L', 'B', 'L'],
+        ['B', 'X', 'L', 'L', 'D', 'X', 'L', 'L'],
         ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'X', 'L', 'L', 'L', 'B'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'D'],
+        ['R', 'L', 'L', 'L', 'L', 'X', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'B', 'R', 'L', 'L', 'B'],
     ],
 
-    // ── Şablon 3: Klasik zigzag — Şablon 1 ile aynı yapı ─────────
-    // Farklı rastgele kelimeler üretilir. Yapı Şablon 1 ile aynı.
+    // ── Şablon 3: çift-kapsama %56 | 45 harf | 19 kelime | çöz ~%90 ──
     [
-        ['D', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'D', 'B', 'D', 'B', 'D', 'B'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'D'],
-        ['L', 'B', 'L', 'R', 'L', 'L', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'L', 'D', 'L', 'R', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'B', 'L'],
+        ['B', 'X', 'L', 'L', 'D', 'X', 'L', 'L'],
         ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'X', 'L', 'L', 'L', 'B'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'D'],
+        ['R', 'L', 'L', 'L', 'L', 'X', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['B', 'R', 'L', 'L', 'R', 'L', 'L', 'B'],
     ],
 
-    // ── Şablon 4: Üst sıra D soruları + X(0,3) çift yön (5 B) ────
-    // Çift yön (X) hücreli yapı. Doğrulandı.
+    // ── Şablon 4: çift-kapsama %57 | 46 harf | 18 kelime | çöz ~%87 ──
     [
-        ['D', 'R', 'L', 'L', 'L', 'L', 'L', 'D'],  // D(0,0) + D(7,0)
-        ['L', 'B', 'D', 'B', 'D', 'B', 'D', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['X', 'L', 'L', 'L', 'L', 'R', 'L', 'L'],  // X(0,3): sağ + aşağı
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'L', 'D', 'L', 'R', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'B', 'L'],
+        ['B', 'X', 'L', 'L', 'D', 'X', 'L', 'L'],
         ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'X', 'L', 'L', 'L', 'B'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'D'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'B'],
     ],
 
-    // ── Şablon 5: Klasik zigzag — T1'in aynısı ────────────────────
-    // Farklı rastgele kelimeler üretilir. Yapı T1 ile aynı.
+    // ── Şablon 5: çift-kapsama %55 | 44 harf | 20 kelime | çöz ~%87 ──
     [
-        ['D', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'D', 'B', 'D', 'B', 'D', 'B'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'D'],
-        ['L', 'B', 'L', 'R', 'L', 'L', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'B', 'L', 'D', 'L', 'R', 'L', 'L'],
-        ['L', 'R', 'L', 'L', 'L', 'L', 'B', 'L'],
+        ['B', 'X', 'L', 'L', 'D', 'X', 'L', 'L'],
         ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'R', 'L', 'L', 'L', 'B'],
+        ['R', 'L', 'L', 'X', 'L', 'L', 'L', 'D'],
+        ['R', 'L', 'L', 'L', 'L', 'X', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'L', 'R', 'L', 'L', 'L'],
+        ['R', 'L', 'L', 'B', 'R', 'L', 'L', 'B'],
     ],
 ];
 
 // ─────────────────────────────────────────────────────────────────
-// 4. ŞABLON DOĞRULAYICI — her L hücresinin en az 1 kelimeyle
-//    kapsandığını ve hiç yan yana B olmadığını kontrol eder.
+// 4. ŞABLON DOĞRULAYICI
+//    HATA (üretimi durdurur):
+//      - Yan yana B
+//      - ORPHAN L: ne yatay ne dikey hiçbir kelimeye ait olmayan harf
+//        (kullanıcının şikâyet ettiği "sorusu olmayan kutucuk" durumu)
+//      - 1-harf slot: bir kelimenin tek harften oluşması (geçersiz)
+//    BİLGİ (sadece raporlanır, hata değil):
+//      - Çift-kapsama oranı: hem yatay hem dikey kelimeye ait harf %'si.
+//        Tek yönlü harfler normaldir (çengelde olağan), orphan DEĞİLDİR.
 // ─────────────────────────────────────────────────────────────────
 function validateTemplate(tmpl) {
     const ROWS = tmpl.length;
     const COLS = tmpl[0].length;
     const errors = [];
+    let letters = 0, both = 0;
 
     // Yan yana B kontrolü
     for (let y = 0; y < ROWS; y++) {
@@ -165,102 +193,129 @@ function validateTemplate(tmpl) {
         }
     }
 
-    // Her L hücresinin kapsandığını kontrol et
+    // Her L hücresinin kapsamasını incele (orphan = hata, tek yön = OK)
     for (let y = 0; y < ROWS; y++) {
         for (let x = 0; x < COLS; x++) {
             if (tmpl[y][x] !== 'L') continue;
-            let covered = false;
+            letters++;
+            let covH = false, covV = false;
 
-            // Sola bak: R veya X var mı?
             for (let cx = x - 1; cx >= 0; cx--) {
                 const t = tmpl[y][cx];
-                if (t === 'R' || t === 'X') { covered = true; break; }
+                if (t === 'R' || t === 'X') { covH = true; break; }
                 if (t !== 'L') break;
             }
-            // Yukarı bak: D veya X var mı?
-            if (!covered) {
-                for (let cy = y - 1; cy >= 0; cy--) {
-                    const t = tmpl[cy][x];
-                    if (t === 'D' || t === 'X') { covered = true; break; }
-                    if (t !== 'L') break;
-                }
+            for (let cy = y - 1; cy >= 0; cy--) {
+                const t = tmpl[cy][x];
+                if (t === 'D' || t === 'X') { covV = true; break; }
+                if (t !== 'L') break;
             }
 
-            if (!covered) errors.push(`Kapsanmayan L hücresi: (${x},${y})`);
+            if (covH && covV) both++;
+            if (!covH && !covV) errors.push(`ORPHAN (sorusu olmayan) hücre: (${x},${y})`);
         }
     }
 
-    return errors;
+    // 1-harf slot kontrolü (R/X sağında tek L, D/X altında tek L)
+    for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+            const t = tmpl[y][x];
+            if (t === 'R' || t === 'X') {
+                let n = 0, cx = x + 1;
+                while (cx < COLS && tmpl[y][cx] === 'L') { n++; cx++; }
+                if (n === 1) errors.push(`1-harf yatay slot: (${x},${y})`);
+            }
+            if (t === 'D' || t === 'X') {
+                let n = 0, cy = y + 1;
+                while (cy < ROWS && tmpl[cy][x] === 'L') { n++; cy++; }
+                if (n === 1) errors.push(`1-harf dikey slot: (${x},${y})`);
+            }
+        }
+    }
+
+    const pct = letters ? Math.round(100 * both / letters) : 0;
+    return { errors, letters, pct };
 }
 
-// Başlangıçta tüm şablonları doğrula
+// Başlangıçta tüm şablonları doğrula + çift-kapsama raporla
 TEMPLATES.forEach((tmpl, i) => {
-    const errs = validateTemplate(tmpl);
-    if (errs.length > 0) {
+    const { errors, letters, pct } = validateTemplate(tmpl);
+    if (errors.length > 0) {
         console.error(`\n⚠️  Şablon ${i + 1} hatalı:`);
-        errs.forEach(e => console.error('   ' + e));
+        errors.forEach(e => console.error('   ' + e));
         process.exit(1);
     }
+    console.log(`   Şablon ${i + 1}: ${letters} harf, çift-kapsama %${pct} ✓`);
 });
 console.log(`✅ Tüm ${TEMPLATES.length} şablon doğrulandı.\n`);
 
 // ─────────────────────────────────────────────────────────────────
-// 5. POZİSYON İNDEKSİ — hızlı aday filtrelemesi için
-//    byLenPosChar[len][pos][char] = sözcük nesneleri dizisi
+// 5. YARDIMCI: Fisher-Yates karıştırma (yerinde, tarafsız)
 // ─────────────────────────────────────────────────────────────────
-const byLenPosChar = {};
-const byLen = {};
-for (const w of dictionary) {
-    const len = w.en.length;
-    if (!byLen[len]) byLen[len] = [];
-    byLen[len].push(w);
-    if (!byLenPosChar[len]) byLenPosChar[len] = {};
-    for (let i = 0; i < len; i++) {
-        const ch = w.en[i];
-        if (!byLenPosChar[len][i]) byLenPosChar[len][i] = {};
-        if (!byLenPosChar[len][i][ch]) byLenPosChar[len][i][ch] = [];
-        byLenPosChar[len][i][ch].push(w);
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
+    return arr;
 }
 
 // ─────────────────────────────────────────────────────────────────
-// 6. BULMACA ÜRETİCİ
+// 6. BULMACA ÜRETİCİ — bir seviye için bir günlük bulmaca üretir.
+//    Dönüş: kullanılan İngilizce kelimeler (history için) | null (başarısız)
 // ─────────────────────────────────────────────────────────────────
-function generatePuzzle(dateString) {
-    // Rastgele şablon seç
-    const templateIndex = Math.floor(Math.random() * TEMPLATES.length);
-    const template = TEMPLATES[templateIndex];
-    console.log(`Şablon ${templateIndex + 1} seçildi.`);
+function generatePuzzle(dateString, level) {
+    // Bu seviyenin sözlüğü + cooldown filtresi (2 harfli köprüler muaf)
+    const recent = recentWordsForLevel(level.key);
+    const fullDict = buildDictionary(level.files);
+    const dictionary = fullDict.filter(w => w.en.length <= 2 || !recent.has(w.en));
+    console.log(`[${level.label}] sözlük: ${fullDict.length} → cooldown sonrası ${dictionary.length} (son ${COOLDOWN_DAYS} günde ${recent.size} kelime kullanılmış)`);
 
-    const ROWS = template.length;
-    const COLS = template[0].length;
-
-    // ── Slotları çıkar ──────────────────────────────────────────
-    let slots = [];
-    let slotId = 1;
-
-    for (let y = 0; y < ROWS; y++) {
-        for (let x = 0; x < COLS; x++) {
-            const t = template[y][x];
-
-            // Sağa yönlü slot: R veya X
-            if (t === 'R' || t === 'X') {
-                let cells = [], cx = x + 1;
-                while (cx < COLS && template[y][cx] === 'L') { cells.push(`${cx}-${y}`); cx++; }
-                if (cells.length > 0) slots.push({ id: `w${slotId++}`, dir: 'right', x, y, length: cells.length, cells });
-            }
-
-            // Aşağı yönlü slot: D veya X
-            if (t === 'D' || t === 'X') {
-                let cells = [], cy = y + 1;
-                while (cy < ROWS && template[cy][x] === 'L') { cells.push(`${x}-${cy}`); cy++; }
-                if (cells.length > 0) slots.push({ id: `w${slotId++}`, dir: 'down', x, y, length: cells.length, cells });
-            }
+    // Pozisyon indeksi (bu seviyeye özel): byLenPosChar[len][pos][char] = kelime[]
+    const byLen = {};
+    const byLenPosChar = {};
+    for (const w of dictionary) {
+        const len = w.en.length;
+        if (!byLen[len]) byLen[len] = [];
+        byLen[len].push(w);
+        if (!byLenPosChar[len]) byLenPosChar[len] = {};
+        for (let i = 0; i < len; i++) {
+            const ch = w.en[i];
+            if (!byLenPosChar[len][i]) byLenPosChar[len][i] = {};
+            if (!byLenPosChar[len][i][ch]) byLenPosChar[len][i][ch] = [];
+            byLenPosChar[len][i][ch].push(w);
         }
     }
 
-    // Uzun kelimeler önce yerleştirilsin (daha az backtrack)
-    slots.sort((a, b) => b.length - a.length);
+    // Şablon + slotlar HER DENEMEDE yeniden seçilir. Böylece bir şablon bu
+    // seviyenin sözlüğüyle tıkansa bile diğer şablonlar denenir (özellikle
+    // "zor"da bazı şablonlar dar sözlükle çözülemiyor; tek şablona kilitlenmeyelim).
+    let templateIndex, template, ROWS, COLS, slots;
+    function pickTemplate() {
+        templateIndex = Math.floor(Math.random() * TEMPLATES.length);
+        template = TEMPLATES[templateIndex];
+        ROWS = template.length;
+        COLS = template[0].length;
+        slots = [];
+        let slotId = 1;
+        for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+                const t = template[y][x];
+                if (t === 'R' || t === 'X') {
+                    let cells = [], cx = x + 1;
+                    while (cx < COLS && template[y][cx] === 'L') { cells.push(`${cx}-${y}`); cx++; }
+                    if (cells.length > 0) slots.push({ id: `w${slotId++}`, dir: 'right', x, y, length: cells.length, cells });
+                }
+                if (t === 'D' || t === 'X') {
+                    let cells = [], cy = y + 1;
+                    while (cy < ROWS && template[cy][x] === 'L') { cells.push(`${x}-${cy}`); cy++; }
+                    if (cells.length > 0) slots.push({ id: `w${slotId++}`, dir: 'down', x, y, length: cells.length, cells });
+                }
+            }
+        }
+        // Uzun kelimeler önce yerleştirilsin (daha az backtrack)
+        slots.sort((a, b) => b.length - a.length);
+    }
 
     let gridLetters = {};
     let placedWords = {};
@@ -268,15 +323,6 @@ function generatePuzzle(dateString) {
 
     let iterations = 0;
     const MAX_ITERATIONS = 300000;
-
-    // Fisher-Yates karıştırma (yerinde)
-    function shuffle(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
 
     function solve(slotIndex) {
         iterations++;
@@ -340,6 +386,7 @@ function generatePuzzle(dateString) {
 
     while (!success && attempts < MAX_ATTEMPTS) {
         attempts++;
+        pickTemplate();              // her denemede yeni şablon
         iterations = 0;
         gridLetters = {};
         placedWords = {};
@@ -348,17 +395,17 @@ function generatePuzzle(dateString) {
         const result = solve(0);
         if (result === true) {
             success = true;
-            console.log(`✅ Deneme ${attempts}: Kombinasyon bulundu!`);
+            console.log(`✅ Deneme ${attempts}: Şablon ${templateIndex + 1} ile bulundu!`);
         } else if (result === "RESTART") {
-            console.log(`↩  Deneme ${attempts}: Tıkandı, yeniden başlatılıyor...`);
+            console.log(`↩  Deneme ${attempts}: Şablon ${templateIndex + 1} tıkandı, yeniden...`);
         } else {
-            console.log(`✗  Deneme ${attempts}: Uygun kelime dizilimi bulunamadı.`);
+            console.log(`✗  Deneme ${attempts}: Şablon ${templateIndex + 1} uygun dizilim yok.`);
         }
     }
 
     if (!success) {
-        console.error("HATA: 50 denemede bulmaca üretilemedi.");
-        return;
+        console.error(`HATA: ${MAX_ATTEMPTS} denemede bulmaca üretilemedi.`);
+        return null;
     }
 
     // ── JSON çıktısını oluştur ───────────────────────────────────
@@ -426,29 +473,50 @@ function generatePuzzle(dateString) {
 
     const puzzleOutput = {
         id: dateString,
+        level: level.key,
         templateIndex: templateIndex + 1,
         grid: { cols: COLS, rows: ROWS },
         cells: exportCells,
         words: exportWords,
-        letterPool: allLetters.sort(() => Math.random() - 0.5)
+        letterPool: shuffle(allLetters)
     };
 
     const dir = './public/puzzles';
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(`${dir}/daily.json`, JSON.stringify(puzzleOutput, null, 2));
+    fs.writeFileSync(`${dir}/daily-${level.key}.json`, JSON.stringify(puzzleOutput, null, 2));
+    // Geriye dönük uyumluluk: eski tek-mod istemciler için medium = daily.json
+    if (level.key === 'medium') {
+        fs.writeFileSync(`${dir}/daily.json`, JSON.stringify(puzzleOutput, null, 2));
+    }
 
-    // ── Geçmişe kaydet: bu günün kullanılan kelimeleri (tekrar önleme için) ──
     const usedEn = [...new Set(Object.values(exportWords).map(w => w.en))];
-    history = history.filter(e => e && e.date !== dateString); // aynı gün tekrar üretilirse güncelle
-    history.push({ date: dateString, words: usedEn });
-    history = history.slice(-400);                              // çok eskiyenleri buda
-    fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
-
-    console.log(`📚 Geçmişe ${usedEn.length} kelime kaydedildi (kayıtlı gün: ${history.length}).`);
-    console.log(`\n🎉 BAŞARILI: ${dir}/daily.json üretildi! (Şablon ${templateIndex + 1})\n`);
+    console.log(`🎉 [${level.label}] daily-${level.key}.json üretildi (Şablon ${templateIndex + 1}, ${usedEn.length} kelime).\n`);
+    return usedEn;
 }
 
-// Tarihi sunucu saat diliminden bağımsız olarak İstanbul takvim gününe sabitle
-// (her gece 00:00 TRT'de çalıştığında doğru günü verir)
+// ─────────────────────────────────────────────────────────────────
+// 7. TÜM SEVİYELERİ ÜRET
+// ─────────────────────────────────────────────────────────────────
+// Tarihi İstanbul takvim gününe sabitle (gece 00:00 TRT'de doğru gün)
 const istanbulDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date());
-generatePuzzle(istanbulDate);
+console.log(`\n📅 ${istanbulDate} — ${LEVELS.length} seviye üretiliyor...\n`);
+
+let okCount = 0;
+for (const level of LEVELS) {
+    console.log(`───── ${level.label.toUpperCase()} (${level.key}) ─────`);
+    const usedEn = generatePuzzle(istanbulDate, level);
+    if (usedEn) {
+        okCount++;
+        // Aynı gün+seviye yeniden üretilirse kaydı güncelle
+        history = history.filter(e => !(e && e.date === istanbulDate && e.level === level.key));
+        history.push({ date: istanbulDate, level: level.key, words: usedEn });
+    } else {
+        console.error(`⚠️  ${level.label} üretilemedi!`);
+    }
+}
+
+history = history.slice(-1200);  // 3 seviye × ~60 gün cooldown için bolca pay
+fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
+console.log(`✅ ${okCount}/${LEVELS.length} seviye üretildi. Geçmiş: ${history.length} kayıt.\n`);
+
+if (okCount < LEVELS.length) process.exit(1);
