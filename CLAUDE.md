@@ -38,6 +38,7 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 ### Zorluk seviyeleri (Günlük Düello)
 - `App.jsx` `screen==='daily'` iken önce **seviye seçim ekranı** gösterir (😊 Kolay/Easy · 🙂 Orta/Medium · 🔥 Zor/Hard). Seçilince `<CengelGame level={dailyLevel} key={dailyLevel} onBack={()=>setDailyLevel(null)} />` render edilir (`key` → her seviye taze mount, state sıfırlama derdi yok).
 - `CengelGame` `level` prop'una göre `fetch('/puzzles/daily-<level>.json')` çeker. Geri butonu "← Geri" → seviye seçimine döner.
+- **Bulmaca dosyası artık KUYRUK formatı:** `{ level, generated, puzzles: [ {id:<tarih>, ...}, ... ] }` (7 günlük tampon). Fetch handler İstanbul tarihine göre **bugünün** kaydını seçer (`puzzles.find(id===today)` → yoksa `id<=today` en günceli → yoksa son eleman). **Eski tek-obje formatıyla geri uyumlu** (`raw.puzzles` yoksa `raw`'ı doğrudan kullanır) → deploy uyumsuzluğunda kırılmaz. Bkz. "Kuyruk/tampon" başlığı.
 - **Seviye save anahtarı:** `cengel_save_<level>_<puzzleId>` (her seviye ayrı ilerleme).
 
 ### Önemli davranışlar (CengelGame)
@@ -60,8 +61,12 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **`common_short.json`** (≈1250 küratörlü yaygın kısa kelime, 3-6 harf) bu oturumda eklendi; her seviyede "harç". Özellikle hard'ın az olan kısa-kelime havuzunu besler (havuzlar: easy ~2900, medium ~4900, hard ~4900).
 - **Köprü kelimeler (`FILLERS`, 27 adet 2 harfli)** her seviyede bulunur (b1_b2/c1_c2/academic'te 2 harfli kelime yok; bunlar olmazsa X şablonları tıkanır). `FILLER_SET` ile cooldown'dan **muaf**tır.
 - Sözlükler `src/data/`'dan okunur (format: `{en, tr}`). Türkçe `toLocaleUpperCase('tr-TR')`. **Element sembolleri elenir** (`/SİMGES/` → "CİVA SİMGESİ"=HG gibi tuhaf köprüler). Kelimeler `en` bazında benzersizleştirilir.
-- Çıktı: **`public/puzzles/daily-<level>.json`** (easy/medium/hard) + geri uyum için `daily.json` = medium kopyası. Uygulama `fetch('/puzzles/daily-<level>.json')`.
-- **Tekrar önleme (per-seviye):** `history.json` `{date, level, words}` tutar. Cooldown her seviye KENDİ geçmişiyle: son `COOLDOWN_DAYS=60` günde o seviyede kullanılan kelimeler elenir (2 harfli ve `FILLER_SET` muaf; level'sız eski kayıtlar tüm seviyelere sayılır).
+- **Çıktı = KUYRUK/TAMPON (`BUFFER_DAYS=7`):** Her `daily-<level>.json` artık tek gün değil, `{ level, generated, puzzles: [...] }` formatında **7 günlük** kuyruk tutar (bugün + 6 ileri gün). Geri uyum için `daily.json` = **bugünün** medium'u (tek obje). Uygulama yine `fetch('/puzzles/daily-<level>.json')` çeker, içinden bugünü seçer.
+  - **Neden:** Kullanıcıya görünen "bugün" cron'un ne zaman koştuğundan **bağımsız** olsun. Dosyada bugün hazır beklediği için 00:00'da uygulama **hiç beklemeden** açılır; GitHub cron gecikse/atlasa bile (tampon < boşluk olmadıkça) kimse boşluk görmez.
+  - **Kendini onarır + idempotent:** Her koşu `targetDates=[bugün..bugün+6]` için eksik günleri üretir, **var olanları yeniden üretmez** (`loadExistingPuzzles` ile okur). Geçmiş günler `targetDates`'te olmadığı için kuyruktan otomatik düşer. Cron birkaç gece atlasa bir sonraki koşu boşlukları doldurur.
+  - **Exit kodu:** Sadece **BUGÜN** herhangi bir seviyede üretilemezse `exit 1`. İleri gün eksiği tamponla tolere edilir (build kırılmaz).
+  - `generatePuzzle(date, level)` artık dosya YAZMAZ; `{ puzzle, usedEn }` döndürür. Orkestratör kuyruğu toplayıp seviye başına tek dosya yazar.
+- **Tekrar önleme (per-seviye):** `history.json` `{date, level, words}` tutar. Cooldown her seviye KENDİ geçmişiyle: `recentWordsForLevel(level, refDate)` o günün **kendi tarihinden** geriye `COOLDOWN_DAYS=60` günü sayar (kuyrukta her ileri gün KENDİ tarihine göre değerlendirilir; üretilen gün anında history'e eklenir ki sonraki günler tekrar etmesin). 2 harfli ve `FILLER_SET` muaf; level'sız eski kayıtlar tüm seviyelere sayılır.
 - **Çift-soru güvencesi:** solver `usedClues` ile aynı bulmacada **aynı TR sorusunu 2 kez kullanmaz** (kelime çakışsa bile).
 - **Şablon GÜNE GÖRE seçilir** (`dayIdx = floor(Date.parse(date)/86400000) % 5`): her gün sıradaki şablon, 5 günde başa döner. İlk 30 deneme günün şablonu; o seviyede tıkanırsa kalan denemeler diğer şablonlara düşer (üretim takılmaz). **Tüm seviyelerin aynı şablonu kullanma zorunluluğu YOK.**
 - 5 şablon (8×8), `X`=çift yön. Hepsi: 0 orphan, 1-harf slot yok, çift-kapsama %55-57. Validator orphan/1-harf/bitişik-B'yi hata sayar; kapsama oranını raporlar. `letterPool` Fisher-Yates ile karışır.

@@ -79,14 +79,19 @@ if (fs.existsSync(HISTORY_PATH)) {
     catch { history = []; }
 }
 
-function recentWordsForLevel(levelKey) {
-    const cutoff = new Date();
+// refDateStr: hangi günün bakış açısından "son 60 gün"? (kuyruk için ileri tarihlerde
+// her gün KENDİ tarihine göre değerlendirilir; verilmezse bugün.)
+function recentWordsForLevel(levelKey, refDateStr) {
+    const ref = refDateStr ? new Date(refDateStr + 'T00:00:00Z') : new Date();
+    const cutoff = new Date(ref);
     cutoff.setDate(cutoff.getDate() - COOLDOWN_DAYS);
     const recent = new Set();
     for (const entry of history) {
         if (!entry || !entry.date) continue;
         if (entry.level && entry.level !== levelKey) continue; // başka seviyenin kaydı → atla
-        if (new Date(entry.date) >= cutoff) (entry.words || []).forEach(w => recent.add(w));
+        if (entry.date === refDateStr) continue;               // bu günün kendi kaydını sayma (yeniden üretim)
+        const d = new Date(entry.date + 'T00:00:00Z');
+        if (d >= cutoff && d < ref) (entry.words || []).forEach(w => recent.add(w));
     }
     return recent;
 }
@@ -272,7 +277,7 @@ function shuffle(arr) {
 function generatePuzzle(dateString, level) {
     // Bu seviyenin sözlüğü + cooldown filtresi.
     // MUAF: köprü kelimeler (FILLER_SET) ve 2 harfliler — bunlar her gün gerekir.
-    const recent = recentWordsForLevel(level.key);
+    const recent = recentWordsForLevel(level.key, dateString);
     const fullDict = buildDictionary(level.files);
     const dictionary = fullDict.filter(w =>
         w.en.length <= 2 || FILLER_SET.has(w.en) || !recent.has(w.en)
@@ -496,42 +501,94 @@ function generatePuzzle(dateString, level) {
         letterPool: shuffle(allLetters)
     };
 
-    const dir = './public/puzzles';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(`${dir}/daily-${level.key}.json`, JSON.stringify(puzzleOutput, null, 2));
-    // Geriye dönük uyumluluk: eski tek-mod istemciler için medium = daily.json
-    if (level.key === 'medium') {
-        fs.writeFileSync(`${dir}/daily.json`, JSON.stringify(puzzleOutput, null, 2));
-    }
-
     const usedEn = [...new Set(Object.values(exportWords).map(w => w.en))];
-    console.log(`🎉 [${level.label}] daily-${level.key}.json üretildi (Şablon ${templateIndex + 1}, ${usedEn.length} kelime).\n`);
-    return usedEn;
+    console.log(`🎉 [${level.label}] ${dateString} üretildi (Şablon ${templateIndex + 1}, ${usedEn.length} kelime).`);
+    // Dosyayı burada YAZMIYORUZ — orkestratör kuyruğu toplayıp tek seferde yazar.
+    return { puzzle: puzzleOutput, usedEn };
+}
+
+// Tarih dizesine gün ekle (İstanbul takvim günü; UTC üzerinden DST'siz hesap)
+function addDays(dateString, n) {
+    const d = new Date(dateString + 'T00:00:00Z');
+    d.setUTCDate(d.getUTCDate() + n);
+    return d.toISOString().slice(0, 10);
 }
 
 // ─────────────────────────────────────────────────────────────────
-// 7. TÜM SEVİYELERİ ÜRET
+// 7. KUYRUK DOLDURUCU — her seviye için N günlük TAMPON tut.
+//    Mantık: kullanıcıya görünen "bugün", cron'un ne zaman koştuğundan
+//    bağımsızdır. Dosyada bugün + ileri günler hazır beklediği için
+//    00:00'da uygulama hiç beklemeden bugünün kaydını bulur.
+//    Bu koşu kendini ONARIR: cron bir/birkaç geceyi atlasa bile bir
+//    sonraki koşu eksik günleri doldurur (tampon < boşluk olmadıkça
+//    kullanıcı asla boşluk görmez). Geçmiş günler kuyruktan düşürülür.
 // ─────────────────────────────────────────────────────────────────
+const BUFFER_DAYS = 7;
+const OUT_DIR = './public/puzzles';
+if (!fs.existsSync(OUT_DIR)) fs.mkdirSync(OUT_DIR, { recursive: true });
+
 // Tarihi İstanbul takvim gününe sabitle (gece 00:00 TRT'de doğru gün)
 const istanbulDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date());
-console.log(`\n📅 ${istanbulDate} — ${LEVELS.length} seviye üretiliyor...\n`);
+const targetDates = Array.from({ length: BUFFER_DAYS }, (_, i) => addDays(istanbulDate, i));
+console.log(`\n📅 Bugün ${istanbulDate} — ${BUFFER_DAYS} günlük tampon: ${targetDates[0]} … ${targetDates[targetDates.length - 1]}\n`);
 
-let okCount = 0;
-for (const level of LEVELS) {
-    console.log(`───── ${level.label.toUpperCase()} (${level.key}) ─────`);
-    const usedEn = generatePuzzle(istanbulDate, level);
-    if (usedEn) {
-        okCount++;
-        // Aynı gün+seviye yeniden üretilirse kaydı güncelle
-        history = history.filter(e => !(e && e.date === istanbulDate && e.level === level.key));
-        history.push({ date: istanbulDate, level: level.key, words: usedEn });
-    } else {
-        console.error(`⚠️  ${level.label} üretilemedi!`);
-    }
+// Var olan kuyruğu oku (eski tek-obje formatını da diziye sar)
+function loadExistingPuzzles(levelKey) {
+    const path = `${OUT_DIR}/daily-${levelKey}.json`;
+    if (!fs.existsSync(path)) return {};
+    try {
+        const data = JSON.parse(fs.readFileSync(path, 'utf8'));
+        const arr = Array.isArray(data.puzzles) ? data.puzzles : (data.id ? [data] : []);
+        const map = {};
+        for (const p of arr) if (p && p.id) map[p.id] = p;
+        return map;
+    } catch { return {}; }
 }
 
-history = history.slice(-1200);  // 3 seviye × ~60 gün cooldown için bolca pay
-fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
-console.log(`✅ ${okCount}/${LEVELS.length} seviye üretildi. Geçmiş: ${history.length} kayıt.\n`);
+let totalGenerated = 0, totalReused = 0, todayFails = 0;
+let mediumToday = null;
 
-if (okCount < LEVELS.length) process.exit(1);
+for (const level of LEVELS) {
+    console.log(`───── ${level.label.toUpperCase()} (${level.key}) ─────`);
+    const existing = loadExistingPuzzles(level.key);
+    const queue = [];
+
+    for (const date of targetDates) {            // tarihler artan sırada (cooldown kronolojisi doğru)
+        if (existing[date]) {                    // zaten üretilmiş günü yeniden üretme
+            queue.push(existing[date]);
+            totalReused++;
+            console.log(`   ↺ ${date} kuyrukta hazır (yeniden üretilmedi).`);
+            continue;
+        }
+        const res = generatePuzzle(date, level);
+        if (res) {
+            queue.push(res.puzzle);
+            totalGenerated++;
+            // Geçmişi ANINDA güncelle ki kuyruktaki sonraki günler bu kelimeleri tekrar etmesin
+            history = history.filter(e => !(e && e.date === date && e.level === level.key));
+            history.push({ date, level: level.key, words: res.usedEn });
+        } else {
+            console.error(`   ⚠️  ${date} üretilemedi (${level.label}).`);
+            if (date === istanbulDate) todayFails++;   // sadece BUGÜNün eksikliği kritiktir
+        }
+    }
+
+    queue.sort((a, b) => (a.id < b.id ? -1 : 1));
+    const out = { level: level.key, generated: new Date().toISOString(), puzzles: queue };
+    fs.writeFileSync(`${OUT_DIR}/daily-${level.key}.json`, JSON.stringify(out, null, 2));
+    console.log(`🗂  daily-${level.key}.json yazıldı — ${queue.length} günlük kuyruk.\n`);
+
+    if (level.key === 'medium') mediumToday = queue.find(p => p.id === istanbulDate) || queue[0] || null;
+}
+
+// Geriye dönük uyumluluk: eski tek-mod istemciler için daily.json = BUGÜNün medium'u (tek obje)
+if (mediumToday) {
+    fs.writeFileSync(`${OUT_DIR}/daily.json`, JSON.stringify(mediumToday, null, 2));
+}
+
+history = history.slice(-1500);  // 3 seviye × ~60 gün cooldown + tampon için bolca pay
+fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
+console.log(`✅ Üretildi: ${totalGenerated} yeni, ${totalReused} hazır. Geçmiş: ${history.length} kayıt.\n`);
+
+// Sadece BUGÜN herhangi bir seviyede eksikse hata ver (ileri gün eksiği tamponla tolere edilir)
+if (todayFails > 0) process.exit(1);

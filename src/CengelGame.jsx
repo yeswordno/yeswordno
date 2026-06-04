@@ -62,7 +62,17 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
         if (!response.ok) throw new Error("JSON bulunamadı");
         return response.json();
       })
-      .then(data => {
+      .then(raw => {
+        // Yeni format: { puzzles: [ {id,...}, ... ] } — İstanbul tarihine göre bugünü seç.
+        // Eski format: tek bulmaca objesi — olduğu gibi kullan (geri uyum).
+        let data = raw;
+        if (raw && Array.isArray(raw.puzzles)) {
+          const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date());
+          data = raw.puzzles.find(p => p.id === today)
+            || raw.puzzles.filter(p => p.id <= today).sort((a, b) => (a.id < b.id ? -1 : 1)).pop()
+            || raw.puzzles[raw.puzzles.length - 1];
+        }
+        if (!data) throw new Error("Kuyrukta bulmaca yok");
         setPuzzle(data);
         // Bugünün ilerlemesi kayıtlıysa geri yükle (kapatıp gelince devam)
         let saved = null;
