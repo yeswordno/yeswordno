@@ -11,7 +11,7 @@
 
   --tile-bg: #f7f8f9;         /* raftaki konmamış taş zemini */
   --tile-ink: #1f2937;        /* taş harfi */
-  --placed-bg: #1f2937;       /* tahtaya konmuş ama onaylanmamış: koyu dolu */
+  --placed-bg: #3a4a5e;       /* tahtaya konmuş ama onaylanmamış: orta-koyu navy (beyaz yazı okunur) */
   --confirmed-bg: #f3f4f6;    /* onaylanıp doğrulanmış: hafif açık gri */
   --confirmed-border: #e5e7eb;
 
