@@ -4366,5 +4366,633 @@
   {
     "en": "VEER",
     "tr": "YÖN DEĞİŞTİRMEK"
+  },
+  {
+    "en": "WELD",
+    "tr": "KAYNAK YAPMAK"
+  },
+  {
+    "en": "RIVET",
+    "tr": "PERÇİNLEMEK"
+  },
+  {
+    "en": "SOLDER",
+    "tr": "LEHİMLEMEK"
+  },
+  {
+    "en": "PASTE",
+    "tr": "YAPIŞTIRMAK"
+  },
+  {
+    "en": "SCULPT",
+    "tr": "YONTMAK (HEYKEL)"
+  },
+  {
+    "en": "ETCH",
+    "tr": "ASİTLE OYMAK"
+  },
+  {
+    "en": "ENGRAVE",
+    "tr": "KAZIMAK (OYMAK)"
+  },
+  {
+    "en": "BORE",
+    "tr": "DELMEK (OYMAK)"
+  },
+  {
+    "en": "GLAZE",
+    "tr": "SIRLAMAK"
+  },
+  {
+    "en": "VARNISH",
+    "tr": "VERNİKLEMEK"
+  },
+  {
+    "en": "PLASTER",
+    "tr": "SIVAMAK"
+  },
+  {
+    "en": "CEMENT",
+    "tr": "ÇİMENTOLAMAK"
+  },
+  {
+    "en": "PAVE",
+    "tr": "DÖŞEMEK (YOL)"
+  },
+  {
+    "en": "TEMPER",
+    "tr": "SU VERMEK (ÇELİK)"
+  },
+  {
+    "en": "SHRED",
+    "tr": "DİDİKLEMEK"
+  },
+  {
+    "en": "CRUMBLE",
+    "tr": "UFALANMAK"
+  },
+  {
+    "en": "DENT",
+    "tr": "GÖÇÜRMEK (EZİK)"
+  },
+  {
+    "en": "WARP",
+    "tr": "EĞRİLMEK"
+  },
+  {
+    "en": "RUST",
+    "tr": "PASLANMAK"
+  },
+  {
+    "en": "DECAY",
+    "tr": "ÇÜRÜMEK (BOZULMAK)"
+  },
+  {
+    "en": "WITHER",
+    "tr": "SOLMAK (KURUMAK)"
+  },
+  {
+    "en": "WILT",
+    "tr": "SOLMAK (PÖRSÜMEK)"
+  },
+  {
+    "en": "TARNISH",
+    "tr": "KARARMAK (METAL)"
+  },
+  {
+    "en": "CORRODE",
+    "tr": "AŞINDIRMAK"
+  },
+  {
+    "en": "PERISH",
+    "tr": "YOK OLMAK"
+  },
+  {
+    "en": "CRUMPLE",
+    "tr": "BURUŞTURMAK"
+  },
+  {
+    "en": "SHRIVEL",
+    "tr": "BÜZÜŞMEK"
+  },
+  {
+    "en": "FRAY",
+    "tr": "YIPRANMAK (KENAR)"
+  },
+  {
+    "en": "POACH",
+    "tr": "HAŞLAMAK (SUDA)"
+  },
+  {
+    "en": "BROIL",
+    "tr": "IZGARADA PİŞİRMEK"
+  },
+  {
+    "en": "SAUTE",
+    "tr": "SOTELEMEK"
+  },
+  {
+    "en": "SIMMER",
+    "tr": "KISIK ATEŞTE PİŞİRMEK"
+  },
+  {
+    "en": "BASTE",
+    "tr": "YAĞLAMAK (PİŞİRİRKEN)"
+  },
+  {
+    "en": "SIFT",
+    "tr": "ELEMEK"
+  },
+  {
+    "en": "GARNISH",
+    "tr": "SÜSLEMEK (YEMEK)"
+  },
+  {
+    "en": "SCALD",
+    "tr": "HAŞLAMAK (KAYNAR)"
+  },
+  {
+    "en": "TREMOR",
+    "tr": "SARSINTI"
+  },
+  {
+    "en": "QUAKE",
+    "tr": "DEPREM"
+  },
+  {
+    "en": "EDDY",
+    "tr": "ANAFOR"
+  },
+  {
+    "en": "SURF",
+    "tr": "DALGA KÖPÜĞÜ"
+  },
+  {
+    "en": "HAZE",
+    "tr": "PUS (SİS)"
+  },
+  {
+    "en": "SMOG",
+    "tr": "DUMAN (HAVA KİRLİLİĞİ)"
+  },
+  {
+    "en": "GUST",
+    "tr": "ANİ RÜZGÂR"
+  },
+  {
+    "en": "SQUALL",
+    "tr": "BORA"
+  },
+  {
+    "en": "TORNADO",
+    "tr": "HORTUM (KASIRGA)"
+  },
+  {
+    "en": "CYCLONE",
+    "tr": "SİKLON"
+  },
+  {
+    "en": "TYPHOON",
+    "tr": "TAYFUN"
+  },
+  {
+    "en": "MONSOON",
+    "tr": "MUSON"
+  },
+  {
+    "en": "ONSET",
+    "tr": "BAŞLANGIÇ"
+  },
+  {
+    "en": "FINALE",
+    "tr": "FİNAL (SON)"
+  },
+  {
+    "en": "CLIMAX",
+    "tr": "DORUK NOKTA"
+  },
+  {
+    "en": "PRELUDE",
+    "tr": "ÖN OYUN"
+  },
+  {
+    "en": "SEQUEL",
+    "tr": "DEVAM FİLMİ"
+  },
+  {
+    "en": "BOUT",
+    "tr": "MAÇ (KARŞILAŞMA)"
+  },
+  {
+    "en": "OUTSET",
+    "tr": "EN BAŞ"
+  },
+  {
+    "en": "PROLOGUE",
+    "tr": "ÖNSÖZ (PROLOG)"
+  },
+  {
+    "en": "EPILOGUE",
+    "tr": "SONSÖZ"
+  },
+  {
+    "en": "RECESS",
+    "tr": "TENEFFÜS"
+  },
+  {
+    "en": "GROOVE",
+    "tr": "OLUK (YİV)"
+  },
+  {
+    "en": "NOTCH",
+    "tr": "ÇENTİK"
+  },
+  {
+    "en": "BULGE",
+    "tr": "ŞİŞKİNLİK"
+  },
+  {
+    "en": "CREASE",
+    "tr": "KIRIŞIK (PLİ)"
+  },
+  {
+    "en": "PLEAT",
+    "tr": "PİLİ"
+  },
+  {
+    "en": "VENT",
+    "tr": "HAVALANDIRMA DELİĞİ"
+  },
+  {
+    "en": "CREVICE",
+    "tr": "YARIK (ÇATLAK)"
+  },
+  {
+    "en": "CHASM",
+    "tr": "UÇURUM (YARIK)"
+  },
+  {
+    "en": "RIFT",
+    "tr": "YARIK (AYRILIK)"
+  },
+  {
+    "en": "DREARY",
+    "tr": "İÇ KARARTICI"
+  },
+  {
+    "en": "DISMAL",
+    "tr": "KASVETLİ"
+  },
+  {
+    "en": "BLEAK",
+    "tr": "ISSIZ (KASVETLİ)"
+  },
+  {
+    "en": "SERENE",
+    "tr": "DİNGİN"
+  },
+  {
+    "en": "PLACID",
+    "tr": "SAKİN (DURGUN)"
+  },
+  {
+    "en": "HECTIC",
+    "tr": "TELAŞLI"
+  },
+  {
+    "en": "FRANTIC",
+    "tr": "ÇILGINCA (TELAŞLI)"
+  },
+  {
+    "en": "QUIRKY",
+    "tr": "ACAYİP (ÖZGÜN)"
+  },
+  {
+    "en": "SOLEMN",
+    "tr": "AĞIRBAŞLI"
+  },
+  {
+    "en": "FESTIVE",
+    "tr": "BAYRAM HAVASINDA"
+  },
+  {
+    "en": "DRAB",
+    "tr": "SÖNÜK (RENKSİZ)"
+  },
+  {
+    "en": "GAUDY",
+    "tr": "CIRTLAK (SÜSLÜ)"
+  },
+  {
+    "en": "QUAINT",
+    "tr": "ESKİ ŞİRİN"
+  },
+  {
+    "en": "HAUL",
+    "tr": "TAŞIMAK (ÇEKEREK)"
+  },
+  {
+    "en": "LUG",
+    "tr": "GÜÇLÜKLE TAŞIMAK"
+  },
+  {
+    "en": "TOTE",
+    "tr": "TAŞIMAK (EL İLE)"
+  },
+  {
+    "en": "CHESS",
+    "tr": "SATRANÇ"
+  },
+  {
+    "en": "DICE",
+    "tr": "ZAR"
+  },
+  {
+    "en": "DARTS",
+    "tr": "DART OYUNU"
+  },
+  {
+    "en": "RELAY",
+    "tr": "BAYRAK YARIŞI"
+  },
+  {
+    "en": "PUCK",
+    "tr": "HOKEY DİSKİ"
+  },
+  {
+    "en": "TROPHY",
+    "tr": "KUPA (ÖDÜL)"
+  },
+  {
+    "en": "HURDLE",
+    "tr": "ENGEL (KOŞU)"
+  },
+  {
+    "en": "DISCUS",
+    "tr": "DİSK (ATMA)"
+  },
+  {
+    "en": "UMPIRE",
+    "tr": "HAKEM (TENİS)"
+  },
+  {
+    "en": "LUNGE",
+    "tr": "HAMLE (ESKRİM)"
+  },
+  {
+    "en": "PARRY",
+    "tr": "SAVUŞTURMA (ESKRİM)"
+  },
+  {
+    "en": "FOIL",
+    "tr": "FLÖRE (ESKRİM)"
+  },
+  {
+    "en": "HELM",
+    "tr": "DÜMEN (GEMİ)"
+  },
+  {
+    "en": "DUNCE",
+    "tr": "BÖN (BUDALA)"
+  },
+  {
+    "en": "BRUTE",
+    "tr": "CANAVAR (KABA)"
+  },
+  {
+    "en": "ROGUE",
+    "tr": "DOLANDIRICI"
+  },
+  {
+    "en": "KNAVE",
+    "tr": "ALÇAK (HİLEKÂR)"
+  },
+  {
+    "en": "CROOK",
+    "tr": "DOLANDIRICI (HIRSIZ)"
+  },
+  {
+    "en": "RASCAL",
+    "tr": "YARAMAZ (ÇAPKIN)"
+  },
+  {
+    "en": "TYRANT",
+    "tr": "ZORBA"
+  },
+  {
+    "en": "COWARD",
+    "tr": "KORKAK"
+  },
+  {
+    "en": "MISER",
+    "tr": "CİMRİ"
+  },
+  {
+    "en": "SNOB",
+    "tr": "SNOP"
+  },
+  {
+    "en": "NOMAD",
+    "tr": "GÖÇEBE"
+  },
+  {
+    "en": "HERMIT",
+    "tr": "MÜNZEVİ"
+  },
+  {
+    "en": "TRAITOR",
+    "tr": "HAİN"
+  },
+  {
+    "en": "HEIR",
+    "tr": "VÂRİS"
+  },
+  {
+    "en": "ELDER",
+    "tr": "İHTİYAR (BÜYÜK)"
+  },
+  {
+    "en": "TODDLER",
+    "tr": "YÜRÜMEYE BAŞLAYAN ÇOCUK"
+  },
+  {
+    "en": "ORPHAN",
+    "tr": "YETİM"
+  },
+  {
+    "en": "GROOM",
+    "tr": "DAMAT"
+  },
+  {
+    "en": "NIECE",
+    "tr": "YEĞEN (KIZ)"
+  },
+  {
+    "en": "NEPHEW",
+    "tr": "YEĞEN (ERKEK)"
+  },
+  {
+    "en": "KNACK",
+    "tr": "USTALIK (YETENEK)"
+  },
+  {
+    "en": "FLAIR",
+    "tr": "YETENEK (HÜNER)"
+  },
+  {
+    "en": "GUSTO",
+    "tr": "ŞEVK"
+  },
+  {
+    "en": "VERVE",
+    "tr": "COŞKU (CANLILIK)"
+  },
+  {
+    "en": "GRIT",
+    "tr": "AZİM"
+  },
+  {
+    "en": "VIGOR",
+    "tr": "DİNÇLİK"
+  },
+  {
+    "en": "VALOR",
+    "tr": "YİĞİTLİK"
+  },
+  {
+    "en": "WONT",
+    "tr": "ALIŞKANLIK"
+  },
+  {
+    "en": "APEX",
+    "tr": "TEPE (DORUK)"
+  },
+  {
+    "en": "BRINK",
+    "tr": "EŞİK (KIYISINDA)"
+  },
+  {
+    "en": "VERGE",
+    "tr": "EŞİK (SINIR)"
+  },
+  {
+    "en": "HUB",
+    "tr": "MERKEZ (GÖBEK)"
+  },
+  {
+    "en": "NODE",
+    "tr": "DÜĞÜM (NODE)"
+  },
+  {
+    "en": "BRIM",
+    "tr": "AĞIZ (KENAR)"
+  },
+  {
+    "en": "NUB",
+    "tr": "ÇIKINTI (TOPAK)"
+  },
+  {
+    "en": "STUB",
+    "tr": "KOÇAN (DİP)"
+  },
+  {
+    "en": "PRONG",
+    "tr": "ÇATAL UCU"
+  },
+  {
+    "en": "SPUR",
+    "tr": "MAHMUZ"
+  },
+  {
+    "en": "BARB",
+    "tr": "DİKEN (UÇ)"
+  },
+  {
+    "en": "FANG",
+    "tr": "AZI DİŞİ (SİVRİ)"
+  },
+  {
+    "en": "TINE",
+    "tr": "ÇATAL DİŞİ"
+  },
+  {
+    "en": "PITH",
+    "tr": "ÖZ (İÇ)"
+  },
+  {
+    "en": "STOOP",
+    "tr": "EĞİLMEK"
+  },
+  {
+    "en": "RECLINE",
+    "tr": "ARKAYA YASLANMAK"
+  },
+  {
+    "en": "NESTLE",
+    "tr": "SOKULMAK (KIVRILMAK)"
+  },
+  {
+    "en": "HUDDLE",
+    "tr": "BÜZÜŞMEK (TOPLANMAK)"
+  },
+  {
+    "en": "DANGLE",
+    "tr": "SALLANMAK (SARKMAK)"
+  },
+  {
+    "en": "DROOP",
+    "tr": "SARKMAK"
+  },
+  {
+    "en": "SLUMP",
+    "tr": "ÇÖKMEK (YIĞILMAK)"
+  },
+  {
+    "en": "WRIGGLE",
+    "tr": "KIVRANMAK"
+  },
+  {
+    "en": "SQUIRM",
+    "tr": "KIPIRDANMAK"
+  },
+  {
+    "en": "FIDGET",
+    "tr": "KIPIR KIPIR ETMEK"
+  },
+  {
+    "en": "TIPTOE",
+    "tr": "PARMAK UCUNDA YÜRÜMEK"
+  },
+  {
+    "en": "WADE",
+    "tr": "SIĞ SUDA YÜRÜMEK"
+  },
+  {
+    "en": "TRUDGE",
+    "tr": "AĞIR AĞIR YÜRÜMEK"
+  },
+  {
+    "en": "PLOD",
+    "tr": "AĞIR ADIMLARLA YÜRÜMEK"
+  },
+  {
+    "en": "TOKEN",
+    "tr": "SİMGE (FİŞ)"
+  },
+  {
+    "en": "PENNANT",
+    "tr": "FLAMA"
+  },
+  {
+    "en": "SCEPTER",
+    "tr": "ASA (HÜKÜMDAR)"
+  },
+  {
+    "en": "THRONE",
+    "tr": "TAHT"
+  },
+  {
+    "en": "HAMLET",
+    "tr": "MEZRA"
   }
 ]
