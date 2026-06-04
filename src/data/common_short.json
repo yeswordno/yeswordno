@@ -3302,5 +3302,1069 @@
   {
     "en": "MESH",
     "tr": "AĞ (FİLE)"
+  },
+  {
+    "en": "FLASK",
+    "tr": "MATARA"
+  },
+  {
+    "en": "VIAL",
+    "tr": "KÜÇÜK ŞİŞE"
+  },
+  {
+    "en": "CASK",
+    "tr": "FIÇI (AHŞAP)"
+  },
+  {
+    "en": "TROUGH",
+    "tr": "YALAK"
+  },
+  {
+    "en": "HAMPER",
+    "tr": "KAPAKLI SEPET"
+  },
+  {
+    "en": "POUCH",
+    "tr": "KESE"
+  },
+  {
+    "en": "SATCHEL",
+    "tr": "OKUL ÇANTASI"
+  },
+  {
+    "en": "WALLET",
+    "tr": "CÜZDAN"
+  },
+  {
+    "en": "PURSE",
+    "tr": "EL ÇANTASI"
+  },
+  {
+    "en": "COFFER",
+    "tr": "PARA SANDIĞI"
+  },
+  {
+    "en": "CASKET",
+    "tr": "MÜCEVHER KUTUSU"
+  },
+  {
+    "en": "CARTON",
+    "tr": "KARTON KUTU"
+  },
+  {
+    "en": "PARCEL",
+    "tr": "KOLİ (PAKET)"
+  },
+  {
+    "en": "BUNDLE",
+    "tr": "BOHÇA (DESTE)"
+  },
+  {
+    "en": "BALE",
+    "tr": "BALYA"
+  },
+  {
+    "en": "CANISTER",
+    "tr": "TENEKE KUTU"
+  },
+  {
+    "en": "TUMBLER",
+    "tr": "BARDAK (KISA)"
+  },
+  {
+    "en": "GOBLET",
+    "tr": "KADEH"
+  },
+  {
+    "en": "PITCHER",
+    "tr": "TESTİ (SÜRAHİ)"
+  },
+  {
+    "en": "PLATTER",
+    "tr": "BÜYÜK TABAK"
+  },
+  {
+    "en": "SAUCER",
+    "tr": "FİNCAN TABAĞI"
+  },
+  {
+    "en": "CAULDRON",
+    "tr": "KAZAN"
+  },
+  {
+    "en": "BUZZ",
+    "tr": "VIZILDAMAK"
+  },
+  {
+    "en": "HUM",
+    "tr": "MIRILDANMAK (EZGİ)"
+  },
+  {
+    "en": "BEEP",
+    "tr": "BİP SESİ"
+  },
+  {
+    "en": "HONK",
+    "tr": "KORNA ÇALMAK"
+  },
+  {
+    "en": "CLANG",
+    "tr": "ÇINLAMAK (METAL)"
+  },
+  {
+    "en": "CLINK",
+    "tr": "ŞINGIRDAMAK"
+  },
+  {
+    "en": "CHIME",
+    "tr": "ÇAN ÇALMAK"
+  },
+  {
+    "en": "RATTLE",
+    "tr": "TAKIRDAMAK"
+  },
+  {
+    "en": "JINGLE",
+    "tr": "ŞINGIRDAMAK (ZİL)"
+  },
+  {
+    "en": "CREAK",
+    "tr": "GICIRDAMAK"
+  },
+  {
+    "en": "SQUEAK",
+    "tr": "CIYAKLAMAK"
+  },
+  {
+    "en": "RUSTLE",
+    "tr": "HIŞIRDAMAK"
+  },
+  {
+    "en": "CRACKLE",
+    "tr": "ÇITIRDAMAK"
+  },
+  {
+    "en": "SIZZLE",
+    "tr": "CIZILDAMAK"
+  },
+  {
+    "en": "HISS",
+    "tr": "TISLAMAK"
+  },
+  {
+    "en": "ROAR",
+    "tr": "KÜKREMEK"
+  },
+  {
+    "en": "GROWL",
+    "tr": "HIRLAMAK"
+  },
+  {
+    "en": "SNARL",
+    "tr": "HIRLAMAK (HIRÇIN)"
+  },
+  {
+    "en": "MEOW",
+    "tr": "MİYAVLAMAK"
+  },
+  {
+    "en": "MOO",
+    "tr": "BÖĞÜRMEK"
+  },
+  {
+    "en": "NEIGH",
+    "tr": "KİŞNEMEK"
+  },
+  {
+    "en": "BLEAT",
+    "tr": "MELEMEK"
+  },
+  {
+    "en": "OINK",
+    "tr": "DOMUZ SESİ"
+  },
+  {
+    "en": "CLUCK",
+    "tr": "GIDAKLAMAK"
+  },
+  {
+    "en": "QUACK",
+    "tr": "VAKLAMAK"
+  },
+  {
+    "en": "HOOT",
+    "tr": "ÖTMEK (BAYKUŞ)"
+  },
+  {
+    "en": "CHIRP",
+    "tr": "CIVILDAMAK"
+  },
+  {
+    "en": "TWEET",
+    "tr": "ÖTMEK (KUŞ)"
+  },
+  {
+    "en": "COO",
+    "tr": "DEM ÇEKMEK"
+  },
+  {
+    "en": "SQUAWK",
+    "tr": "ACI ACI BAĞIRMAK (KUŞ)"
+  },
+  {
+    "en": "HOWL",
+    "tr": "ULUMAK"
+  },
+  {
+    "en": "WHINE",
+    "tr": "SIZLANMAK"
+  },
+  {
+    "en": "YELP",
+    "tr": "HAVLAMAK (KESİK)"
+  },
+  {
+    "en": "PURR",
+    "tr": "MIRILDAMAK (KEDİ)"
+  },
+  {
+    "en": "CHATTER",
+    "tr": "GEVEZELİK ETMEK"
+  },
+  {
+    "en": "THAW",
+    "tr": "ÇÖZÜLMEK (BUZ)"
+  },
+  {
+    "en": "SLEET",
+    "tr": "SULU KAR"
+  },
+  {
+    "en": "DRIZZLE",
+    "tr": "ÇİSELEME"
+  },
+  {
+    "en": "PUDDLE",
+    "tr": "SU BİRİKİNTİSİ"
+  },
+  {
+    "en": "RAINBOW",
+    "tr": "GÖKKUŞAĞI"
+  },
+  {
+    "en": "THUNDER",
+    "tr": "GÖK GÜRÜLTÜSÜ"
+  },
+  {
+    "en": "BLIZZARD",
+    "tr": "TİPİ (KAR FIRTINASI)"
+  },
+  {
+    "en": "VAPOR",
+    "tr": "BUHAR"
+  },
+  {
+    "en": "ICICLE",
+    "tr": "BUZ SARKITI"
+  },
+  {
+    "en": "LINEN",
+    "tr": "KETEN"
+  },
+  {
+    "en": "DENIM",
+    "tr": "KOT KUMAŞI"
+  },
+  {
+    "en": "VELVET",
+    "tr": "KADİFE"
+  },
+  {
+    "en": "SATIN",
+    "tr": "SATEN"
+  },
+  {
+    "en": "TWEED",
+    "tr": "TÜVİT"
+  },
+  {
+    "en": "FELT",
+    "tr": "KEÇE"
+  },
+  {
+    "en": "SUEDE",
+    "tr": "SÜET"
+  },
+  {
+    "en": "NYLON",
+    "tr": "NAYLON"
+  },
+  {
+    "en": "FLEECE",
+    "tr": "POLAR"
+  },
+  {
+    "en": "BURLAP",
+    "tr": "ÇUVAL BEZİ"
+  },
+  {
+    "en": "GAUZE",
+    "tr": "GAZLI BEZ"
+  },
+  {
+    "en": "WICKER",
+    "tr": "HASIR (ÖRGÜ)"
+  },
+  {
+    "en": "PLAID",
+    "tr": "EKOSE"
+  },
+  {
+    "en": "FIBER",
+    "tr": "LİF"
+  },
+  {
+    "en": "TASSEL",
+    "tr": "PÜSKÜL"
+  },
+  {
+    "en": "FRINGE",
+    "tr": "SAÇAK"
+  },
+  {
+    "en": "DOOM",
+    "tr": "KIYAMET (FELAKET)"
+  },
+  {
+    "en": "HONOR",
+    "tr": "ONUR"
+  },
+  {
+    "en": "PERIL",
+    "tr": "TEHLİKE"
+  },
+  {
+    "en": "CHANT",
+    "tr": "TEMPOLU SÖYLEMEK"
+  },
+  {
+    "en": "RECITE",
+    "tr": "EZBERDEN OKUMAK"
+  },
+  {
+    "en": "BRAG",
+    "tr": "BÖBÜRLENMEK"
+  },
+  {
+    "en": "TAUNT",
+    "tr": "İĞNELEMEK"
+  },
+  {
+    "en": "MOCK",
+    "tr": "ALAY ETMEK"
+  },
+  {
+    "en": "TEASE",
+    "tr": "TAKILMAK"
+  },
+  {
+    "en": "NAG",
+    "tr": "DIRDIR ETMEK"
+  },
+  {
+    "en": "SCOFF",
+    "tr": "DALGA GEÇMEK"
+  },
+  {
+    "en": "BABBLE",
+    "tr": "GEVELEMEK"
+  },
+  {
+    "en": "STAMMER",
+    "tr": "KEKELEMEK"
+  },
+  {
+    "en": "STUTTER",
+    "tr": "KEKELEMEK (PEPELEMEK)"
+  },
+  {
+    "en": "DRONE",
+    "tr": "TEKDÜZE KONUŞMAK"
+  },
+  {
+    "en": "NAPKIN",
+    "tr": "PEÇETE"
+  },
+  {
+    "en": "TEAPOT",
+    "tr": "ÇAYDANLIK"
+  },
+  {
+    "en": "TOASTER",
+    "tr": "EKMEK KIZARTMA MAKİNESİ"
+  },
+  {
+    "en": "BLENDER",
+    "tr": "BLENDER"
+  },
+  {
+    "en": "MORTAR",
+    "tr": "HAVAN"
+  },
+  {
+    "en": "PESTLE",
+    "tr": "HAVAN ELİ"
+  },
+  {
+    "en": "CLEAVER",
+    "tr": "SATIR (BIÇAK)"
+  },
+  {
+    "en": "CARAFE",
+    "tr": "SÜRAHİ (CAM)"
+  },
+  {
+    "en": "YOGURT",
+    "tr": "YOĞURT"
+  },
+  {
+    "en": "BACON",
+    "tr": "DOMUZ PASTIRMASI"
+  },
+  {
+    "en": "HAM",
+    "tr": "JAMBON"
+  },
+  {
+    "en": "SAUSAGE",
+    "tr": "SOSİS"
+  },
+  {
+    "en": "STEAK",
+    "tr": "BİFTEK"
+  },
+  {
+    "en": "POULTRY",
+    "tr": "KÜMES HAYVANI ETİ"
+  },
+  {
+    "en": "TRIPE",
+    "tr": "İŞKEMBE"
+  },
+  {
+    "en": "FILLET",
+    "tr": "FİLETO"
+  },
+  {
+    "en": "CUTLET",
+    "tr": "PİRZOLA"
+  },
+  {
+    "en": "GIBLETS",
+    "tr": "SAKATAT (TAVUK)"
+  },
+  {
+    "en": "OFFAL",
+    "tr": "SAKATAT"
+  },
+  {
+    "en": "CIDER",
+    "tr": "ELMA ŞARABI"
+  },
+  {
+    "en": "ALE",
+    "tr": "BİRA (ALE)"
+  },
+  {
+    "en": "MEAD",
+    "tr": "BAL ŞARABI"
+  },
+  {
+    "en": "TONIC",
+    "tr": "TONİK"
+  },
+  {
+    "en": "SODA",
+    "tr": "GAZOZ"
+  },
+  {
+    "en": "LATTE",
+    "tr": "SÜTLÜ KAHVE"
+  },
+  {
+    "en": "MOCHA",
+    "tr": "MOKA"
+  },
+  {
+    "en": "KEFIR",
+    "tr": "KEFİR"
+  },
+  {
+    "en": "LIQUOR",
+    "tr": "İÇKİ (SERT)"
+  },
+  {
+    "en": "BRANDY",
+    "tr": "KONYAK"
+  },
+  {
+    "en": "TEAK",
+    "tr": "TİK AĞACI"
+  },
+  {
+    "en": "BALSA",
+    "tr": "BALSA AĞACI"
+  },
+  {
+    "en": "LUMBER",
+    "tr": "KERESTE (KÜTÜK)"
+  },
+  {
+    "en": "STUMP",
+    "tr": "KÜTÜK (KESİLMİŞ)"
+  },
+  {
+    "en": "RESIN",
+    "tr": "REÇİNE"
+  },
+  {
+    "en": "PLYWOOD",
+    "tr": "KONTRPLAK"
+  },
+  {
+    "en": "VENEER",
+    "tr": "KAPLAMA (AHŞAP)"
+  },
+  {
+    "en": "SHAVING",
+    "tr": "TALAŞ"
+  },
+  {
+    "en": "SPLINTER",
+    "tr": "KIYMIK"
+  },
+  {
+    "en": "BANGLE",
+    "tr": "BİLEZİK"
+  },
+  {
+    "en": "ANKLET",
+    "tr": "HALHAL"
+  },
+  {
+    "en": "LOCKET",
+    "tr": "MADALYON"
+  },
+  {
+    "en": "PENDANT",
+    "tr": "KOLYE UCU"
+  },
+  {
+    "en": "JEWEL",
+    "tr": "MÜCEVHER"
+  },
+  {
+    "en": "CARAT",
+    "tr": "KARAT"
+  },
+  {
+    "en": "FACET",
+    "tr": "YÜZEY (KESİM)"
+  },
+  {
+    "en": "SEQUIN",
+    "tr": "PUL (PAYET)"
+  },
+  {
+    "en": "AMULET",
+    "tr": "MUSKA"
+  },
+  {
+    "en": "TRINKET",
+    "tr": "BİBLO (UFAK TAKI)"
+  },
+  {
+    "en": "BAUBLE",
+    "tr": "DEĞERSİZ SÜS"
+  },
+  {
+    "en": "GILT",
+    "tr": "YALDIZ"
+  },
+  {
+    "en": "ENAMEL",
+    "tr": "MİNE"
+  },
+  {
+    "en": "BEADS",
+    "tr": "TESPİH (BONCUK)"
+  },
+  {
+    "en": "RUNG",
+    "tr": "MERDİVEN BASAMAĞI"
+  },
+  {
+    "en": "SLAT",
+    "tr": "PANJUR ÇITASI"
+  },
+  {
+    "en": "MANTEL",
+    "tr": "ŞÖMİNE RAFI"
+  },
+  {
+    "en": "CANOPY",
+    "tr": "GÖLGELİK (TENTE)"
+  },
+  {
+    "en": "AWNING",
+    "tr": "TENTE"
+  },
+  {
+    "en": "TRELLIS",
+    "tr": "KAFES (ÇARDAK)"
+  },
+  {
+    "en": "RAILING",
+    "tr": "KORKULUK"
+  },
+  {
+    "en": "ALCOVE",
+    "tr": "GİRİNTİ (NİŞ)"
+  },
+  {
+    "en": "PANTRY",
+    "tr": "KİLER"
+  },
+  {
+    "en": "LARDER",
+    "tr": "KİLER (ERZAK)"
+  },
+  {
+    "en": "MANTLE",
+    "tr": "MANTO (ÖRTÜ)"
+  },
+  {
+    "en": "CUSHION",
+    "tr": "MİNDER"
+  },
+  {
+    "en": "BOLSTER",
+    "tr": "YASTIK (UZUN)"
+  },
+  {
+    "en": "DRAPE",
+    "tr": "PERDE (AĞIR)"
+  },
+  {
+    "en": "VALANCE",
+    "tr": "PERDE FARBALASI"
+  },
+  {
+    "en": "DRESSER",
+    "tr": "ŞİFONYER"
+  },
+  {
+    "en": "BUREAU",
+    "tr": "YAZI MASASI"
+  },
+  {
+    "en": "WEEVIL",
+    "tr": "BUĞDAY BİTİ"
+  },
+  {
+    "en": "MAGGOT",
+    "tr": "KURTÇUK (SİNEK)"
+  },
+  {
+    "en": "MIDGE",
+    "tr": "TATARCIK (SİNEK)"
+  },
+  {
+    "en": "MITE",
+    "tr": "AKAR"
+  },
+  {
+    "en": "LOUSE",
+    "tr": "BİT"
+  },
+  {
+    "en": "NIT",
+    "tr": "SİRKE (BİT YUMURTASI)"
+  },
+  {
+    "en": "GRUB",
+    "tr": "KURTÇUK (LARVA)"
+  },
+  {
+    "en": "COCOON",
+    "tr": "KOZA"
+  },
+  {
+    "en": "SWARM",
+    "tr": "SÜRÜ (BÖCEK)"
+  },
+  {
+    "en": "POLLEN",
+    "tr": "POLEN"
+  },
+  {
+    "en": "STINGER",
+    "tr": "İĞNE (ARI)"
+  },
+  {
+    "en": "ANTLER",
+    "tr": "BOYNUZ (GEYİK)"
+  },
+  {
+    "en": "TUSK",
+    "tr": "FİL DİŞİ (UZUN)"
+  },
+  {
+    "en": "SNOUT",
+    "tr": "BURUN (HAYVAN)"
+  },
+  {
+    "en": "WHISKER",
+    "tr": "BIYIK (HAYVAN)"
+  },
+  {
+    "en": "FLIPPER",
+    "tr": "YÜZGEÇ (FOK)"
+  },
+  {
+    "en": "GILL",
+    "tr": "SOLUNGAÇ"
+  },
+  {
+    "en": "PLUME",
+    "tr": "SORGUÇ (TÜY)"
+  },
+  {
+    "en": "CROCK",
+    "tr": "GÜVEÇ KABI"
+  },
+  {
+    "en": "BEAKER",
+    "tr": "BEHER (KAP)"
+  },
+  {
+    "en": "PHIAL",
+    "tr": "KÜÇÜK ŞİŞE (FİYAL)"
+  },
+  {
+    "en": "CRUET",
+    "tr": "YAĞLIK (SOFRA)"
+  },
+  {
+    "en": "TUREEN",
+    "tr": "ÇORBA KÂSESİ"
+  },
+  {
+    "en": "PONDER",
+    "tr": "DERİN DÜŞÜNMEK"
+  },
+  {
+    "en": "MUSE",
+    "tr": "DALIP DÜŞÜNMEK"
+  },
+  {
+    "en": "FRET",
+    "tr": "ENDİŞELENMEK"
+  },
+  {
+    "en": "CRAVE",
+    "tr": "CAN ATMAK"
+  },
+  {
+    "en": "LOATHE",
+    "tr": "NEFRET ETMEK"
+  },
+  {
+    "en": "ADORE",
+    "tr": "TAPARCASINA SEVMEK"
+  },
+  {
+    "en": "CHERISH",
+    "tr": "BAĞRINA BASMAK"
+  },
+  {
+    "en": "DESPISE",
+    "tr": "HOR GÖRMEK"
+  },
+  {
+    "en": "RESENT",
+    "tr": "GÜCENMEK"
+  },
+  {
+    "en": "MOURN",
+    "tr": "YAS TUTMAK"
+  },
+  {
+    "en": "GRIEVE",
+    "tr": "KEDERLENMEK"
+  },
+  {
+    "en": "REJOICE",
+    "tr": "SEVİNMEK"
+  },
+  {
+    "en": "MARVEL",
+    "tr": "HAYRAN KALMAK"
+  },
+  {
+    "en": "DETEST",
+    "tr": "İĞRENMEK"
+  },
+  {
+    "en": "ESTEEM",
+    "tr": "SAYGI DUYMAK"
+  },
+  {
+    "en": "HOARD",
+    "tr": "İSTİFLEMEK"
+  },
+  {
+    "en": "STACK",
+    "tr": "YIĞMAK (ÜST ÜSTE)"
+  },
+  {
+    "en": "HEAP",
+    "tr": "YIĞIN"
+  },
+  {
+    "en": "COIL",
+    "tr": "SARMAK (KANGAL)"
+  },
+  {
+    "en": "TANGLE",
+    "tr": "DOLAŞTIRMAK"
+  },
+  {
+    "en": "BRAID",
+    "tr": "ÖRMEK (SAÇ)"
+  },
+  {
+    "en": "TWINE",
+    "tr": "SARMAŞMAK"
+  },
+  {
+    "en": "CLASP",
+    "tr": "KENETLEMEK"
+  },
+  {
+    "en": "TETHER",
+    "tr": "İPLE BAĞLAMAK"
+  },
+  {
+    "en": "SCATTER",
+    "tr": "SAÇMAK"
+  },
+  {
+    "en": "STREW",
+    "tr": "SERPMEK"
+  },
+  {
+    "en": "SPRAY",
+    "tr": "PÜSKÜRTMEK"
+  },
+  {
+    "en": "SQUIRT",
+    "tr": "FIŞKIRTMAK"
+  },
+  {
+    "en": "GUSH",
+    "tr": "FIŞKIRMAK"
+  },
+  {
+    "en": "OOZE",
+    "tr": "SIZMAK (AĞIR)"
+  },
+  {
+    "en": "SEEP",
+    "tr": "SIZMAK"
+  },
+  {
+    "en": "TRICKLE",
+    "tr": "DAMLA DAMLA AKMAK"
+  },
+  {
+    "en": "DRENCH",
+    "tr": "SIRILSIKLAM ETMEK"
+  },
+  {
+    "en": "SUBMERGE",
+    "tr": "SUYA BATIRMAK"
+  },
+  {
+    "en": "SPLASH",
+    "tr": "SIÇRATMAK"
+  },
+  {
+    "en": "SLOSH",
+    "tr": "ÇALKALANMAK"
+  },
+  {
+    "en": "SWIRL",
+    "tr": "GİRDAP YAPMAK"
+  },
+  {
+    "en": "RIPPLE",
+    "tr": "DALGALANMAK (HAFİF)"
+  },
+  {
+    "en": "TRUCE",
+    "tr": "ATEŞKES"
+  },
+  {
+    "en": "FEUD",
+    "tr": "KAN DAVASI"
+  },
+  {
+    "en": "CLAN",
+    "tr": "KLAN (BOY)"
+  },
+  {
+    "en": "HERD",
+    "tr": "SÜRÜ (BÜYÜKBAŞ)"
+  },
+  {
+    "en": "FLOCK",
+    "tr": "SÜRÜ (KUŞ/KOYUN)"
+  },
+  {
+    "en": "SHOAL",
+    "tr": "BALIK SÜRÜSÜ"
+  },
+  {
+    "en": "THRONG",
+    "tr": "İZDİHAM"
+  },
+  {
+    "en": "HORDE",
+    "tr": "YIĞIN (KALABALIK)"
+  },
+  {
+    "en": "OUNCE",
+    "tr": "ONS"
+  },
+  {
+    "en": "GRAM",
+    "tr": "GRAM"
+  },
+  {
+    "en": "LITER",
+    "tr": "LİTRE"
+  },
+  {
+    "en": "METER",
+    "tr": "METRE"
+  },
+  {
+    "en": "DOLLOP",
+    "tr": "BİR KAŞIK (MİKTAR)"
+  },
+  {
+    "en": "BATCH",
+    "tr": "PARTİ (GRUP)"
+  },
+  {
+    "en": "SCOOP",
+    "tr": "TOP (KEPÇE DOLUSU)"
+  },
+  {
+    "en": "GLEAM",
+    "tr": "PARILTI"
+  },
+  {
+    "en": "SHIMMER",
+    "tr": "PARILDAMAK"
+  },
+  {
+    "en": "GLITTER",
+    "tr": "PARLAMAK (IŞILTI)"
+  },
+  {
+    "en": "SPARKLE",
+    "tr": "KIVILCIMLANMAK"
+  },
+  {
+    "en": "FLICKER",
+    "tr": "TİTREŞMEK (IŞIK)"
+  },
+  {
+    "en": "BLAZE",
+    "tr": "ALEV ALEV YANMAK"
+  },
+  {
+    "en": "GLARE",
+    "tr": "GÖZ KAMAŞTIRMAK"
+  },
+  {
+    "en": "TINT",
+    "tr": "RENK TONU (HAFİF)"
+  },
+  {
+    "en": "GLOSS",
+    "tr": "PARLAKLIK (CİLA)"
+  },
+  {
+    "en": "SHEEN",
+    "tr": "PARLAKLIK (HAFİF)"
+  },
+  {
+    "en": "GLINT",
+    "tr": "PIRILTI"
+  },
+  {
+    "en": "DAZZLE",
+    "tr": "GÖZ KAMAŞTIRMAK"
+  },
+  {
+    "en": "RADIATE",
+    "tr": "IŞIK SAÇMAK"
+  },
+  {
+    "en": "GLIMMER",
+    "tr": "HAFİF IŞILTI"
+  },
+  {
+    "en": "FLARE",
+    "tr": "ALEVLENMEK"
+  },
+  {
+    "en": "HALO",
+    "tr": "HALE (AYLA)"
+  },
+  {
+    "en": "BUDGE",
+    "tr": "KIPIRDAMAK"
+  },
+  {
+    "en": "HOIST",
+    "tr": "YUKARI ÇEKMEK"
+  },
+  {
+    "en": "TOPPLE",
+    "tr": "DEVRİLMEK"
+  },
+  {
+    "en": "TUMBLE",
+    "tr": "YUVARLANMAK"
+  },
+  {
+    "en": "RECOIL",
+    "tr": "GERİ TEPMEK"
+  },
+  {
+    "en": "HURTLE",
+    "tr": "HIZLA FIRLAMAK"
+  },
+  {
+    "en": "SWERVE",
+    "tr": "BİRDEN SAPMAK"
+  },
+  {
+    "en": "VEER",
+    "tr": "YÖN DEĞİŞTİRMEK"
   }
 ]
