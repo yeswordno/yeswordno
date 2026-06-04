@@ -2,10 +2,9 @@ name: Günlük bulmaca üret
 
 # Her gece 00:00 Türkiye saati = 21:00 UTC
 # (GitHub cron UTC'dir; cron birkaç dakika gecikebilir, bu normaldir)
-# GEÇİCİ TEST: 16:50 TRT = 13:50 UTC — test sonrası "0 21 * * *"e geri al!
 on:
   schedule:
-    - cron: "50 13 * * *"
+    - cron: "0 21 * * *"
   workflow_dispatch: {}   # Gerektiğinde elle de tetikleyebilirsin
 
 permissions:
