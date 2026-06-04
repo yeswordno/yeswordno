@@ -53,24 +53,37 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **Kalıcılık:** `localStorage` `cengel_save_<level>_<puzzleId>` (taşlar, raf, skorlar, kilitler, gameOver). Yeni gün/seviye = taze oyun.
 
 ## Günlük bulmaca üretimi — `generator.js`
-- **3 seviye üretir** (`LEVELS`, kademeli eşleme): `easy` = a1_a2 · `medium` = a1_a2+b1_b2 · `hard` = b1_b2+c1_c2+academic. **Köprü kelimeler (`FILLERS`, ~27 adet 2 harfli)** her seviyede bulunur (b1_b2/c1_c2/academic'te 2 harfli kelime yok; bunlar olmazsa X şablonları tıkanır).
-- Sözlükler `src/data/`'dan okunur (format: `{en, tr}`). Türkçe `toLocaleUpperCase('tr-TR')`. **Element sembolleri elenir** (`/SİMGES/` → "CİVA SİMGESİ"=HG gibi tuhaf köprüler).
+- **3 seviye üretir** (`LEVELS`, kademeli eşleme). Her seviyenin dosya listesi:
+  - `easy` = `a1_a2.json` + `common_short.json`
+  - `medium` = `a1_a2.json` + `b1_b2.json` + `common_short.json`
+  - `hard` = `b1_b2.json` + `c1_c2.json` + `academic.json` + `common_short.json`
+- **`common_short.json`** (≈1250 küratörlü yaygın kısa kelime, 3-6 harf) bu oturumda eklendi; her seviyede "harç". Özellikle hard'ın az olan kısa-kelime havuzunu besler (havuzlar: easy ~2900, medium ~4900, hard ~4900).
+- **Köprü kelimeler (`FILLERS`, 27 adet 2 harfli)** her seviyede bulunur (b1_b2/c1_c2/academic'te 2 harfli kelime yok; bunlar olmazsa X şablonları tıkanır). `FILLER_SET` ile cooldown'dan **muaf**tır.
+- Sözlükler `src/data/`'dan okunur (format: `{en, tr}`). Türkçe `toLocaleUpperCase('tr-TR')`. **Element sembolleri elenir** (`/SİMGES/` → "CİVA SİMGESİ"=HG gibi tuhaf köprüler). Kelimeler `en` bazında benzersizleştirilir.
 - Çıktı: **`public/puzzles/daily-<level>.json`** (easy/medium/hard) + geri uyum için `daily.json` = medium kopyası. Uygulama `fetch('/puzzles/daily-<level>.json')`.
-- **Tekrar önleme (per-seviye):** `history.json` artık `{date, level, words}` tutar. Cooldown her seviye KENDİ geçmişiyle: son `COOLDOWN_DAYS=60` günde o seviyede kullanılan kelimeler elenir (2 harfli muaf; level'sız eski kayıtlar tüm seviyelere sayılır).
-- **Şablon her DENEMEDE yeniden seçilir** (tek şablona kilitlenme yok). 5 şablon (8×8), `X`=çift yön. Hepsi: 0 orphan, 1-harf slot yok, çift-kapsama %55-57. Validator orphan/1-harf/bitişik-B'yi hata sayar; kapsama oranını raporlar. `letterPool` Fisher-Yates ile karışır.
+- **Tekrar önleme (per-seviye):** `history.json` `{date, level, words}` tutar. Cooldown her seviye KENDİ geçmişiyle: son `COOLDOWN_DAYS=60` günde o seviyede kullanılan kelimeler elenir (2 harfli ve `FILLER_SET` muaf; level'sız eski kayıtlar tüm seviyelere sayılır).
+- **Çift-soru güvencesi:** solver `usedClues` ile aynı bulmacada **aynı TR sorusunu 2 kez kullanmaz** (kelime çakışsa bile).
+- **Şablon GÜNE GÖRE seçilir** (`dayIdx = floor(Date.parse(date)/86400000) % 5`): her gün sıradaki şablon, 5 günde başa döner. İlk 30 deneme günün şablonu; o seviyede tıkanırsa kalan denemeler diğer şablonlara düşer (üretim takılmaz). **Tüm seviyelerin aynı şablonu kullanma zorunluluğu YOK.**
+- 5 şablon (8×8), `X`=çift yön. Hepsi: 0 orphan, 1-harf slot yok, çift-kapsama %55-57. Validator orphan/1-harf/bitişik-B'yi hata sayar; kapsama oranını raporlar. `letterPool` Fisher-Yates ile karışır.
 - Tarih: `Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' })`.
+
+### ⚠️ "Sahte sütun" sorunu — KAPANDI (tekrar uğraşma)
+Şablonlarda alt alta yatay kelimelerin harfleri dikeyde sorusu olmayan "sahte sütun" oluşturur (col2/col6 ~8 hücre). Bunu yok etmek = "tam kesişimli ızgara" = klasik *word-square* problemi. **Bu 6k'lık iki dilli sözlükle ÇÖZÜLEMEZ** — ~2M deneme yapıldı (rastgele, kurgusal tam-kesişim, mutasyon, +1250 kelime sonrası), hepsi 0/0% çözüm. Karar: **mevcut şablonlar kalsın** (her hücrenin yatay sorusu var; standart çengel). Gerçek çözüm 10-100× büyük kısa-kelime DB + özel word-square algoritması ister (ayrı/büyük proje).
 
 ## İkonlar / PWA
 - `public/icon.svg` — ince monoline "WTR" logosu (mor gradyan), favicon + manifest kaynağı.
 - `public/apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png` — SVG'den üretildi (iOS ana ekran + Android PWA).
-- `public/manifest.webmanifest` + `index.html`'de favicon/apple-touch/manifest/theme-color linkleri.
+- `public/manifest.webmanifest` (`display: standalone`) + `index.html`'de favicon/apple-touch/manifest/theme-color + `viewport-fit=cover` + `apple-mobile-web-app-status-bar-style: black-translucent`.
 - `src/utils/MenuIcons.jsx` — menüdeki `PuzzleIcon` (çapraz bulmaca ızgarası) ve `DuelIcon` (çapraz kılıçlar); App.jsx'te emoji yerine kullanılır.
+- **PWA güvenli alan (standalone):** `black-translucent` içeriği çentik/status bar altına alır → `.game-container` ve `.menu-screen` padding'lerinde `env(safe-area-inset-top/bottom)` kullanılır (çengel "← Geri" butonu status bar altında kalmasın). Alt boşluk için `.app-container/.menu-screen/.game-container` `min-height:100dvh`. SVG/PNG ikon üretimi: dış HTTPS bu ortamda kapalı (sertifika); PNG'ler tarayıcı canvas'ından üretildi.
 
 ## Otomatik yayın — `.github/workflows/daily-puzzle.yml`
 - Cron `0 21 * * *` = 21:00 UTC = **00:00 TRT**. `workflow_dispatch` ile elle de tetiklenir.
 - `node generator.js` → `public/puzzles/*.json` (3 seviye + daily.json + history.json) commit'ler → push → Vercel otomatik deploy.
+- **Dayanıklı push:** checkout↔push arası remote kıpırdarsa (yarış) `git pull --rebase -X theirs` + 5 deneme; `fetch-depth: 0`. (İlk gece "fetch first" hatası yaşandı, bu yüzden eklendi.)
 - **GEREKLİ AYAR:** GitHub repo → Settings → Actions → General → Workflow permissions → **Read and write permissions** (yoksa push adımı yetki hatasıyla patlar; repo ayarı tavandır, workflow `permissions:` bloğu tek başına yetmez).
 - GitHub cron birkaç dk gecikebilir / nadiren atlar; atlarsa elle "Run workflow".
+- **Canlı URL:** https://wordtr.vercel.app
 
 ## Git
 - Commit kimliği bu repoda yerel olarak `yeswordno <yeswordno@gmail.com>` (doğru). Global ise `cevaplapp`.
