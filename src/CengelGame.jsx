@@ -561,7 +561,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     }
 
     // Sıra rakibe geçer (oyuncu animasyonları tamamen bitsin, sonra kısa nefes)
-    setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3000);
+    setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3500);
   };
 
   // Rakip: orta seviye — her el 1–3 doğru harf koyar
