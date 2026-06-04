@@ -6,10 +6,12 @@ import fs from 'fs';
 // ─────────────────────────────────────────────────────────────────
 const DATA_DIR = './src/data';
 
+// common_short.json: küratörlü yaygın kısa kelimeler — her seviyede "harç"
+// (özellikle hard'ın az olan 3-5 harfli havuzunu besler).
 const LEVELS = [
-    { key: 'easy',   label: 'Kolay', files: ['a1_a2.json'] },
-    { key: 'medium', label: 'Orta',  files: ['a1_a2.json', 'b1_b2.json'] },
-    { key: 'hard',   label: 'Zor',   files: ['b1_b2.json', 'c1_c2.json', 'academic.json'] },
+    { key: 'easy',   label: 'Kolay', files: ['a1_a2.json', 'common_short.json'] },
+    { key: 'medium', label: 'Orta',  files: ['a1_a2.json', 'b1_b2.json', 'common_short.json'] },
+    { key: 'hard',   label: 'Zor',   files: ['b1_b2.json', 'c1_c2.json', 'academic.json', 'common_short.json'] },
 ];
 
 // KÖPRÜ KELİMELER — her seviyede bulunur (2 harfli X slotlarını doldurur, cooldown muaf).
@@ -328,6 +330,7 @@ function generatePuzzle(dateString, level) {
     let gridLetters = {};
     let placedWords = {};
     let usedEnglishWords = new Set();
+    let usedClues = new Set();   // aynı bulmacada aynı TR sorusu 2 kez sorulmasın
 
     let iterations = 0;
     const MAX_ITERATIONS = 300000;
@@ -351,7 +354,7 @@ function generatePuzzle(dateString, level) {
         let candidates;
         if (constraints.length === 0) {
             // Kısıt yok — uzunluğa göre tüm kelimeler
-            candidates = (byLen[len] || []).filter(w => !usedEnglishWords.has(w.en));
+            candidates = (byLen[len] || []).filter(w => !usedEnglishWords.has(w.en) && !usedClues.has(w.tr));
         } else {
             // En küçük ön-filtrelenmiş seti bul
             let base = null;
@@ -362,6 +365,7 @@ function generatePuzzle(dateString, level) {
             // Tüm kısıtları karşılayan adayları filtrele
             candidates = (base || []).filter(w =>
                 !usedEnglishWords.has(w.en) &&
+                !usedClues.has(w.tr) &&                       // aynı soru tekrar etmesin
                 constraints.every(([pos, ch]) => w.en[pos] === ch)
             );
         }
@@ -374,6 +378,7 @@ function generatePuzzle(dateString, level) {
             for (let i = 0; i < len; i++) gridLetters[currentSlot.cells[i]] = wordObj.en[i];
             placedWords[currentSlot.id] = wordObj;
             usedEnglishWords.add(wordObj.en);
+            usedClues.add(wordObj.tr);
 
             const result = solve(slotIndex + 1);
             if (result === true) return true;
@@ -382,6 +387,7 @@ function generatePuzzle(dateString, level) {
             gridLetters = previousState;
             delete placedWords[currentSlot.id];
             usedEnglishWords.delete(wordObj.en);
+            usedClues.delete(wordObj.tr);
         }
         return false;
     }
@@ -399,6 +405,7 @@ function generatePuzzle(dateString, level) {
         gridLetters = {};
         placedWords = {};
         usedEnglishWords.clear();
+        usedClues.clear();
 
         const result = solve(0);
         if (result === true) {

@@ -1,0 +1,550 @@
+[
+  {
+    "en": "AXE",
+    "tr": "BALTA"
+  },
+  {
+    "en": "COD",
+    "tr": "MORİNA"
+  },
+  {
+    "en": "ELF",
+    "tr": "ELF"
+  },
+  {
+    "en": "EEL",
+    "tr": "YILAN BALIĞI"
+  },
+  {
+    "en": "FIR",
+    "tr": "KÖKNAR"
+  },
+  {
+    "en": "HAY",
+    "tr": "SAMAN"
+  },
+  {
+    "en": "HUE",
+    "tr": "RENK TONU"
+  },
+  {
+    "en": "IVY",
+    "tr": "SARMAŞIK"
+  },
+  {
+    "en": "JAY",
+    "tr": "ALAKARGA"
+  },
+  {
+    "en": "KIN",
+    "tr": "AKRABA"
+  },
+  {
+    "en": "LAG",
+    "tr": "GECİKME"
+  },
+  {
+    "en": "MOP",
+    "tr": "PASPAS"
+  },
+  {
+    "en": "OAK",
+    "tr": "MEŞE"
+  },
+  {
+    "en": "OAR",
+    "tr": "KÜREK"
+  },
+  {
+    "en": "PEA",
+    "tr": "BEZELYE"
+  },
+  {
+    "en": "PUN",
+    "tr": "KELİME OYUNU"
+  },
+  {
+    "en": "RYE",
+    "tr": "ÇAVDAR"
+  },
+  {
+    "en": "TOW",
+    "tr": "ÇEKMEK"
+  },
+  {
+    "en": "URN",
+    "tr": "VAZO"
+  },
+  {
+    "en": "WAX",
+    "tr": "BALMUMU"
+  },
+  {
+    "en": "YEN",
+    "tr": "ÖZLEM"
+  },
+  {
+    "en": "ZEN",
+    "tr": "ZEN"
+  },
+  {
+    "en": "COG",
+    "tr": "DİŞLİ ÇARK"
+  },
+  {
+    "en": "DEW",
+    "tr": "ÇİY"
+  },
+  {
+    "en": "FOE",
+    "tr": "DÜŞMAN"
+  },
+  {
+    "en": "GEL",
+    "tr": "JEL"
+  },
+  {
+    "en": "HEM",
+    "tr": "ETEK UCU"
+  },
+  {
+    "en": "KEG",
+    "tr": "FIÇI"
+  },
+  {
+    "en": "LYE",
+    "tr": "KÜLSUYU"
+  },
+  {
+    "en": "NAB",
+    "tr": "YAKALAMAK"
+  },
+  {
+    "en": "PEG",
+    "tr": "MANDAL"
+  },
+  {
+    "en": "RAM",
+    "tr": "KOÇ"
+  },
+  {
+    "en": "ACHE",
+    "tr": "AĞRI"
+  },
+  {
+    "en": "BARN",
+    "tr": "AHIR"
+  },
+  {
+    "en": "BEAK",
+    "tr": "GAGA"
+  },
+  {
+    "en": "BREW",
+    "tr": "DEMLEMEK"
+  },
+  {
+    "en": "CALF",
+    "tr": "BUZAĞI"
+  },
+  {
+    "en": "CLAW",
+    "tr": "PENÇE"
+  },
+  {
+    "en": "CLAY",
+    "tr": "KİL"
+  },
+  {
+    "en": "CORK",
+    "tr": "MANTAR"
+  },
+  {
+    "en": "CRIB",
+    "tr": "BEŞİK"
+  },
+  {
+    "en": "DUSK",
+    "tr": "ALACAKARANLIK"
+  },
+  {
+    "en": "DYE",
+    "tr": "BOYA"
+  },
+  {
+    "en": "FERN",
+    "tr": "EĞRELTİOTU"
+  },
+  {
+    "en": "FOAM",
+    "tr": "KÖPÜK"
+  },
+  {
+    "en": "GLUE",
+    "tr": "TUTKAL"
+  },
+  {
+    "en": "GOAT",
+    "tr": "KEÇİ"
+  },
+  {
+    "en": "HARE",
+    "tr": "YABAN TAVŞANI"
+  },
+  {
+    "en": "HAWK",
+    "tr": "ŞAHİN"
+  },
+  {
+    "en": "HIVE",
+    "tr": "ARI KOVANI"
+  },
+  {
+    "en": "HOOF",
+    "tr": "TOYNAK"
+  },
+  {
+    "en": "LAMB",
+    "tr": "KUZU"
+  },
+  {
+    "en": "MANE",
+    "tr": "YELE"
+  },
+  {
+    "en": "MOLD",
+    "tr": "KÜF"
+  },
+  {
+    "en": "MOTH",
+    "tr": "GÜVE"
+  },
+  {
+    "en": "PAWN",
+    "tr": "PİYON"
+  },
+  {
+    "en": "PEAR",
+    "tr": "ARMUT"
+  },
+  {
+    "en": "PLUM",
+    "tr": "ERİK"
+  },
+  {
+    "en": "PORK",
+    "tr": "DOMUZ ETİ"
+  },
+  {
+    "en": "RAKE",
+    "tr": "TIRMIK"
+  },
+  {
+    "en": "REED",
+    "tr": "KAMIŞ"
+  },
+  {
+    "en": "REEF",
+    "tr": "RESİF"
+  },
+  {
+    "en": "SAGE",
+    "tr": "ADAÇAYI"
+  },
+  {
+    "en": "SLED",
+    "tr": "KIZAK"
+  },
+  {
+    "en": "SWAN",
+    "tr": "KUĞU"
+  },
+  {
+    "en": "TUNA",
+    "tr": "TON BALIĞI"
+  },
+  {
+    "en": "WASP",
+    "tr": "EŞEK ARISI"
+  },
+  {
+    "en": "YARN",
+    "tr": "İPLİK"
+  },
+  {
+    "en": "YOLK",
+    "tr": "YUMURTA SARISI"
+  },
+  {
+    "en": "CUBE",
+    "tr": "KÜP"
+  },
+  {
+    "en": "DOME",
+    "tr": "KUBBE"
+  },
+  {
+    "en": "KITE",
+    "tr": "UÇURTMA"
+  },
+  {
+    "en": "MAZE",
+    "tr": "LABİRENT"
+  },
+  {
+    "en": "RAFT",
+    "tr": "SAL"
+  },
+  {
+    "en": "VASE",
+    "tr": "VAZO"
+  },
+  {
+    "en": "BERRY",
+    "tr": "ÜZÜMSÜ MEYVE"
+  },
+  {
+    "en": "BROOM",
+    "tr": "SÜPÜRGE"
+  },
+  {
+    "en": "CHALK",
+    "tr": "TEBEŞİR"
+  },
+  {
+    "en": "CLOAK",
+    "tr": "PELERİN"
+  },
+  {
+    "en": "CRANE",
+    "tr": "TURNA (KUŞ)"
+  },
+  {
+    "en": "CREEK",
+    "tr": "DERE"
+  },
+  {
+    "en": "DAISY",
+    "tr": "PAPATYA"
+  },
+  {
+    "en": "DITCH",
+    "tr": "HENDEK"
+  },
+  {
+    "en": "DOUGH",
+    "tr": "HAMUR"
+  },
+  {
+    "en": "EAGLE",
+    "tr": "KARTAL"
+  },
+  {
+    "en": "FERRY",
+    "tr": "FERİBOT"
+  },
+  {
+    "en": "FROST",
+    "tr": "KIRAĞI"
+  },
+  {
+    "en": "GOOSE",
+    "tr": "KAZ"
+  },
+  {
+    "en": "HEDGE",
+    "tr": "ÇALI ÇİT"
+  },
+  {
+    "en": "HONEY",
+    "tr": "BAL"
+  },
+  {
+    "en": "HYENA",
+    "tr": "SIRTLAN"
+  },
+  {
+    "en": "KNOT",
+    "tr": "DÜĞÜM"
+  },
+  {
+    "en": "MAPLE",
+    "tr": "AKÇAAĞAÇ"
+  },
+  {
+    "en": "MARSH",
+    "tr": "BATAKLIK"
+  },
+  {
+    "en": "MELON",
+    "tr": "KAVUN"
+  },
+  {
+    "en": "MOOSE",
+    "tr": "GEYİK (ELK)"
+  },
+  {
+    "en": "OLIVE",
+    "tr": "ZEYTİN"
+  },
+  {
+    "en": "OTTER",
+    "tr": "SU SAMURU"
+  },
+  {
+    "en": "PEARL",
+    "tr": "İNCİ"
+  },
+  {
+    "en": "PLUMB",
+    "tr": "ÇEKÜL"
+  },
+  {
+    "en": "QUILT",
+    "tr": "YORGAN"
+  },
+  {
+    "en": "ROBIN",
+    "tr": "NARBÜLBÜLÜ"
+  },
+  {
+    "en": "SNAIL",
+    "tr": "SALYANGOZ"
+  },
+  {
+    "en": "SPADE",
+    "tr": "BEL (KÜREK)"
+  },
+  {
+    "en": "SQUID",
+    "tr": "KALAMAR"
+  },
+  {
+    "en": "STORK",
+    "tr": "LEYLEK"
+  },
+  {
+    "en": "STRAW",
+    "tr": "SAMAN"
+  },
+  {
+    "en": "THORN",
+    "tr": "DİKEN"
+  },
+  {
+    "en": "TIGER",
+    "tr": "KAPLAN"
+  },
+  {
+    "en": "TRUNK",
+    "tr": "AĞAÇ GÖVDESİ"
+  },
+  {
+    "en": "WHALE",
+    "tr": "BALİNA"
+  },
+  {
+    "en": "ZEBRA",
+    "tr": "ZEBRA"
+  },
+  {
+    "en": "CAMEL",
+    "tr": "DEVE"
+  },
+  {
+    "en": "ALMOND",
+    "tr": "BADEM"
+  },
+  {
+    "en": "BEAVER",
+    "tr": "KUNDUZ"
+  },
+  {
+    "en": "BREEZE",
+    "tr": "MELTEM"
+  },
+  {
+    "en": "CELERY",
+    "tr": "KEREVİZ"
+  },
+  {
+    "en": "CHERRY",
+    "tr": "KİRAZ"
+  },
+  {
+    "en": "DONKEY",
+    "tr": "EŞEK"
+  },
+  {
+    "en": "FALCON",
+    "tr": "DOĞAN"
+  },
+  {
+    "en": "GINGER",
+    "tr": "ZENCEFİL"
+  },
+  {
+    "en": "LIZARD",
+    "tr": "KERTENKELE"
+  },
+  {
+    "en": "MAGPIE",
+    "tr": "SAKSAĞAN"
+  },
+  {
+    "en": "MARROW",
+    "tr": "İLİK"
+  },
+  {
+    "en": "MEADOW",
+    "tr": "ÇAYIR"
+  },
+  {
+    "en": "PARROT",
+    "tr": "PAPAĞAN"
+  },
+  {
+    "en": "PIGEON",
+    "tr": "GÜVERCİN"
+  },
+  {
+    "en": "POPLAR",
+    "tr": "KAVAK"
+  },
+  {
+    "en": "RABBIT",
+    "tr": "TAVŞAN"
+  },
+  {
+    "en": "SALMON",
+    "tr": "SOMON"
+  },
+  {
+    "en": "SHRIMP",
+    "tr": "KARİDES"
+  },
+  {
+    "en": "SPLEEN",
+    "tr": "DALAK"
+  },
+  {
+    "en": "SPRUCE",
+    "tr": "LADİN"
+  },
+  {
+    "en": "TURNIP",
+    "tr": "ŞALGAM"
+  },
+  {
+    "en": "WALNUT",
+    "tr": "CEVİZ"
+  },
+  {
+    "en": "WILLOW",
+    "tr": "SÖĞÜT"
+  },
+  {
+    "en": "TROUT",
+    "tr": "ALABALIK"
+  }
+]
