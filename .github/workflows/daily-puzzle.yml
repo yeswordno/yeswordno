@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Depoyu çek
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0      # rebase için tam geçmiş gerekir (shallow'da pull --rebase patlar)
 
       - name: Node kur
         uses: actions/setup-node@v4
@@ -40,7 +42,19 @@ jobs:
           git add public/puzzles/*.json
           if git diff --cached --quiet; then
             echo "Değişiklik yok, commit atlanıyor."
-          else
-            git commit -m "chore: günlük bulmaca $(TZ=Europe/Istanbul date +%F)"
-            git push
+            exit 0
           fi
+          git commit -m "chore: günlük bulmaca $(TZ=Europe/Istanbul date +%F)"
+          # Dayanıklı push: checkout ile push arasında remote kıpırdarsa (elle push vb.)
+          # rebase edip yeniden dener. Çakışmada ÜRETİLEN dosyalar kazanır (-X theirs = bizim commit).
+          for i in 1 2 3 4 5; do
+            if git push origin HEAD:master; then
+              echo "✅ push başarılı (deneme $i)"
+              exit 0
+            fi
+            echo "↩ push reddedildi, remote çekiliyor (deneme $i)..."
+            git pull --rebase -X theirs origin master || git rebase --abort
+            sleep $(( (RANDOM % 5) + 3 ))
+          done
+          echo "❌ 5 denemede push edilemedi"
+          exit 1
