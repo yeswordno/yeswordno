@@ -69,7 +69,7 @@
 }
 
 .logo-accent {
-  color: var(--text-dark);
+  color: var(--placed-bg);
   font-weight: 800;
 }
 
@@ -116,7 +116,7 @@
 }
 
 .vs-you .vs-score {
-  color: var(--text-dark);
+  color: var(--placed-bg);
 }
 
 .vs-rival .vs-score {
@@ -518,8 +518,8 @@
 
 /* Birincil eylem: tek vurgu rengi yalnızca burada */
 .submit-btn {
-  background-color: var(--accent);
-  border-color: var(--accent);
+  background-color: var(--placed-bg);
+  border-color: var(--placed-bg);
   color: #ffffff;
 }
 
