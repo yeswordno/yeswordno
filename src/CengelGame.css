@@ -196,10 +196,8 @@
   font-weight: 800;
   word-break: break-word;
   line-height: 1.12;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
+  max-width: 100%;
+  /* Taşmayı AutoFitText font'u küçülterek halleder; kırpma yok. */
 }
 
 /* Masaüstünde (geniş ekran) hücreler büyüdüğü için sorular biraz inceltilir */
@@ -265,11 +263,6 @@
   height: 1px;
   background-color: var(--grid-line);
   flex-shrink: 0;
-}
-
-/* X hücresinde her yarı dar; metni 3 satırla sınırla (taşmasın) */
-.clue-both .clue-text {
-  -webkit-line-clamp: 3;
 }
 
 /* → oku: sağ kelime için, hücrenin sağ kenarında üst yarının hizasında */

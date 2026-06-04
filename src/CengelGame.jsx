@@ -1,5 +1,36 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import './CengelGame.css';
+
+// Soru yazısını kapsayan kutuya SIĞACAK şekilde otomatik küçültür.
+// Özellikle X (çift soru) hücrelerinde uzun kelimeler taşmasın diye font'u
+// kademeli düşürür (taşma kalmayana ya da min boyuta inene kadar).
+function AutoFitText({ text, className }) {
+  const ref = useRef(null);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const el = ref.current;
+      if (!el) return;
+      const box = el.parentElement;
+      if (!box || !box.clientWidth) return;
+      el.style.fontSize = '';                                 // CSS varsayılanına dön, sonra ölç
+      let size = parseFloat(getComputedStyle(el).fontSize) || 12;
+      const MIN = 6;
+      let guard = 0;
+      while (
+        (el.scrollHeight > box.clientHeight + 0.5 || el.scrollWidth > box.clientWidth + 0.5) &&
+        size > MIN && guard < 48
+      ) {
+        size -= 0.5;
+        el.style.fontSize = `${size}px`;
+        guard++;
+      }
+    };
+    fit();
+    window.addEventListener('resize', fit);                   // döndürme / yeniden boyutlandırmada yeniden sığdır
+    return () => window.removeEventListener('resize', fit);
+  }, [text]);
+  return <span ref={ref} className={className}>{text}</span>;
+}
 
 // Sürükleme görselinin parmağa göre ofseti (sağ-üst çapraz).
 // Aynı değerler hem görseli konumlamak hem bırakma isabetini hizalamak için kullanılır.
@@ -530,7 +561,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     }
 
     // Sıra rakibe geçer (oyuncu animasyonları tamamen bitsin, sonra kısa nefes)
-    setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3500);
+    setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3000);
   };
 
   // Rakip: orta seviye — her el 1–3 doğru harf koyar
@@ -558,9 +589,9 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     const poolCounts = {};
     curPool.forEach(l => { poolCounts[l] = (poolCounts[l] || 0) + 1; });
 
-    // Orta seviye dağılım: 1:%50, 2:%35, 3:%15
+    // Orta seviye (güçlendirilmiş) dağılım: 1:%30, 2:%45, 3:%25 — ort. ~1.95 taş/hamle
     const r = Math.random();
-    let count = r < 0.50 ? 1 : r < 0.85 ? 2 : 3;
+    let count = r < 0.30 ? 1 : r < 0.75 ? 2 : 3;
     count = Math.min(count, available.length);
 
     // Karıştır, sonra harfi havuzda kalan hücreleri sırayla seç
@@ -679,11 +710,11 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                   onClick={(e) => handleClueClick(e, cell.id)}
                 >
                   <div className="clue-half clue-half-top">
-                    <span className="clue-text">{cell.textRight}</span>
+                    <AutoFitText className="clue-text" text={cell.textRight} />
                   </div>
                   <div className="clue-divider" />
                   <div className="clue-half clue-half-bottom">
-                    <span className="clue-text">{cell.textDown}</span>
+                    <AutoFitText className="clue-text" text={cell.textDown} />
                   </div>
                   {/* Oklar hücrenin doğrudan çocuğu — yarım-kutu overflow'u kırpmasın */}
                   <span className="arrow-right-both">{'▶︎'}</span>
@@ -698,7 +729,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                 className={`cg-cell clue${activeClue === cell.id ? ' clue-active' : ''}`}
                 onClick={(e) => handleClueClick(e, cell.id)}
               >
-                <span className="clue-text">{cell.text}</span>
+                <AutoFitText className="clue-text" text={cell.text} />
                 {cell.dir === "right" && <span className="arrow-right">{'▶︎'}</span>}
                 {cell.dir === "down" && <span className="arrow-down">{'▼︎'}</span>}
               </div>
