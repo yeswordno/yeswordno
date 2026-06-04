@@ -30,6 +30,9 @@ const FILLERS = [
     { tr: "BİR (BELİRTEÇ)", en: "AN" }, { tr: "KİMLİK", en: "ID" },
     { tr: "TELEVİZYON", en: "TV" }
 ];
+// Köprü kelimeler tekrar-önleme (cooldown) muafıdır — yoksa az sayıda 2 harfli
+// köprü 60 gün içinde tükenir ve X şablonları tıkanır.
+const FILLER_SET = new Set(FILLERS.map(f => f.en));
 
 // Sözlük dosyalarını bir kez oku, önbelleğe al
 const fileCache = {};
@@ -265,10 +268,13 @@ function shuffle(arr) {
 //    Dönüş: kullanılan İngilizce kelimeler (history için) | null (başarısız)
 // ─────────────────────────────────────────────────────────────────
 function generatePuzzle(dateString, level) {
-    // Bu seviyenin sözlüğü + cooldown filtresi (2 harfli köprüler muaf)
+    // Bu seviyenin sözlüğü + cooldown filtresi.
+    // MUAF: köprü kelimeler (FILLER_SET) ve 2 harfliler — bunlar her gün gerekir.
     const recent = recentWordsForLevel(level.key);
     const fullDict = buildDictionary(level.files);
-    const dictionary = fullDict.filter(w => w.en.length <= 2 || !recent.has(w.en));
+    const dictionary = fullDict.filter(w =>
+        w.en.length <= 2 || FILLER_SET.has(w.en) || !recent.has(w.en)
+    );
     console.log(`[${level.label}] sözlük: ${fullDict.length} → cooldown sonrası ${dictionary.length} (son ${COOLDOWN_DAYS} günde ${recent.size} kelime kullanılmış)`);
 
     // Pozisyon indeksi (bu seviyeye özel): byLenPosChar[len][pos][char] = kelime[]
@@ -287,12 +293,14 @@ function generatePuzzle(dateString, level) {
         }
     }
 
-    // Şablon + slotlar HER DENEMEDE yeniden seçilir. Böylece bir şablon bu
-    // seviyenin sözlüğüyle tıkansa bile diğer şablonlar denenir (özellikle
-    // "zor"da bazı şablonlar dar sözlükle çözülemiyor; tek şablona kilitlenmeyelim).
+    // Şablon GÜNE GÖRE belirlenir: her gün bir sonraki şablon, 5'te başa döner
+    // (bugün=şablon A, yarın=B … böylece görsel her gün değişir, tüm seviyeler aynı).
+    // İlk 30 deneme bugünün şablonu; o seviye sözlüğüyle tıkanırsa kalan denemeler
+    // diğer şablonlara geçer (üretim hiçbir seviyede takılmasın).
+    const dayIdx = Math.floor(Date.parse(dateString) / 86400000) % TEMPLATES.length;
     let templateIndex, template, ROWS, COLS, slots;
-    function pickTemplate() {
-        templateIndex = Math.floor(Math.random() * TEMPLATES.length);
+    function pickTemplate(attempt) {
+        templateIndex = attempt <= 30 ? dayIdx : (dayIdx + attempt) % TEMPLATES.length;
         template = TEMPLATES[templateIndex];
         ROWS = template.length;
         COLS = template[0].length;
@@ -386,7 +394,7 @@ function generatePuzzle(dateString, level) {
 
     while (!success && attempts < MAX_ATTEMPTS) {
         attempts++;
-        pickTemplate();              // her denemede yeni şablon
+        pickTemplate(attempts);      // güne göre şablon (tıkanırsa diğerlerine düşer)
         iterations = 0;
         gridLetters = {};
         placedWords = {};
