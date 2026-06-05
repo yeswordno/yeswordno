@@ -47,10 +47,12 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **Skor anında işlenmez:** `+1/−1/+N` puanlar hücreden skor tablosuna **uçar** (`flyingPoints` + Web Animations API). Skor, uçuş bitince `landScore(who, value)` ile işlenir. Oyuncu skoru `Math.max(0, ...)` ile 0 tabanlı.
 - **Yanlış harf:** köşede `−1` belirir, sonra **koyu taşı** rafa geri uçar (`flyingTiles`).
 - **Rakip taşı uçar (yerleşme):** rakip hamlede taşlar **rakip skorundan hücreye** kademeli uçar (`flyingOppTiles`, `flyOppTileToCell`, ~880ms, 280ms arayla); inince hücre kilitlenir + `+1` skora uçar. Birden belirmez.
-- **Rakip (medium AI):** oyuncudan ~3.5s sonra oynar, dağılım 1:%50 / 2:%35 / 3:%15. **Sadece harfi havuzda olan hücreleri doldurur** → oyuncunun eli asla "alakasız taş"a dönüşmez ve **oyuncu+rakip = boş hücre** her zaman tutar. Havuz boşsa (kalan harflerin hepsi oyuncuda) rakip pas geçer. Stale-closure'a karşı `poolRef/gridStateRef/oppLockedRef` kullanılır.
+- **Rakip (medium AI):** oyuncudan ~3.5s sonra oynar, dağılım 1:%30 / 2:%45 / 3:%25 (ort. ~1.95 taş/hamle). **Önce sadece harfi havuzda olan hücreleri doldurur** → oyuncunun eli "alakasız taş"a dönüşmez ve **oyuncu+rakip = boş hücre** tutarlı kalır. **Havuz boşaldığında** (kalan harfler oyuncunun rafında) eskiden hep pas geçip son taşları oyuncuya bırakıyordu; artık **%50 olasılıkla oyuncunun rafındaki bir harfe denk gelen hücreyi "kapar"** (o taşı raftan düşürerek; 1 hücre + 1 taş → denge korunur) → son hak hep oyuncuda kalmaz. Stale-closure'a karşı `poolRef/gridStateRef/oppLockedRef/rackRef` kullanılır.
 - **Taş sayısı:** raf, kalan boş hücre kadar dolar — `cap = min(5, kalanBoşHücre)`.
 - **Soru hücresi:** dokununca `scale(1.42)` büyür (`activeClue`). **X (çift soru) hücresi:** iki soru ortalı, oklar (▶ üst-sağ, ▼ alt-orta) yarım-kutu dışında render edilir (kırpılmaz).
-- **Oyun sonu:** tüm harf hücreleri kilitlenince ~1.9s sonra `gameOver=true`. `.result-overlay`: "You won!" / "Not this time" / "It's a tie!".
+- **Oyun sonu:** tüm harf hücreleri kilitlenince **~3.2s** sonra `gameOver=true` (son +1/+N puan uçuşları skora varıp işlensin, sonuç ondan sonra çıksın). `.result-overlay`: "You won!" / "Not this time" / "It's a tie!".
+- **Soru yazısı auto-fit:** `AutoFitText` bileşeni soru metnini kutusuna sığmazsa font'u kademeli küçültür (6px tabanına kadar), resize/döndürmede yeniden sığdırır. X (çift soru) hücrelerindeki uzun kelimeler kesilmez (line-clamp kaldırıldı).
+- **Renk uyumu:** `--placed-bg` (yerleştirilmiş taş, açık navy #54637d) aynı zamanda **TR logosu, oyuncu skoru ve ONAYLA butonu** için de kullanılır → tek değişkenle uyum.
 - **Kalıcılık:** `localStorage` `cengel_save_<level>_<puzzleId>` (taşlar, raf, skorlar, kilitler, gameOver). Yeni gün/seviye = taze oyun.
 
 ## Günlük bulmaca üretimi — `generator.js`
