@@ -41,6 +41,11 @@ const DRAG_OFFSET_Y = -46;
 // Günlük ilerlemeyi tarayıcıda saklamak için anahtar öneki
 const STORAGE_PREFIX = 'cengel_save_';
 
+// Rakibin hedef payı: harf hücrelerinin ~bu oranını rakip doldurur (gerisi oyuncu).
+// finalizeRack bu kadar hücrenin harfini havuzda "rezerv" tutar → oyun sonunda da
+// rakibe harf kalır, son taşlar hep oyuncuya kalmaz. Daha güçlü/zayıf için değiştir.
+const OPP_SHARE = 0.4;
+
 const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const [puzzle, setPuzzle] = useState(null);
   const [gridState, setGridState] = useState({});
@@ -542,7 +547,13 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       // Kalan boş hücre sayısı: her hücre ya kilitli ya boş (bekleyen kalmadı)
       const totalLetters = puzzle.cells.filter(c => c.type === 'letter').length;
       const emptyAfter = totalLetters - newLocked.length - opponentLockedCells.length;
-      const cap = Math.min(5, Math.max(0, emptyAfter));
+      // RAKİBE PAY AYIR: rakibin doldurması gereken hücre kadar harfi havuzda BIRAK
+      // (oyuncunun rafına çekme). O harfler oyuncunun eline geçmediği için o hücreleri
+      // rakip doldurur → son taşlar hep oyuncuya kalmaz, bitiş karışır, son hamle bazen
+      // rakipte olur. Rakip payını doldurdukça oppRemaining düşer, oyuncu payı artar.
+      const oppTarget = Math.round(totalLetters * OPP_SHARE);
+      const oppRemaining = Math.max(0, oppTarget - opponentLockedCells.length);
+      const cap = Math.min(5, Math.max(0, emptyAfter - oppRemaining));
       let nextRack = [...rack, ...wrongEntries.map(w => w.placed)];
       let nextPool = [...pool];
       // Boş hücre kadar taş ver (5'i geçme)
@@ -608,34 +619,25 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     let count = r < 0.30 ? 1 : r < 0.75 ? 2 : 3;
     count = Math.min(count, available.length);
 
-    // Karıştır; ÖNCE harfi havuzda olan hücreleri seç.
+    // Rakip HEDEF PAYINI AŞMASIN: payını oyun boyunca dengeli doldursun, sona da pay
+    // kalsın (erken bitirip son hücreleri oyuncuya bırakmasın). Payını doldurduysa pas.
+    const totalLettersOpp = puzzle.cells.filter(c => c.type === 'letter').length;
+    const oppRemainingTurn = Math.max(0, Math.round(totalLettersOpp * OPP_SHARE) - curOppLocked.length);
+    count = Math.min(count, oppRemainingTurn);
+    if (count === 0) { setBusy(false); return; }
+
+    // Karıştır; harfi havuzda olan hücreleri seç. (Rakibin payı finalizeRack'teki
+    // REZERV ile havuzda tutulduğu için, oyun sonunda da havuzda rakibe ait harfler
+    // kalır → rakip son hücrelerin bir kısmını doldurur; bitiş karışır.)
     const shuffled = [...available].sort(() => Math.random() - 0.5);
     const picked = [];
-    const fromRack = new Set();          // oyuncunun rafından "kapılan" hücreler
     const remainPool = { ...poolCounts };
     for (const c of shuffled) {
       if (picked.length >= count) break;
       if (remainPool[c.expected] > 0) { remainPool[c.expected]--; picked.push(c); }
     }
 
-    // Havuz bu hamleyi DOLDURAMADIYSA (oyun sonu yaklaşıyor; kalan harfler oyuncunun
-    // rafında), kalanı oyuncunun RAFINDAKİ harfe denk gelen hücreleri "kapayarak"
-    // tamamla — o taş raftan düşer (denge: 1 hücre + 1 taş). Böylece son taşlar hep
-    // oyuncuya kalmaz; bitiş 3/2 gibi karışır, son hamle bazen rakipte olur.
-    const CLAIM_PROB = 0.6;
-    const remainRack = {};
-    rackRef.current.forEach(t => { remainRack[t.letter] = (remainRack[t.letter] || 0) + 1; });
-    for (const c of shuffled) {
-      if (picked.length >= count) break;
-      if (picked.includes(c)) continue;
-      if (remainRack[c.expected] > 0 && Math.random() < CLAIM_PROB) {
-        remainRack[c.expected]--;
-        picked.push(c);
-        fromRack.add(c.id);
-      }
-    }
-
-    // Oynayacak hücre yoksa pas
+    // Havuzda oynanacak harf yoksa pas
     if (picked.length === 0) { setBusy(false); return; }
 
     // 1) Taşları rakip skorundan hücrelere uçur (yavaşça yerleşme hissi)
@@ -652,29 +654,15 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
         flyFromCell(c.id, '+1', 'rival', 0, 1);
       });
 
-      // Havuz kaynaklı taşları havuzdan düş (kapılanlar hariç)
+      // Doldurulan hücrelerin harflerini havuzdan düş
       setPool(prev => {
         const np = [...prev];
         picked.forEach(c => {
-          if (fromRack.has(c.id)) return;
           const i = np.indexOf(c.expected);
           if (i !== -1) np.splice(i, 1);
         });
         return np;
       });
-      // Rakip oyuncunun rafından kaptıysa o taşı raftan düş (denge korunur: 1 hücre + 1 taş)
-      if (fromRack.size > 0) {
-        setRack(prev => {
-          const nr = [...prev];
-          picked.forEach(c => {
-            if (!fromRack.has(c.id)) return;
-            const i = nr.findIndex(t => t.letter === c.expected);
-            if (i !== -1) nr.splice(i, 1);
-          });
-          return nr;
-        });
-        setSelectedRackItem(null);   // kapılan taş seçiliyse seçim kalmasın
-      }
 
       // Rakibin tamamladığı kelimeler
       const allLocked = new Set([...playerLocked, ...newOppLocked]);
