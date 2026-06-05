@@ -681,7 +681,21 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       setOpponentLockedCells(newOppLocked);
       // Rakip skoru anında değil, uçan +1'ler skora vardıkça (landScore) işlenir.
       setCompletedWords(newCompleted);
-      setBusy(false);
+
+      // Oyuncunun rafı BOŞ ve hâlâ (rakibe ait, oyuncunun dolduramayacağı) hücre
+      // varsa: PAS bekleme — rakip OTOMATİK devam edip oyunu bitirsin. Bu sırada
+      // busy AÇIK kalır ki oyuncu paralel bir tur tetikleyemesin.
+      const stillEmpty = puzzle.cells.some(c =>
+        c.type === 'letter' &&
+        !playerLocked.includes(c.id) &&
+        !newOppLocked.includes(c.id) &&
+        !gridStateRef.current[c.id]
+      );
+      if (stillEmpty && rackRef.current.length === 0) {
+        setTimeout(() => runOpponentTurn(playerLocked, newCompleted), 950);
+      } else {
+        setBusy(false);
+      }
     }, landDelay);
   };
 
