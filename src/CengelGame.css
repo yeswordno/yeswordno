@@ -1,27 +1,33 @@
 .cengel-root {
-  /* Rams × Ive — tek nötr sistem, tek anlamlı vurgu */
-  --bg-color: #f5f5f3;        /* hafif sıcak beyaz zemin */
-  --clue-bg: #f4ead0;         /* açık bal: soru hücresi */
-  --empty-bg: #ebdcb8;        /* biraz koyu bal: boş/pasif hücre */
-  --letter-bg: #ffffff;       /* harf hücresi */
-  --grid-line: #d8dadd;       /* yumuşak ızgara çizgisi */
+  /* Premium MOR / ALTIN tema — altın YALNIZCA seçili taş + ONAYLA'da; gerisi sakin.
+     İlke: her şey parlamasın → göz tahtaya ve konmuş harflere gitsin (hiyerarşi). */
+  --bg-color: #1a1340;            /* derin mor zemin (gradyan .game-container'da) */
+  --gold: #e8b657;                /* tek vurgu rengi: altın */
+  --gold-deep: #c98f31;
 
-  --text-dark: #1f2937;       /* antrasit: tüm yazılar */
-  --ink-soft: #374151;        /* yumuşak antrasit: ikincil */
+  --clue-bg: #ece0c2;             /* açık KREM soru hücresi (altın değil) */
+  --empty-bg: rgba(236, 233, 250, 0.14);  /* pasif/boş (B) hücre: çok sakin */
+  --letter-bg: rgba(236, 233, 250, 0.40); /* boş oynanabilir hücre: sakin lavanta */
+  --grid-line: rgba(255, 255, 255, 0.10); /* yumuşak ızgara çizgisi */
 
-  --tile-bg: #f7f8f9;         /* raftaki konmamış taş zemini */
-  --tile-ink: #1f2937;        /* taş harfi */
-  --placed-bg: #54637d;       /* tahtaya konmuş ama onaylanmamış: açık slate-navy (beyaz yazı okunur) */
-  --confirmed-bg: #f3f4f6;    /* onaylanıp doğrulanmış: hafif açık gri */
-  --confirmed-border: #e5e7eb;
+  --text-dark: #1f2937;          /* açık hücre/krem üstü koyu yazı */
+  --ink-soft: #4b5563;           /* ikincil koyu (soru okları) */
+  --text-light: #efeafe;         /* mor zemin üstü açık yazı */
+  --text-dim: rgba(239, 234, 254, 0.62);
 
-  --accent: #1f2937;          /* %100 monokrom: vurgu da antrasit */
-  --selected-bg: #e5e7eb;     /* seçili taş: nötr gri */
-  --danger-color: #b91c1c;    /* yalnızca hata geri bildirimi */
+  --tile-bg: #f3f1fb;            /* raftaki konmamış taş: açık cam */
+  --tile-ink: #1f2937;          /* taş harfi */
+  --placed-bg: #5b5391;          /* konmuş-onaylanmamış: mor-slate (beyaz yazı) */
+  --confirmed-bg: rgba(255, 255, 255, 0.85); /* onaylanmış doğru: açık */
+  --confirmed-border: rgba(255, 255, 255, 0.5);
 
-  /* Geriye dönük uyumluluk için eski adlar yeni sisteme bağlandı */
-  --primary-color: #1f2937;
-  --tile-color: #f7f8f9;
+  --accent: var(--gold);
+  --selected-bg: #f0c44e;        /* seçili taş: altın */
+  --danger-color: #f0686b;       /* yalnızca hata geri bildirimi */
+
+  /* Geriye dönük uyumluluk için eski adlar */
+  --primary-color: var(--gold);
+  --tile-color: #f3f1fb;
   --tile-dark: #1f2937;
   --opp-color: #1f2937;
 }
@@ -45,6 +51,8 @@
   min-height: 100dvh;       /* mobil Safari/Chrome: adres çubuğunu hesaba katar */
   max-width: 600px;
   margin: 0 auto;
+  /* Premium mor zemin (üstte hafif aydınlık, sakin) */
+  background: radial-gradient(125% 90% at 50% -8%, #3a2c72 0%, #271d54 46%, #1a1340 100%);
   /* PWA güvenli alan: üstte status bar/çentik, altta ana ekran çubuğu kadar boşluk */
   padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
 }
@@ -60,16 +68,16 @@
 }
 
 .logo-text {
-  font-size: 1.7rem;
+  font-size: 1.35rem;            /* küçük tutuldu: göz tahtaya gitsin (hiyerarşi) */
   margin: 0;
-  color: var(--text-dark);
+  color: var(--text-dim);        /* sessiz açık mor — öne çıkmasın */
   letter-spacing: 3px;
   text-align: center;
   font-weight: 600;
 }
 
 .logo-accent {
-  color: var(--placed-bg);
+  color: var(--gold);            /* tek altın dokunuş: marka */
   font-weight: 800;
 }
 
@@ -90,8 +98,8 @@
   flex: 1;
   padding: 6px 14px;
   border-radius: 10px;
-  background: #ffffff;
-  border: 1px solid #d0d3d4;
+  background: rgba(255, 255, 255, 0.07);   /* mor-cam */
+  border: 1px solid rgba(255, 255, 255, 0.13);
 }
 
 .vs-you {
@@ -105,7 +113,7 @@
 .vs-label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--text-dim);
 }
 
 .vs-score {
@@ -116,17 +124,17 @@
 }
 
 .vs-you .vs-score {
-  color: var(--placed-bg);
+  color: var(--text-light);
 }
 
 .vs-rival .vs-score {
-  color: #9ca3af;
+  color: rgba(239, 234, 254, 0.5);
 }
 
 .vs-mid {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #95a5a6;
+  color: rgba(239, 234, 254, 0.45);
   flex-shrink: 0;
 }
 
@@ -135,8 +143,11 @@
   display: grid;
   gap: 1px;
   background-color: var(--grid-line);
-  padding: 1px;
-  border-radius: 8px;
+  padding: 4px;
+  border-radius: 12px;
+  /* İnce altın çerçeve (abartısız) — tahta sahne olsun */
+  border: 1px solid rgba(232, 182, 87, 0.30);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   /* Izgara kalan dikey alanı doldursun (mobilde referans gibi oturur) */
   width: 100%;
   margin-bottom: 14px;
@@ -427,10 +438,10 @@
   /* SABİT yükseklik: taş (54) + dikey dolgu (24) + kenar (2) = 80px.
      Böylece harf kalmayınca raf kısalmaz (boş/dolu hep aynı boy). */
   min-height: 80px;
-  background-color: #ffffff;
-  border: 1px solid var(--grid-line);
+  background-color: rgba(255, 255, 255, 0.06);   /* sessiz mor-cam */
+  border: 1px solid rgba(255, 255, 255, 0.10);
   padding: 12px 10px;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 12px;
 }
 
@@ -438,14 +449,15 @@
   width: 54px;
   height: 54px;
   background-color: var(--tile-bg);
-  border: 1px solid #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: var(--tile-ink);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.7rem;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   color: var(--tile-ink);
   transition: transform 0.12s, box-shadow 0.12s, background-color 0.12s;
@@ -457,12 +469,13 @@
   transform: scale(0.93);
 }
 
-/* Seçili taş stili (tap-to-select) */
+/* Seçili taş: TEK altın parıltı — sahnenin yıldızı */
 .rack-tile.selected {
-  background-color: var(--selected-bg);
-  transform: translateY(-6px) scale(1.08);
-  box-shadow: none;
-  border: 1px solid var(--accent);
+  background: linear-gradient(180deg, #f4cf63 0%, #e6ad3c 100%);
+  color: #3a2a08;
+  transform: translateY(-6px) scale(1.10);
+  box-shadow: 0 8px 20px rgba(232, 182, 87, 0.5);
+  border: 1px solid var(--gold-deep);
 }
 
 .empty-rack-msg {
@@ -480,9 +493,9 @@
   flex: 1;
   padding: 14px 6px;
   font-size: 1rem;
-  border: 1px solid var(--grid-line);
-  border-radius: 8px;
-  color: var(--text-dark);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  color: var(--text-light);
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.1s, opacity 0.1s;
@@ -493,11 +506,11 @@
   transform: scale(0.96);
 }
 
-/* İkincil butonlar: nötr, sessiz */
+/* İkincil butonlar: SESSİZ mor-cam (öne çıkmasın — hiyerarşi) */
 .undo-btn,
 .shuffle-btn {
-  background-color: #ffffff;
-  color: var(--ink-soft);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
 }
 
 /* GERİ ikonu: ince kalmasın, belirgin dursun */
@@ -511,25 +524,29 @@
 }
 
 .undo-btn:disabled {
-  background-color: #f3f4f6;
-  color: #b8bcc2;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: rgba(239, 234, 254, 0.28);
   cursor: not-allowed;
   opacity: 1;
   transform: none !important;
 }
 
-/* Birincil eylem: tek vurgu rengi yalnızca burada */
+/* Birincil eylem: TEK ALTIN buton — göz buraya gelsin */
 .submit-btn {
-  background-color: var(--placed-bg);
-  border-color: var(--placed-bg);
-  color: #ffffff;
+  background: linear-gradient(180deg, #f0c44e 0%, #e0a838 100%);
+  border-color: var(--gold-deep);
+  color: #3a2a08;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(232, 182, 87, 0.35);
 }
 
-/* PAS durumu (hiç taş konmamış): vurgu yok, nötr */
+/* PAS durumu (hiç taş konmamış): vurgu yok, sessiz cam */
 .submit-btn.pass-btn {
-  background-color: #ffffff;
-  border-color: var(--grid-line);
-  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-dim);
+  box-shadow: none;
+  font-weight: 600;
 }
 
 .btn:disabled {
@@ -818,9 +835,9 @@
   position: absolute;
   left: 0;
   top: 0;
-  background: #ffffff;
-  border: 1px solid var(--grid-line);
-  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-light);
   font-size: 0.85rem;
   font-weight: 600;
   padding: 6px 12px;
@@ -839,9 +856,9 @@
   top: 0;
   width: 32px;
   height: 32px;
-  background: #ffffff;
-  border: 1px solid var(--grid-line);
-  color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-light);
   font-size: 1rem;
   font-weight: 800;
   border-radius: 50%;
