@@ -164,6 +164,11 @@ function App() {
 
       if (!rawAnswer) return null;
 
+      // Çapraz bulmacada boşluk gösterilemez → cevabı ÇOK KELİMELİ olanları ele
+      // (ör. "harekete geçmek", "kafa karıştırıcı" → "KAFAKARIŞTIRICI" gibi saçma dizi).
+      // İpucu (clue) çok kelimeli olabilir, sorun değil; sadece CEVAP tek kelime olmalı.
+      if (rawAnswer.trim().includes(' ')) return null;
+
       let clean = mode === 'TR_EN'
         ? rawAnswer.toUpperCase().replace(/[^A-Z]/g, '')
         : rawAnswer.toLocaleUpperCase('tr').replace(/[^A-ZÇĞİÖŞÜ]/g, '');
