@@ -1,10 +1,13 @@
 name: Günlük bulmaca üret
 
-# Her gece 00:00 Türkiye saati = 21:00 UTC
-# (GitHub cron UTC'dir; cron birkaç dakika gecikebilir, bu normaldir)
+# SAKİN SAATTE çalışır: 12:00 Türkiye saati = 09:00 UTC.
+# Kullanıcıya görünen oyunu CRON DEĞİL, tarayıcı tarihi belirler (7 günlük kuyruk +
+# istemci tarih seçimi) → gece 00:00'da yeni oyun deploy/cron beklemeden gelir.
+# Cron sadece kuyruğu doldurur; gece yarısı kalabalığından kaçınmak için öğlene alındı.
+# (GitHub cron UTC'dir ve birkaç dk gecikebilir; tampon bunu zaten tolere eder.)
 on:
   schedule:
-    - cron: "0 21 * * *"
+    - cron: "0 9 * * *"
   workflow_dispatch: {}   # Gerektiğinde elle de tetikleyebilirsin
 
 permissions:

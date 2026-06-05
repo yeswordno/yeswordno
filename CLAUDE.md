@@ -85,7 +85,7 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **PWA güvenli alan (standalone):** `black-translucent` içeriği çentik/status bar altına alır → `.game-container` ve `.menu-screen` padding'lerinde `env(safe-area-inset-top/bottom)` kullanılır (çengel "← Geri" butonu status bar altında kalmasın). Alt boşluk için `.app-container/.menu-screen/.game-container` `min-height:100dvh`. SVG/PNG ikon üretimi: dış HTTPS bu ortamda kapalı (sertifika); PNG'ler tarayıcı canvas'ından üretildi.
 
 ## Otomatik yayın — `.github/workflows/daily-puzzle.yml`
-- Cron `0 21 * * *` = 21:00 UTC = **00:00 TRT**. `workflow_dispatch` ile elle de tetiklenir.
+- Cron `0 9 * * *` = 09:00 UTC = **12:00 TRT (sakin saat)**. `workflow_dispatch` ile elle de tetiklenir. **Kullanıcıya görünen oyunu cron DEĞİL, tarayıcı tarihi belirler** (7 günlük kuyruk + istemci tarih seçimi) → 00:00'da yeni oyun deploy/cron beklemeden gelir; cron sadece kuyruğu doldurur (gece yarısı kalabalığından kaçınmak için öğlene alındı).
 - `node generator.js` → `public/puzzles/*.json` (3 seviye + daily.json + history.json) commit'ler → push → Vercel otomatik deploy.
 - **Dayanıklı push:** checkout↔push arası remote kıpırdarsa (yarış) `git pull --rebase -X theirs` + 5 deneme; `fetch-depth: 0`. (İlk gece "fetch first" hatası yaşandı, bu yüzden eklendi.)
 - **GEREKLİ AYAR:** GitHub repo → Settings → Actions → General → Workflow permissions → **Read and write permissions** (yoksa push adımı yetki hatasıyla patlar; repo ayarı tavandır, workflow `permissions:` bloğu tek başına yetmez).
