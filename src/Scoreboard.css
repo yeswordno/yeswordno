@@ -203,3 +203,65 @@
   background: #eef1ff;
   outline: 2px solid #667eea;
 }
+
+/* ─── Günlük Düello ekranındaki kompakt önizleme ─── */
+.sb-preview {
+  width: 100%;
+  max-width: 340px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 16px;
+  padding: 12px;
+  margin-top: 4px;
+  color: #2d3436;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+.sb-preview-head {
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.sb-preview-info {
+  text-align: center;
+  color: #8a93a0;
+  font-weight: 600;
+  padding: 14px 4px;
+  font-size: 0.85rem;
+}
+.sb-preview-list { display: flex; flex-direction: column; gap: 5px; }
+.sb-prow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: #f6f7f9;
+  font-size: 0.9rem;
+}
+.sb-prow.first { background: linear-gradient(135deg, #fff7e0, #ffeec0); }
+.sb-prow.me { background: #eef1ff; outline: 2px solid #667eea; }
+.sb-prank { min-width: 24px; text-align: center; font-weight: 800; color: #636e72; }
+.sb-pnick {
+  flex: 1;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-pav { font-size: 1.05rem; }
+.sb-pscore { font-weight: 800; color: #667eea; }
+.sb-preview-btn {
+  width: 100%;
+  margin-top: 9px;
+  padding: 9px;
+  border: none;
+  border-radius: 10px;
+  background: #667eea;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+}

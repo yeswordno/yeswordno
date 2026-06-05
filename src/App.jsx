@@ -13,6 +13,7 @@ import { SpeakerIcon } from './utils/SpeakerIcon';
 import { PuzzleIcon, DuelIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
 import Scoreboard from './Scoreboard';
+import ScoreboardPreview from './ScoreboardPreview';
 
 function App() {
   // --- STATE YÖNETİMİ ---
@@ -506,16 +507,23 @@ function App() {
         </div>
       )}
 
-      {/* GÜNLÜK ÇENGEL — ZORLUK SEÇİMİ */}
+      {/* GÜNLÜK ÇENGEL — ZORLUK SEÇİMİ + SKOR ÖNİZLEME */}
       {screen === 'daily' && !dailyLevel && (
-        <div className="menu-screen">
-          <div className="logo-icon"><DuelIcon size={72} color="#ffffff" /></div>
-          <h2 className="screen-title">Günlük Düello</h2>
-          <p style={{ marginTop: '-4px', marginBottom: '16px', textAlign: 'center', lineHeight: 1.2 }}>
-            <span style={{ display: 'block', fontSize: '1.15rem', fontWeight: 800, color: '#2d3436' }}>
+        <div
+          className="menu-screen"
+          style={{ position: 'relative', justifyContent: 'flex-start', overflowY: 'auto', gap: '10px',
+                   paddingTop: 'max(54px, calc(env(safe-area-inset-top) + 38px))' }}
+        >
+          {/* Sol-üst geri oku (alttaki Geri butonunun yerine) */}
+          <button className="daily-back" onClick={() => setScreen('lang')}>← Geri</button>
+
+          <div className="logo-icon" style={{ marginBottom: 0 }}><DuelIcon size={50} color="#ffffff" /></div>
+          <h2 className="screen-title" style={{ margin: '2px 0 0' }}>Günlük Düello</h2>
+          <p style={{ margin: '0 0 4px', textAlign: 'center', lineHeight: 1.15 }}>
+            <span style={{ display: 'block', fontSize: '1.05rem', fontWeight: 800, color: '#2d3436' }}>
               Zorluk Seç
             </span>
-            <span style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#8a93a0' }}>
+            <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#8a93a0' }}>
               Choose Difficulty
             </span>
           </p>
@@ -539,10 +547,8 @@ function App() {
             </div>
           </button>
 
-          <button className="btn-main btn-collection" onClick={() => setShowScoreboard(true)}>
-            🏆 Skor Tablosu
-          </button>
-          <button className="btn-back" onClick={() => setScreen('lang')}>⬅ Geri Dön</button>
+          {/* Kompakt ilk-5 sıralama önizlemesi */}
+          <ScoreboardPreview onExpand={() => setShowScoreboard(true)} />
         </div>
       )}
 
