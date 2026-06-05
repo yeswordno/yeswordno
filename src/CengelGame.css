@@ -5,7 +5,7 @@
   --gold: #e8b657;                /* tek vurgu rengi: altın */
   --gold-deep: #c98f31;
 
-  --clue-bg: #ece0c2;             /* açık KREM soru hücresi (altın değil) */
+  --clue-bg: #f2d074;             /* açık ALTIN soru hücresi (ONAYLA'nın bir ton açığı) */
   --empty-bg: rgba(236, 233, 250, 0.14);  /* pasif/boş (B) hücre: çok sakin */
   --letter-bg: rgba(236, 233, 250, 0.40); /* boş oynanabilir hücre: sakin lavanta */
   --grid-line: rgba(255, 255, 255, 0.10); /* yumuşak ızgara çizgisi */
@@ -141,10 +141,10 @@
 /* ─── BULMACA IZGARASI ─── */
 .puzzle-grid {
   display: grid;
-  gap: 1px;
-  background-color: var(--grid-line);
-  padding: 4px;
-  border-radius: 12px;
+  gap: 5px;                        /* kutucuklar arası şık boşluk (mor zemin görünür) */
+  background-color: transparent;
+  padding: 7px;
+  border-radius: 16px;
   /* İnce altın çerçeve (abartısız) — tahta sahne olsun */
   border: 1px solid rgba(232, 182, 87, 0.30);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
@@ -178,6 +178,8 @@
   font-weight: bold;
   user-select: none;
   -webkit-user-select: none;
+  /* Resimdeki gibi: düz kare değil, şık yuvarlatılmış kutucuk */
+  border-radius: 8px;
 }
 
 .cg-cell.empty {
@@ -506,11 +508,11 @@
   transform: scale(0.96);
 }
 
-/* İkincil butonlar: SESSİZ mor-cam (öne çıkmasın — hiyerarşi) */
+/* İkincil butonlar: mor-cam, ama belirgin (okunur) */
 .undo-btn,
 .shuffle-btn {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: var(--text-dim);
+  background-color: rgba(255, 255, 255, 0.17);
+  color: var(--text-light);
 }
 
 /* GERİ ikonu: ince kalmasın, belirgin dursun */
@@ -540,11 +542,11 @@
   box-shadow: 0 6px 18px rgba(232, 182, 87, 0.35);
 }
 
-/* PAS durumu (hiç taş konmamış): vurgu yok, sessiz cam */
+/* PAS durumu (hiç taş konmamış): vurgu yok ama belirgin cam */
 .submit-btn.pass-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.17);
+  border-color: rgba(255, 255, 255, 0.20);
+  color: var(--text-light);
   box-shadow: none;
   font-weight: 600;
 }
@@ -661,8 +663,8 @@
   }
 
   .puzzle-grid {
-    gap: 1px;
-    padding: 2px;
+    gap: 4px;
+    padding: 6px;
     margin-bottom: 10px;
   }
 
