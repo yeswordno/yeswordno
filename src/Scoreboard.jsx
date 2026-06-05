@@ -117,7 +117,7 @@ export default function Scoreboard({ onClose }) {
                         <span className="sb-rank">{medal(r.rank)}</span>
                         <span className="sb-nick">
                           <span className="sb-av">{r.emoji}</span>
-                          {r.nick}{r.rank === 1 ? ' 👑' : ''}{r.me ? ' (sen)' : ''}
+                          {r.nick}{r.rank === 1 ? ' 👑' : ''}
                         </span>
                         <span className="sb-score">{r.score}</span>
                       </div>
@@ -129,7 +129,7 @@ export default function Scoreboard({ onClose }) {
                 {data.me && (
                   <div className="sb-me-row">
                     <span className="sb-rank">{data.me.rank}</span>
-                    <span className="sb-nick"><span className="sb-av">{data.me.emoji}</span>{data.me.nick} (sen)</span>
+                    <span className="sb-nick"><span className="sb-av">{data.me.emoji}</span>{data.me.nick}</span>
                     <span className="sb-score">{data.me.score}</span>
                   </div>
                 )}

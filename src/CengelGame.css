@@ -424,7 +424,9 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  min-height: 64px;
+  /* SABİT yükseklik: taş (54) + dikey dolgu (24) + kenar (2) = 80px.
+     Böylece harf kalmayınca raf kısalmaz (boş/dolu hep aynı boy). */
+  min-height: 80px;
   background-color: #ffffff;
   border: 1px solid var(--grid-line);
   padding: 12px 10px;
@@ -655,7 +657,8 @@
   .rack {
     padding: 8px 6px;
     gap: 6px;
-    min-height: 56px;
+    /* taş (48) + dikey dolgu (16) + kenar (2) = 66px — boş/dolu sabit */
+    min-height: 66px;
     margin-bottom: 8px;
   }
 

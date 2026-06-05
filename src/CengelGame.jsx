@@ -853,7 +853,6 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               {item.letter}
             </div>
           ))}
-          {rack.length === 0 && <div className="empty-rack-msg">Raf Boş</div>}
         </div>
 
         <div className="controls">
