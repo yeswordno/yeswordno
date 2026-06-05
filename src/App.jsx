@@ -12,11 +12,13 @@ import { TrFlag, GbFlag } from './utils/FlagIcons';
 import { SpeakerIcon } from './utils/SpeakerIcon';
 import { PuzzleIcon, DuelIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
+import Scoreboard from './Scoreboard';
 
 function App() {
   // --- STATE YÖNETİMİ ---
   const [screen, setScreen] = useState('lang'); // 'lang', 'level', 'game'
   const [dailyLevel, setDailyLevel] = useState(null); // Günlük Düello zorluğu: 'easy'|'medium'|'hard'
+  const [showScoreboard, setShowScoreboard] = useState(false); // 🏆 skor tablosu modalı
   const [showWinModal, setShowWinModal] = useState(false);
   const [mode, setMode] = useState('EN_TR');
   const [sourceWords, setSourceWords] = useState([]);
@@ -537,6 +539,9 @@ function App() {
             </div>
           </button>
 
+          <button className="btn-main btn-collection" onClick={() => setShowScoreboard(true)}>
+            🏆 Skor Tablosu
+          </button>
           <button className="btn-back" onClick={() => setScreen('lang')}>⬅ Geri Dön</button>
         </div>
       )}
@@ -988,6 +993,9 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* 🏆 SKOR TABLOSU MODALI */}
+      {showScoreboard && <Scoreboard onClose={() => setShowScoreboard(false)} />}
     </div >
   );
 }

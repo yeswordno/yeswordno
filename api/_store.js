@@ -2,8 +2,10 @@
 // Vercel: "_" ile başlayan dosyalar endpoint sayılmaz; sadece import edilir.
 // Gerekli ortam değişkenleri (Upstash entegrasyonu Vercel'e otomatik ekler):
 //   UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
-const URL = process.env.UPSTASH_REDIS_REST_URL;
-const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+// Upstash entegrasyonu UPSTASH_REDIS_REST_*; eski Vercel KV ise KV_REST_API_* adıyla
+// enjekte eder. İkisini de kabul et (hangi yolla bağlarsan bağla çalışsın).
+const URL = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
+const TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
 
 export function redisConfigured() {
   return Boolean(URL && TOKEN);

@@ -1,0 +1,205 @@
+/* Skor tablosu — izole (.sb-root altında). App.css ile çakışmaz. */
+.sb-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgba(20, 22, 30, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: sb-fade 0.18s ease;
+}
+@keyframes sb-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.sb-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  padding: 22px 18px 18px;
+  color: #2d3436;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sb-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f2f6;
+  color: #2d3436;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sb-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.sb-sub {
+  font-size: 0.9rem;
+  color: #8a93a0;
+  text-align: center;
+  margin: 0 0 16px;
+  line-height: 1.35;
+}
+
+/* ─── Onboarding ─── */
+.sb-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  outline: none;
+  margin-bottom: 14px;
+}
+.sb-input:focus { border-color: #667eea; }
+
+.sb-emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.sb-emoji {
+  aspect-ratio: 1;
+  font-size: 1.5rem;
+  border: 2px solid #eceef3;
+  border-radius: 12px;
+  background: #fafbfc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+.sb-emoji.sel {
+  border-color: #667eea;
+  background: #eef1ff;
+  transform: scale(1.08);
+}
+
+.sb-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  background: #667eea;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.sb-primary:disabled { opacity: 0.6; }
+
+.sb-skip {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #8a93a0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sb-error {
+  background: #fde8e8;
+  color: #c0392b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 9px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.sb-info {
+  text-align: center;
+  color: #8a93a0;
+  font-weight: 600;
+  padding: 24px 8px;
+}
+
+/* ─── Tablo ─── */
+.sb-tabs {
+  display: flex;
+  background: #f1f2f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin: 6px 0 14px;
+}
+.sb-tab {
+  flex: 1;
+  padding: 9px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8a93a0;
+  cursor: pointer;
+}
+.sb-tab.on {
+  background: #fff;
+  color: #2d3436;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sb-list { display: flex; flex-direction: column; gap: 6px; }
+.sb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  background: #f8f9fb;
+}
+.sb-row.first { background: linear-gradient(135deg, #fff7e0, #ffeec0); }
+.sb-row.me { background: #eef1ff; outline: 2px solid #667eea; }
+
+.sb-rank {
+  min-width: 30px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #636e72;
+}
+.sb-nick {
+  flex: 1;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-av { font-size: 1.2rem; }
+.sb-score { font-weight: 800; color: #667eea; font-size: 1.05rem; }
+
+.sb-me-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  margin-top: 10px;
+  border-radius: 12px;
+  background: #eef1ff;
+  outline: 2px solid #667eea;
+}
