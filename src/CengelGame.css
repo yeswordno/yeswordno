@@ -141,9 +141,9 @@
 /* ─── BULMACA IZGARASI ─── */
 .puzzle-grid {
   display: grid;
-  gap: 5px;                        /* kutucuklar arası şık boşluk (mor zemin görünür) */
+  gap: 2px;                        /* kutucuklar arası ince boşluk (sıkı dursun) */
   background-color: transparent;
-  padding: 7px;
+  padding: 6px;
   border-radius: 16px;
   /* İnce altın çerçeve (abartısız) — tahta sahne olsun */
   border: 1px solid rgba(232, 182, 87, 0.30);
@@ -663,8 +663,8 @@
   }
 
   .puzzle-grid {
-    gap: 4px;
-    padding: 6px;
+    gap: 2px;
+    padding: 5px;
     margin-bottom: 10px;
   }
 
