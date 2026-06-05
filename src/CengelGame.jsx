@@ -608,36 +608,35 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     let count = r < 0.30 ? 1 : r < 0.75 ? 2 : 3;
     count = Math.min(count, available.length);
 
-    // Karıştır, sonra harfi havuzda kalan hücreleri sırayla seç
+    // Karıştır; ÖNCE harfi havuzda olan hücreleri seç.
     const shuffled = [...available].sort(() => Math.random() - 0.5);
     const picked = [];
-    const remainCounts = { ...poolCounts };
+    const fromRack = new Set();          // oyuncunun rafından "kapılan" hücreler
+    const remainPool = { ...poolCounts };
     for (const c of shuffled) {
       if (picked.length >= count) break;
-      if (remainCounts[c.expected] > 0) {
-        remainCounts[c.expected]--;
+      if (remainPool[c.expected] > 0) { remainPool[c.expected]--; picked.push(c); }
+    }
+
+    // Havuz bu hamleyi DOLDURAMADIYSA (oyun sonu yaklaşıyor; kalan harfler oyuncunun
+    // rafında), kalanı oyuncunun RAFINDAKİ harfe denk gelen hücreleri "kapayarak"
+    // tamamla — o taş raftan düşer (denge: 1 hücre + 1 taş). Böylece son taşlar hep
+    // oyuncuya kalmaz; bitiş 3/2 gibi karışır, son hamle bazen rakipte olur.
+    const CLAIM_PROB = 0.6;
+    const remainRack = {};
+    rackRef.current.forEach(t => { remainRack[t.letter] = (remainRack[t.letter] || 0) + 1; });
+    for (const c of shuffled) {
+      if (picked.length >= count) break;
+      if (picked.includes(c)) continue;
+      if (remainRack[c.expected] > 0 && Math.random() < CLAIM_PROB) {
+        remainRack[c.expected]--;
         picked.push(c);
+        fromRack.add(c.id);
       }
     }
 
-    // Havuz boşaldıysa (kalan harfler oyuncunun elinde) rakip normalde PAS geçer ve
-    // son taşlar HEP oyuncuya kalırdı. Artık rakip ARA SIRA oyuncunun rafındaki bir
-    // harfe denk gelen boş hücreyi "kapar" (o taşı raftan düşürerek) → son hamle her
-    // zaman oyuncuda olmaz; bitiş 3/2 gibi dengeli olabilir.
-    const fromRack = new Set();
-    if (picked.length === 0) {
-      const rackLetters = {};
-      rackRef.current.forEach(t => { rackLetters[t.letter] = (rackLetters[t.letter] || 0) + 1; });
-      const claimable = shuffled.filter(c => rackLetters[c.expected] > 0);
-      const CLAIM_PROB = 0.5;   // havuz boşken rakibin son hücreyi kapma olasılığı
-      if (claimable.length > 0 && Math.random() < CLAIM_PROB) {
-        picked.push(claimable[0]);
-        fromRack.add(claimable[0].id);
-      } else {
-        setBusy(false);   // bu el pas
-        return;
-      }
-    }
+    // Oynayacak hücre yoksa pas
+    if (picked.length === 0) { setBusy(false); return; }
 
     // 1) Taşları rakip skorundan hücrelere uçur (yavaşça yerleşme hissi)
     const STAGGER = 280;   // taşlar arası gecikme
