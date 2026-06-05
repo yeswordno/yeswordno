@@ -80,9 +80,11 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const poolRef = useRef([]);
   const gridStateRef = useRef({});
   const oppLockedRef = useRef([]);
+  const rackRef = useRef([]);
   useEffect(() => { poolRef.current = pool; }, [pool]);
   useEffect(() => { gridStateRef.current = gridState; }, [gridState]);
   useEffect(() => { oppLockedRef.current = opponentLockedCells; }, [opponentLockedCells]);
+  useEffect(() => { rackRef.current = rack; }, [rack]);
 
   // Bu seviyenin kayıt anahtarı: cengel_save_<seviye>_<tarih>
   const saveKey = (id) => `${STORAGE_PREFIX}${level}_${id}`;
@@ -143,13 +145,14 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     } catch { /* kota dolu vb. — sessiz geç */ }
   }, [puzzle, gridState, lockedCells, opponentLockedCells, score, opponentScore, completedWords, rack, pool, gameOver]);
 
-  // Tüm harf hücreleri dolunca oyunu bitir (skor uçuşları insin diye kısa gecikme)
+  // Tüm harf hücreleri dolunca oyunu bitir. Son +1/+N puan uçuşları skora varıp
+  // işlensin diye birkaç saniye bekle, SONRA sonucu göster (anında değil).
   useEffect(() => {
     if (!puzzle || gameOver) return;
     const total = puzzle.cells.filter(c => c.type === 'letter').length;
     const lockedTotal = new Set([...lockedCells, ...opponentLockedCells]).size;
     if (total > 0 && lockedTotal >= total) {
-      const t = setTimeout(() => setGameOver(true), 1900);
+      const t = setTimeout(() => setGameOver(true), 3200);
       return () => clearTimeout(t);
     }
   }, [puzzle, lockedCells, opponentLockedCells, gameOver]);
@@ -606,10 +609,23 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       }
     }
 
-    // Rakibin oynanabilir taşı yok (kalan harflerin hepsi oyuncuda) → pas
+    // Havuz boşaldıysa (kalan harfler oyuncunun elinde) rakip normalde PAS geçer ve
+    // son taşlar HEP oyuncuya kalırdı. Artık rakip ARA SIRA oyuncunun rafındaki bir
+    // harfe denk gelen boş hücreyi "kapar" (o taşı raftan düşürerek) → son hamle her
+    // zaman oyuncuda olmaz; bitiş 3/2 gibi dengeli olabilir.
+    const fromRack = new Set();
     if (picked.length === 0) {
-      setBusy(false);
-      return;
+      const rackLetters = {};
+      rackRef.current.forEach(t => { rackLetters[t.letter] = (rackLetters[t.letter] || 0) + 1; });
+      const claimable = shuffled.filter(c => rackLetters[c.expected] > 0);
+      const CLAIM_PROB = 0.5;   // havuz boşken rakibin son hücreyi kapma olasılığı
+      if (claimable.length > 0 && Math.random() < CLAIM_PROB) {
+        picked.push(claimable[0]);
+        fromRack.add(claimable[0].id);
+      } else {
+        setBusy(false);   // bu el pas
+        return;
+      }
     }
 
     // 1) Taşları rakip skorundan hücrelere uçur (yavaşça yerleşme hissi)
@@ -626,15 +642,29 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
         flyFromCell(c.id, '+1', 'rival', 0, 1);
       });
 
-      // Doldurulan hücrelerin harflerini havuzdan düş (artık güvenli: hepsi havuzdaydı)
+      // Havuz kaynaklı taşları havuzdan düş (kapılanlar hariç)
       setPool(prev => {
         const np = [...prev];
         picked.forEach(c => {
+          if (fromRack.has(c.id)) return;
           const i = np.indexOf(c.expected);
           if (i !== -1) np.splice(i, 1);
         });
         return np;
       });
+      // Rakip oyuncunun rafından kaptıysa o taşı raftan düş (denge korunur: 1 hücre + 1 taş)
+      if (fromRack.size > 0) {
+        setRack(prev => {
+          const nr = [...prev];
+          picked.forEach(c => {
+            if (!fromRack.has(c.id)) return;
+            const i = nr.findIndex(t => t.letter === c.expected);
+            if (i !== -1) nr.splice(i, 1);
+          });
+          return nr;
+        });
+        setSelectedRackItem(null);   // kapılan taş seçiliyse seçim kalmasın
+      }
 
       // Rakibin tamamladığı kelimeler
       const allLocked = new Set([...playerLocked, ...newOppLocked]);
