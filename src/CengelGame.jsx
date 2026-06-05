@@ -78,6 +78,8 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const [activeClue, setActiveClue] = useState(null);
   // Oyun bitti mi (tüm hücreler dolu) — bitince tekrar oynanamaz
   const [gameOver, setGameOver] = useState(false);
+  // "Nasıl oynanır?" yardım ekranı açık mı
+  const [showHelp, setShowHelp] = useState(false);
   // localStorage'a kayıt yapılabilsin mi (ilk yükleme bitmeden yazma)
   const restoredRef = useRef(false);
 
@@ -717,6 +719,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
         {onBack && (
           <button className="cengel-back" onClick={onBack}>← Geri</button>
         )}
+        <button className="cengel-help" onClick={() => setShowHelp(true)} aria-label="Nasıl oynanır?">?</button>
         <h1 className="logo-text">WORD <span className="logo-accent">TR</span></h1>
         <div className="versus-board">
           <div className="vs-side vs-you">
@@ -864,7 +867,9 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
           >
             <span className="undo-icon">{'↺'}</span> GERİ
           </button>
-          <button className="btn shuffle-btn" onClick={shuffleRack} disabled={busy}>DEĞİŞTİR</button>
+          <button className="btn shuffle-btn" onClick={shuffleRack} disabled={busy}>
+            <span className="shuffle-icon" aria-hidden="true">⇄</span> DEĞİŞTİR
+          </button>
           {(() => {
             const hasPending = Object.keys(gridState).some(id => !lockedCells.includes(id));
             return (
@@ -931,6 +936,26 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       ))}
 
       {/* OYUN SONU EKRANI (İngilizce, sade) */}
+      {/* NASIL OYNANIR? yardım ekranı */}
+      {showHelp && (
+        <div className="help-overlay" onClick={() => setShowHelp(false)}>
+          <div className="help-card" onClick={e => e.stopPropagation()}>
+            <button className="help-close" onClick={() => setShowHelp(false)}>✕</button>
+            <h2 className="help-title">Nasıl Oynanır?</h2>
+            <ul className="help-list">
+              <li><b>🎯 Amaç:</b> Bulmacadaki harf hücrelerini doğru harflerle doldur — rakibe karşı yarış, çoğunu sen kap.</li>
+              <li><b>✍️ Taş koy:</b> Alttaki raftan bir harf seç, ipucuna uyan hücreye dokun (ya da sürükle).</li>
+              <li><b>✅ ONAYLA:</b> Doğruysa hücre kilitlenir ve <b>+1</b> kazanırsın; yanlışsa <b>−1</b> ve taş rafa döner.</li>
+              <li><b>⇄ DEĞİŞTİR:</b> Raftaki taşları karıştırır. <b>↺ GERİ:</b> bu turda koyduklarını geri alır.</li>
+              <li><b>❓ Sorular:</b> Sarı hücredeki ipucuna dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
+              <li><b>🤖 Rakip:</b> O da hücre doldurur. Taşın bitince kalanları rakip tamamlar; en çok puanı toplayan kazanır.</li>
+              <li><b>📅 Her gün:</b> Yeni bulmaca (3 zorluk). Skorun 🏆 tabloya işler — günün ve haftanın birincisi ol!</li>
+            </ul>
+            <button className="help-ok" onClick={() => setShowHelp(false)}>Anladım</button>
+          </div>
+        </div>
+      )}
+
       {gameOver && (() => {
         const won = score > opponentScore;
         const lost = score < opponentScore;
