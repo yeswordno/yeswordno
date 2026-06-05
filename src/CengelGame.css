@@ -413,7 +413,7 @@
 
 /* ─── RAF (RACK) ─── */
 .bottom-panel {
-  margin-top: 0;
+  margin-top: auto;        /* raf+butonları ekranın DİBİNE sabitle (altta boş bant kalmasın) */
   padding-bottom: 8px;
   flex-shrink: 0;
 }
@@ -624,7 +624,8 @@
 /* ─── MOBİL (≤ 480px) ─── */
 @media (max-width: 480px) {
   .game-container {
-    padding: 8px 8px env(safe-area-inset-bottom, 10px);
+    /* ÜST safe-area korunmalı (çentik/status bar) — yoksa "← Geri" başlık çubuğu altında kalır */
+    padding: max(8px, env(safe-area-inset-top)) 8px env(safe-area-inset-bottom, 10px);
   }
 
   .logo-text {
