@@ -7,6 +7,7 @@ const EMOJIS = ['👑', '🦁', '🐯', '🐉', '🦅', '🐺', '🔥', '⚡', '
 const ERR_TR = {
   'nick-dolu': 'Bu takma ad alınmış, başka bir tane dene.',
   'nick-kisa': 'Takma ad en az 2 harf olmalı.',
+  'nick-uygunsuz': 'Bu takma ad uygun değil, başka bir tane seç.',
   'backend-yok': 'Skor tablosu henüz hazır değil (sunucu bağlı değil).',
   'eksik': 'Bilgiler eksik.',
 };

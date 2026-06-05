@@ -1,6 +1,7 @@
 // POST /api/register  { deviceKey, nick, emoji }
 // Takma adı cihaz anahtarına bağlar (şifre yok). Nick benzersizdir.
 import { redis, redisConfigured } from './_store.js';
+import { isOffensive } from './_badwords.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
@@ -11,6 +12,7 @@ export default async function handler(req, res) {
 
   const cleanNick = String(nick).trim().replace(/\s+/g, ' ').slice(0, 20);
   if (cleanNick.length < 2) return res.status(400).json({ error: 'nick-kisa' });
+  if (isOffensive(cleanNick)) return res.status(422).json({ error: 'nick-uygunsuz' });
   const lower = cleanNick.toLocaleLowerCase('tr-TR');
   const safeEmoji = (emoji && String(emoji).slice(0, 8)) || '🎮';
 
