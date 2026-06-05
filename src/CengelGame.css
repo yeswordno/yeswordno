@@ -178,8 +178,8 @@
   font-weight: bold;
   user-select: none;
   -webkit-user-select: none;
-  /* Resimdeki gibi: düz kare değil, şık yuvarlatılmış kutucuk */
-  border-radius: 8px;
+  /* Referanstaki gibi HAFİF yuvarlatma (aşırı değil) */
+  border-radius: 4px;
 }
 
 .cg-cell.empty {
