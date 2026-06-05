@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import './CengelGame.css';
+import { submitScore } from './utils/leaderboard';
 
 // Soru yazısını kapsayan kutuya SIĞACAK şekilde otomatik küçültür.
 // Özellikle X (çift soru) hücrelerinde uzun kelimeler taşmasın diye font'u
@@ -144,6 +145,16 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       }));
     } catch { /* kota dolu vb. — sessiz geç */ }
   }, [puzzle, gridState, lockedCells, opponentLockedCells, score, opponentScore, completedWords, rack, pool, gameOver]);
+
+  // Oyun bitince bu seviyenin skorunu skor tablosuna gönder (yalnız bir kez,
+  // kayıtlı kullanıcı için; kayıtsızsa sessizce atlanır, oyunu etkilemez).
+  const submittedRef = useRef(false);
+  useEffect(() => {
+    if (gameOver && !submittedRef.current) {
+      submittedRef.current = true;
+      submitScore(level, score);
+    }
+  }, [gameOver, level, score]);
 
   // Tüm harf hücreleri dolunca oyunu bitir. Son +1/+N puan uçuşları skora varıp
   // işlensin diye birkaç saniye bekle, SONRA sonucu göster (anında değil).
