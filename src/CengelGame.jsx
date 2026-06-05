@@ -255,6 +255,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   // Skor tablosundaki sayıların referansları (uçan puan hedefi)
   const scoreRef = useRef(null);
   const oppScoreRef = useRef(null);
+  const oppLabelRef = useRef(null);   // "Rakip" yazısı — rakip taşları buradan uçar
 
   // (x0,y0) → (x1,y1) arası uçan bir puan üret (value: skora eklenecek; who: hedef taraf)
   const spawnFly = (x0, y0, x1, y1, text, value, who) => {
@@ -303,11 +304,12 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const flyOppTileToCell = (cellId, letter, delayMs = 0) => {
     setTimeout(() => {
       const el = document.querySelector(`[data-cell-id="${cellId}"]`);
-      const scoreEl = oppScoreRef.current;
-      if (!el || !scoreEl) return;
+      // Rakip taşları "Rakip" yazısının SAĞINDAN çıksın (skor sayısından değil)
+      const originEl = oppLabelRef.current || oppScoreRef.current;
+      if (!el || !originEl) return;
       const r = el.getBoundingClientRect();
-      const s = scoreEl.getBoundingClientRect();
-      const x0 = s.left + s.width / 2, y0 = s.top + s.height / 2;
+      const s = originEl.getBoundingClientRect();
+      const x0 = s.right + 6, y0 = s.top + s.height / 2;
       const x1 = r.left + r.width / 2, y1 = r.top + r.height / 2;
       const id = `otile-${Date.now()}-${Math.random()}`;
       setFlyingOppTiles(prev => [...prev, { id, letter, x0, y0, dx: x1 - x0, dy: y1 - y0 }]);
@@ -729,7 +731,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
           <span className="vs-mid">VS</span>
           <div className="vs-side vs-rival">
             <span className="vs-score" ref={oppScoreRef}>{opponentScore}</span>
-            <span className="vs-label">Rakip</span>
+            <span className="vs-label" ref={oppLabelRef}>Rakip</span>
           </div>
         </div>
       </header>
