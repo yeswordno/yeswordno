@@ -719,7 +719,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     >
       <header className="game-header" onClick={e => e.stopPropagation()}>
         {onBack && (
-          <button className="cengel-back" onClick={onBack}>← Geri</button>
+          <button className="cengel-close" onClick={onBack} aria-label="Kapat">✕</button>
         )}
         <button className="cengel-help" onClick={() => setShowHelp(true)} aria-label="Nasıl oynanır?">?</button>
         <h1 className="logo-text">WORD <span className="logo-accent">TR</span></h1>

@@ -810,25 +810,26 @@
   transform: scale(0.96);
 }
 
-/* ─── MENÜYE DÖN BUTONU ─── */
+/* ─── KAPAT (✕) BUTONU — sağdaki "?" ile simetrik, sol üst yuvarlak ─── */
 .cengel-root .game-header {
   position: relative;
 }
-.cengel-back {
+.cengel-close {
   position: absolute;
   left: 0;
   top: 0;
+  width: 32px;
+  height: 32px;
   background: #ffffff;
   border: 1px solid var(--grid-line);
   color: var(--ink-soft);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 800;
+  border-radius: 50%;
   cursor: pointer;
   z-index: 40;
 }
-.cengel-back:active {
+.cengel-close:active {
   transform: scale(0.96);
 }
 
