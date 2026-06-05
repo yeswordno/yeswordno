@@ -6,8 +6,8 @@
   --gold-deep: #c98f31;
 
   --clue-bg: #f2d074;             /* açık ALTIN soru hücresi (ONAYLA'nın bir ton açığı) */
-  --empty-bg: rgba(236, 233, 250, 0.14);  /* pasif/boş (B) hücre: çok sakin */
-  --letter-bg: rgba(236, 233, 250, 0.40); /* boş oynanabilir hücre: sakin lavanta */
+  --empty-bg: rgba(150, 140, 200, 0.16);  /* pasif/boş (B) hücre: geri çekilmiş mor-cam */
+  --letter-bg: rgba(240, 237, 253, 0.62); /* boş oynanabilir hücre: AÇIK camsı lavanta */
   --grid-line: rgba(255, 255, 255, 0.10); /* yumuşak ızgara çizgisi */
 
   --text-dark: #1f2937;          /* açık hücre/krem üstü koyu yazı */
@@ -68,17 +68,19 @@
 }
 
 .logo-text {
-  font-size: 1.35rem;            /* küçük tutuldu: göz tahtaya gitsin (hiyerarşi) */
+  font-size: 1.5rem;
   margin: 0;
-  color: var(--text-dim);        /* sessiz açık mor — öne çıkmasın */
+  color: var(--text-light);
   letter-spacing: 3px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
+  text-shadow: 0 0 14px rgba(190, 170, 255, 0.45);   /* yumuşak ışıltı */
 }
 
 .logo-accent {
-  color: var(--gold);            /* tek altın dokunuş: marka */
+  color: var(--gold);            /* altın marka */
   font-weight: 800;
+  text-shadow: 0 0 16px rgba(232, 182, 87, 0.6);     /* altın ışıltı */
 }
 
 /* ─── SEN vs RAKİP TABLOSU ─── */
@@ -96,10 +98,14 @@
   align-items: center;
   gap: 10px;
   flex: 1;
-  padding: 6px 14px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.07);   /* mor-cam */
-  border: 1px solid rgba(255, 255, 255, 0.13);
+  padding: 7px 14px;
+  border-radius: 12px;
+  /* Buzlu cam panel */
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.30), 0 4px 14px rgba(0, 0, 0, 0.2);
 }
 
 .vs-you {
@@ -144,10 +150,11 @@
   gap: 2px;                        /* kutucuklar arası ince boşluk (sıkı dursun) */
   background-color: transparent;
   padding: 6px;
-  border-radius: 16px;
-  /* İnce altın çerçeve (abartısız) — tahta sahne olsun */
-  border: 1px solid rgba(232, 182, 87, 0.30);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  border-radius: 18px;
+  /* Işıyan altın cam çerçeve — tahta sahnenin yıldızı */
+  border: 1px solid rgba(232, 182, 87, 0.45);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4), 0 0 26px rgba(232, 182, 87, 0.18),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   /* Izgara kalan dikey alanı doldursun (mobilde referans gibi oturur) */
   width: 100%;
   margin-bottom: 14px;
@@ -178,22 +185,32 @@
   font-weight: bold;
   user-select: none;
   -webkit-user-select: none;
-  /* Referanstaki gibi HAFİF yuvarlatma (aşırı değil) */
-  border-radius: 4px;
+  border-radius: 5px;
+  /* Glassmorphism: buzlu cam + net beyaz kenar parlaması + üst iç ışık */
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.55), inset 0 -2px 4px rgba(80, 60, 140, 0.10);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 
+/* Pasif (B): geri çekilmiş, parlamasız → oynanamaz belli olsun */
 .cg-cell.empty {
   background-color: var(--empty-bg);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.18);
 }
 
 .cg-cell.clue {
   background-color: var(--clue-bg);
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 55%);
   flex-direction: column;
   text-align: center;
   padding: 2px 2px 11px;
-  color: #111;
+  color: #2a1d05;
   cursor: pointer;
   transition: transform 0.16s ease, box-shadow 0.16s ease;
+  border-color: rgba(255, 240, 200, 0.6);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.65), 0 0 10px rgba(232, 182, 87, 0.20);
 }
 
 /* Dokunulan soru hücresi: kare ve içindeki yazı bir miktar büyür */
@@ -324,21 +341,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--placed-bg);
-  border: 1px solid var(--placed-bg);
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  /* 3D konmuş taş: mor-slate gradyan + üst parlama */
+  background: linear-gradient(180deg, #6a619f 0%, #524a85 100%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.30), 0 4px 9px rgba(0, 0, 0, 0.35);
   color: #ffffff;
   font-size: clamp(1.2rem, 4.2vw, 1.8rem);
-  font-weight: 600;
+  font-weight: 700;
   touch-action: none;
 }
 
-/* Rakibin koyduğu harf (her zaman onaylanmış → açık gri) */
+/* Rakibin/onaylanmış harf (açık 3D taş, koyu yazı) */
 .letter-tile.opp-tile {
-  background-color: var(--confirmed-bg);
-  border-color: var(--confirmed-border);
+  background: linear-gradient(180deg, #ffffff 0%, #ece7f6 100%);
+  border-color: rgba(255, 255, 255, 0.85);
   color: var(--text-dark);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 3px 8px rgba(0, 0, 0, 0.28);
 }
 
 /* Sürüklenen taşın parmağı/ imleci takip eden görseli.
@@ -363,10 +382,10 @@
 
 .cg-cell.locked .letter-tile,
 .letter-tile.opp-tile {
-  background-color: var(--confirmed-bg);
-  border-color: var(--confirmed-border);
-  border-radius: 6px;
-  box-shadow: none;
+  background: linear-gradient(180deg, #ffffff 0%, #ece7f6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), 0 3px 8px rgba(0, 0, 0, 0.28);
   color: var(--text-dark);
   text-shadow: none;
 }
@@ -440,29 +459,34 @@
   /* SABİT yükseklik: taş (54) + dikey dolgu (24) + kenar (2) = 80px.
      Böylece harf kalmayınca raf kısalmaz (boş/dolu hep aynı boy). */
   min-height: 80px;
-  background-color: rgba(255, 255, 255, 0.06);   /* sessiz mor-cam */
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  /* Buzlu cam raf */
+  background-color: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 6px 18px rgba(0, 0, 0, 0.22);
   padding: 12px 10px;
-  border-radius: 14px;
+  border-radius: 16px;
   margin-bottom: 12px;
 }
 
 .rack-tile {
   width: 54px;
   height: 54px;
-  background-color: var(--tile-bg);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  /* 3D dokunsal taş: hafif gradyan + üst parlama + zemin gölgesi */
+  background: linear-gradient(180deg, #ffffff 0%, #e7e2f4 100%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   color: var(--tile-ink);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 1.7rem;
-  font-weight: 700;
-  border-radius: 8px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  font-weight: 800;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -3px 5px rgba(120, 100, 170, 0.18),
+              0 4px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  color: var(--tile-ink);
-  transition: transform 0.12s, box-shadow 0.12s, background-color 0.12s;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
   /* Sürükleme sırasında sayfa kaymasın */
   touch-action: none;
 }
@@ -511,8 +535,11 @@
 /* İkincil butonlar: mor-cam, ama belirgin (okunur) */
 .undo-btn,
 .shuffle-btn {
-  background-color: rgba(255, 255, 255, 0.17);
+  background-color: rgba(255, 255, 255, 0.13);
   color: var(--text-light);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22);
 }
 
 /* GERİ ikonu: ince kalmasın, belirgin dursun */
@@ -535,11 +562,13 @@
 
 /* Birincil eylem: TEK ALTIN buton — göz buraya gelsin */
 .submit-btn {
-  background: linear-gradient(180deg, #f0c44e 0%, #e0a838 100%);
-  border-color: var(--gold-deep);
+  background: linear-gradient(180deg, #ffd877 0%, #f0bb4c 48%, #e0a233 100%);
+  border-color: rgba(255, 230, 170, 0.7);
   color: #3a2a08;
   font-weight: 800;
-  box-shadow: 0 6px 18px rgba(232, 182, 87, 0.35);
+  /* İç ışıltı (üstte parlak çizgi) + dış altın parıltı */
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.7), inset 0 -2px 6px rgba(160, 110, 20, 0.35),
+              0 6px 22px rgba(232, 182, 87, 0.5), 0 0 18px rgba(240, 196, 78, 0.35);
 }
 
 /* PAS durumu (hiç taş konmamış): vurgu yok ama belirgin cam */
