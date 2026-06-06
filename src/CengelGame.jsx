@@ -18,7 +18,7 @@ function mulberry32(seed) {
 // Kurallar: 2× H2, 1× H3, 1× K2. K2 kelimesinin hücrelerine H2/H3 KONMAZ (çakışma yok).
 // Aynı tohum → her gün herkese aynı bonuslar; yeniden generate gerekmez, save ile tutarlı.
 function computeBonuses(puzzle) {
-  if (!puzzle) return { cell: {}, k2: null, k2Cells: new Set() };
+  if (!puzzle) return { cell: {}, k2: null, k2Clue: null };
   const seedStr = String(puzzle.id || '');
   let seed = 0;
   for (let i = 0; i < seedStr.length; i++) seed = (Math.imul(seed, 31) + seedStr.charCodeAt(i)) >>> 0;
@@ -27,10 +27,18 @@ function computeBonuses(puzzle) {
   const letterCells = puzzle.cells.filter(c => c.type === 'letter').map(c => c.id);
   const wordIds = Object.keys(puzzle.words || {});
 
-  // K2: 3+ harfli bir kelime seç (2 katı anlamlı olsun); yoksa herhangi bir kelime
-  const k2Pool = wordIds.filter(w => puzzle.words[w].length >= 3);
-  const pickFrom = k2Pool.length ? k2Pool : wordIds;
-  const k2 = pickFrom.length ? pickFrom[Math.floor(rand() * pickFrom.length)] : null;
+  // Kelime → TEK YÖNLÜ soru hücresi eşlemesi (K2 yıldızı o soruya net otursun;
+  // çift soru/X hücrelerinde hangi kelime olduğu belirsiz olurdu, onları tercih etmeyiz).
+  const singleClue = {};
+  puzzle.cells.forEach(c => { if (c.type === 'clue' && c.wordId) singleClue[c.wordId] = c.id; });
+
+  // K2: 3+ harfli ve tek yönlü sorusu olan kelimelerden seç (2 katı anlamlı + yıldız net)
+  let pool = wordIds.filter(w => puzzle.words[w].length >= 3 && singleClue[w]);
+  if (!pool.length) pool = wordIds.filter(w => puzzle.words[w].length >= 3);
+  if (!pool.length) pool = wordIds;
+  const k2 = pool.length ? pool[Math.floor(rand() * pool.length)] : null;
+  // K2 kelimesinin soru hücresi (yıldız + 2× buraya konur)
+  const k2Clue = k2 ? (singleClue[k2] || null) : null;
   const k2Cells = new Set(k2 ? puzzle.words[k2].cells : []);
 
   // H2/H3: K2 kelimesinin hücreleri DIŞINDAN 3 farklı hücre (deterministik karıştır)
@@ -43,7 +51,7 @@ function computeBonuses(puzzle) {
   if (cand[0]) cell[cand[0]] = 2;   // H2
   if (cand[1]) cell[cand[1]] = 2;   // H2
   if (cand[2]) cell[cand[2]] = 3;   // H3
-  return { cell, k2, k2Cells };
+  return { cell, k2, k2Clue };
 }
 
 // Soru yazısını kapsayan kutuya SIĞACAK şekilde otomatik küçültür.
@@ -789,13 +797,6 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   );
   if (!puzzle) return <div className="cengel-root"><div className="loading">Yükleniyor...</div></div>;
 
-  // K² etiketi: doublelanan kelimenin İLK BOŞ hücresinde göster (hep tek etiket,
-  // ilk hücre erken dolsa bile sonraki boş hücreye kayar; ton tüm kelimede kalır).
-  const k2LabelCell = bonuses.k2
-    ? (puzzle.words[bonuses.k2].cells.find(id =>
-        !gridState[id] && !lockedCells.includes(id) && !opponentLockedCells.includes(id)) || null)
-    : null;
-
   return (
     <div className="cengel-root">
     <div
@@ -852,6 +853,9 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                   {/* Oklar hücrenin doğrudan çocuğu — yarım-kutu overflow'u kırpmasın */}
                   <span className="arrow-right-both">{'▶︎'}</span>
                   <span className="arrow-down-both">{'▼︎'}</span>
+                  {bonuses.k2Clue === cell.id && (
+                    <span className="clue-k2"><span className="clue-k2-star">★</span>2×</span>
+                  )}
                 </div>
               );
             }
@@ -865,6 +869,9 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                 <AutoFitText className="clue-text" text={cell.text} />
                 {cell.dir === "right" && <span className="arrow-right">{'▶︎'}</span>}
                 {cell.dir === "down" && <span className="arrow-down">{'▼︎'}</span>}
+                {bonuses.k2Clue === cell.id && (
+                  <span className="clue-k2"><span className="clue-k2-star">★</span>2×</span>
+                )}
               </div>
             );
           }
@@ -876,12 +883,11 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
           const animClass = animations[cell.id] || '';
           // Seçili taş varsa boş/dolu kilitli olmayan hücreleri vurgula
           const isTarget = !!selectedRackItem && !isLocked;
-          // Bonus: H2/H3 (tek hücre) veya K2 (kelime hücresi). Boş hücrede görünür.
+          // Harf bonusu: H2 (×2) / H3 (×3) — tek hücre, boş hücrede görünür.
+          // (K2 artık harf hücrelerinde değil, kelimenin SORU kutucuğunda gösterilir.)
           const hVal = bonuses.cell[cell.id];                 // 2 (H2) | 3 (H3) | undefined
-          const inK2 = bonuses.k2Cells.has(cell.id);
-          const isK2Label = inK2 && cell.id === k2LabelCell; // K² etiketi: kelimenin ilk boş hücresi
-          const bonusClass = hVal === 3 ? 'bonus-h3' : hVal === 2 ? 'bonus-h2' : inK2 ? 'bonus-k2' : '';
-          const bonusLabel = hVal === 3 ? 'H³' : hVal === 2 ? 'H²' : isK2Label ? 'K²' : '';
+          const bonusClass = hVal === 3 ? 'bonus-h3' : hVal === 2 ? 'bonus-h2' : '';
+          const bonusLabel = hVal === 3 ? 'H³' : hVal === 2 ? 'H²' : '';
           const showBadge = !placed && !lockedByOpp && bonusLabel;
 
           return (
@@ -1043,7 +1049,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               <li><b>🎯 Amaç:</b> Bulmacadaki harf hücrelerini doğru harflerle doldur — rakibe karşı yarış, çoğunu sen kap.</li>
               <li><b>✍️ Taş koy:</b> Alttaki raftan bir harf seç, ipucuna uyan hücreye dokun (ya da sürükle).</li>
               <li><b>✅ ONAYLA:</b> Doğruysa hücre kilitlenir ve <b>+1</b> kazanırsın; yanlışsa <b>−1</b> ve taş rafa döner.</li>
-              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. <b>K²</b> işaretli kelimeyi tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
+              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. Sorusunda <b>★2×</b> olan kelimeyi tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
               <li><b>⇄ DEĞİŞTİR:</b> Raftaki taşları karıştırır. <b>↺ GERİ:</b> bu turda koyduklarını geri alır.</li>
               <li><b>❓ Sorular:</b> Sarı hücredeki ipucuna dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
               <li><b>🤖 Rakip:</b> O da hücre doldurur. Taşın bitince kalanları rakip tamamlar; en çok puanı toplayan kazanır.</li>

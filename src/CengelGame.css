@@ -345,7 +345,26 @@
 }
 .cell-bonus-h2 { color: #c08a2e; }   /* bal/amber */
 .cell-bonus-h3 { color: #b0451f; }   /* kiremit (daha güçlü) */
-.cell-bonus-k2 { color: #2f7a72; }   /* teal (kelime bonusu) */
+
+/* K2: kelimenin SORU kutucuğunda ★ + 2× rozeti (köşede küçük beyaz pill, bal zeminde okunsun) */
+.clue-k2 {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 0 2px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: clamp(0.44rem, 1.7vw, 0.6rem);
+  font-weight: 800;
+  color: #b5790a;
+  line-height: 1.35;
+  pointer-events: none;
+  z-index: 2;
+}
+.clue-k2-star { color: #e0a514; font-size: 1.1em; }
 
 /* Sürüklenmekte olan taşın kaynağı (raf taşı / hücre harfi) gizlenir → "raftan kalktı" hissi.
    Yeri korunur (opacity), raf yeniden akmaz. */
@@ -356,7 +375,6 @@
    H2 soru hücrelerinden (bal #f4ead0) ayrışsın diye daha AÇIK krem. */
 .cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fdf8ec; }
 .cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #f8e6d6; }
-.cg-cell.letter-box.bonus-k2:not(.locked):not(.opp-locked) { background-color: #e4f0ee; }
 
 /* Sürüklenen taşın parmağı/ imleci takip eden görseli.
    Parmağın hafif sağ-üst çaprazında durur ki harf parmakla örtülmeden görünsün. */
