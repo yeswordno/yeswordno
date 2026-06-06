@@ -17,6 +17,8 @@ Menüdeki sıra (lang ekranı):
 
 > Mevcut "Kelime Avcısı" akışı (lang/level/game/collection) **bozulmamalı**. Çengel ayrı bir bileşendir.
 
+**Kelime Avcısı kelime seçimi (`startGame`):** Çapraz bulmacada boşluk gösterilemez → **cevabı çok kelimeli olan kayıtlar elenir** (`rawAnswer.trim().includes(' ')` → atla; ör. "harekete geçmek", "kafa karıştırıcı" → "KAFAKARIŞTIRICI" gibi saçma dizi olmasın). İpucu (clue) çok kelimeli olabilir, sorun değil. (Tek-kelimeye kısaltılmış YANLIŞ çeviriler — ör. veri "mobilize=harekete" — otomatik tespit edilemez, elle düzeltilir.) Izgara `gameLogic.js` `generateCrossword`, `GRID_SIZE=15`.
+
 ## Çengel "Günlük Düello" modu — `src/CengelGame.jsx` + `src/CengelGame.css`
 Kendi kendine yeten bir bileşen. `App.jsx` içinde `import CengelGame from './CengelGame'` ile gelir, `<CengelGame onBack={() => setScreen('lang')} />` olarak render edilir.
 
@@ -37,7 +39,7 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 
 ### Zorluk seviyeleri (Günlük Düello)
 - `App.jsx` `screen==='daily'` iken önce **seviye seçim ekranı** gösterir (😊 Kolay/Easy · 🙂 Orta/Medium · 🔥 Zor/Hard). Seçilince `<CengelGame level={dailyLevel} key={dailyLevel} onBack={()=>setDailyLevel(null)} />` render edilir (`key` → her seviye taze mount, state sıfırlama derdi yok).
-- `CengelGame` `level` prop'una göre `fetch('/puzzles/daily-<level>.json')` çeker. Geri butonu "← Geri" → seviye seçimine döner.
+- `CengelGame` `level` prop'una göre `fetch('/puzzles/daily-<level>.json')` çeker. **Header:** sol-üstte yuvarlak **✕** (`.cengel-close`, menüye/seviye seçimine döner) + sağ-üstte yuvarlak **?** (`.cengel-help`, "Nasıl Oynanır?" modalı `showHelp`) — ikisi simetrik. Ortada `WORD TR` logosu, altında Sen/Rakip skor tablosu. Alt kontroller: **↺ GERİ** (undo), **⇄ DEĞİŞTİR** (`shuffleRack`, `.shuffle-icon`), **ONAYLA/PAS** (`submitTurn`).
 - **Bulmaca dosyası artık KUYRUK formatı:** `{ level, generated, puzzles: [ {id:<tarih>, ...}, ... ] }` (7 günlük tampon). Fetch handler İstanbul tarihine göre **bugünün** kaydını seçer (`puzzles.find(id===today)` → yoksa `id<=today` en günceli → yoksa son eleman). **Eski tek-obje formatıyla geri uyumlu** (`raw.puzzles` yoksa `raw`'ı doğrudan kullanır) → deploy uyumsuzluğunda kırılmaz. Bkz. "Kuyruk/tampon" başlığı.
 - **Seviye save anahtarı:** `cengel_save_<level>_<puzzleId>` (her seviye ayrı ilerleme).
 
@@ -46,14 +48,27 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **Taş durumları:** raf taşı açık (`--tile-bg`), tahtaya konmuş-onaylanmamış **koyu** (`--placed-bg`), onaylanmış doğru **açık gri** (`--confirmed-bg`).
 - **Skor anında işlenmez:** `+1/−1/+N` puanlar hücreden skor tablosuna **uçar** (`flyingPoints` + Web Animations API). Skor, uçuş bitince `landScore(who, value)` ile işlenir. Oyuncu skoru `Math.max(0, ...)` ile 0 tabanlı.
 - **Yanlış harf:** köşede `−1` belirir, sonra **koyu taşı** rafa geri uçar (`flyingTiles`).
-- **Rakip taşı uçar (yerleşme):** rakip hamlede taşlar **rakip skorundan hücreye** kademeli uçar (`flyingOppTiles`, `flyOppTileToCell`, ~880ms, 280ms arayla); inince hücre kilitlenir + `+1` skora uçar. Birden belirmez.
-- **Rakip (medium AI):** oyuncudan ~3.5s sonra oynar, dağılım 1:%30 / 2:%45 / 3:%25 (ort. ~1.95 taş/hamle). **Önce sadece harfi havuzda olan hücreleri doldurur** → oyuncunun eli "alakasız taş"a dönüşmez ve **oyuncu+rakip = boş hücre** tutarlı kalır. **Havuz hamleyi dolduramadığında** (oyun sonu yaklaşır, kalan harfler oyuncunun rafında) rakip kalanı **oyuncunun rafındaki harfe denk gelen hücreleri %60 (`CLAIM_PROB`) olasılıkla "kapayarak"** tamamlar (o taşı raftan düşürerek; 1 hücre + 1 taş → denge korunur) → son taşlar hep oyuncuya kalmaz, bitiş 3/2 gibi karışır. (Eski sürüm yalnız havuz TAMAMEN boşken kapıyordu; oyuncu son taşları tek hamlede koyup bitirdiği için tetiklenmiyordu.) Stale-closure'a karşı `poolRef/gridStateRef/oppLockedRef/rackRef` kullanılır.
-- **Taş sayısı:** raf, kalan boş hücre kadar dolar — `cap = min(5, kalanBoşHücre)`.
+- **Rakip taşı uçar (yerleşme):** rakip hamlede taşlar **"Rakip" yazısının sağından** (`oppLabelRef`, skor sayısından DEĞİL) hücreye kademeli uçar (`flyingOppTiles`, `flyOppTileToCell`, ~880ms, 280ms arayla); inince hücre kilitlenir + `+1` skora uçar.
+- **Rakip (medium AI):** oyuncudan ~3.5s sonra oynar, dağılım 1:%30 / 2:%45 / 3:%25 (ort. ~1.95 taş/hamle). **Sadece harfi havuzda olan hücreleri doldurur** → oyuncunun eli "alakasız taş"a dönüşmez ve **oyuncu+rakip = boş hücre** tutarlı kalır. Stale-closure'a karşı `poolRef/gridStateRef/oppLockedRef/rackRef`.
+- **REZERV mekanizması (son taşlar hep oyuncuya kalmasın):** `OPP_SHARE=0.4` → rakip harf hücrelerinin ~%40'ını doldurur. (a) `runOpponentTurn` rakibi **hedef payını aşmaktan alıkoyar** (`oppRemaining = OPP_SHARE*N - oppLocked`, payını oyun boyunca dengeli doldurur). (b) `finalizeRack` raf kapağını `cap = min(5, kalanBoşHücre − oppRemaining)` yapar → rakibin payı kadar harf **havuzda rezerv** tutulur, oyuncunun rafına çekilmez → o hücreleri rakip doldurur. Böylece bitiş 3/2 gibi karışır, son hamle bazen rakipte. *(Önceki "CLAIM_PROB kapma" yaklaşımı kaldırıldı — finalizeRack refill'i son harfi hep oyuncuya çekiyordu.)*
+- **Oyuncunun taşı bitince:** rakip hamlesi sonunda raf boş + hâlâ (rakibe ait) hücre varsa rakip **otomatik devam** eder (`busy` açık kalır, PAS gerekmez) → kalan hücreleri rakip bitirir.
 - **Soru hücresi:** dokununca `scale(1.42)` büyür (`activeClue`). **X (çift soru) hücresi:** iki soru ortalı, oklar (▶ üst-sağ, ▼ alt-orta) yarım-kutu dışında render edilir (kırpılmaz).
 - **Oyun sonu:** tüm harf hücreleri kilitlenince **~3.2s** sonra `gameOver=true` (son +1/+N puan uçuşları skora varıp işlensin, sonuç ondan sonra çıksın). `.result-overlay`: "You won!" / "Not this time" / "It's a tie!".
 - **Soru yazısı auto-fit:** `AutoFitText` bileşeni soru metnini kutusuna sığmazsa font'u kademeli küçültür (6px tabanına kadar), resize/döndürmede yeniden sığdırır. X (çift soru) hücrelerindeki uzun kelimeler kesilmez (line-clamp kaldırıldı).
 - **Renk uyumu:** `--placed-bg` (yerleştirilmiş taş, açık navy #54637d) aynı zamanda **TR logosu, oyuncu skoru ve ONAYLA butonu** için de kullanılır → tek değişkenle uyum.
 - **Kalıcılık:** `localStorage` `cengel_save_<level>_<puzzleId>` (taşlar, raf, skorlar, kilitler, gameOver). Yeni gün/seviye = taze oyun.
+
+## 🏆 Skor Tablosu (leaderboard) — Upstash + serverless
+Günlük Düello için günlük/haftalık sıralama. **Şifresiz** kimlik (takma ad + cihaz anahtarı).
+- **Backend (`api/`, Vercel serverless, ek bağımlılık YOK — Upstash REST'e `fetch`):**
+  - `api/_store.js` (`_` → endpoint değil): Upstash REST yardımcıları (`redis(...)`, `parseHash`), İstanbul tarihi/ISO-hafta, `LEVELS`, TTL. Env: `UPSTASH_REDIS_REST_URL`/`TOKEN` **veya** `KV_REST_API_URL`/`TOKEN` (ikisini de kabul eder).
+  - `api/register.js`: `{deviceKey, nick, emoji}` → nick benzersiz (`nick:<lower>`→deviceKey), `user:<deviceKey>`={nick,emoji}. `_badwords.js` ile **uygunsuz nick filtresi** (iki katman: uzun küfür kökleri alt-dize + kısa kelimeler tam eşleşme; leetspeak çözer → Scunthorpe yanlış-pozitifi yok).
+  - `api/submit.js`: `{deviceKey, level, score}` → **günlük puan = o gün oynanan seviyelerin ORTALAMASI**; **haftalık = günlük puanların TOPLAMI** (ZSET `lb:day:<date>`, `lb:week:<isoweek>`; delta ile). En iyi skoru tutar; TTL ile gün/hafta düşer.
+  - `api/leaderboard.js`: `?type=day|week&device=` → ilk 20 + (ilk 20 dışındaysa) kendi sıran.
+  - `api/admin.js`: `?token=ADMIN_TOKEN&action=remove&nick=` → nick'i + kayıtlarını siler (moderasyon). `ADMIN_TOKEN` env elle eklenir.
+- **İstemci:** `src/utils/leaderboard.js` — `getDeviceKey()` (UUID, localStorage `wtr_device`), `register/submitScore/fetchLeaderboard`. CengelGame oyun bitince `submitScore(level, score)` (kayıtsızsa sessiz atlar).
+- **UI:** `src/Scoreboard.jsx`+`.css` (onboarding nick+emoji / Günlük·Haftalık tablo, 👑 birinciye, "sen" satırı vurgulu — modal). `src/ScoreboardPreview.jsx` Günlük Düello zorluk ekranında **ilk-5 önizleme** + "Tümünü Gör →" modalı açar (App.jsx `showScoreboard`).
+- **Kurulum:** Vercel → Storage → Upstash Redis bağla (env'ler otomatik) → redeploy. Tablo **sadece canlıda** çalışır (Vite dev'de `/api` yok). Anonim olduğu için banlanan yeni nick'le dönebilir; asıl koruma önleyici filtre.
 
 ## Günlük bulmaca üretimi — `generator.js`
 - **3 seviye üretir** (`LEVELS`, kademeli eşleme). Her seviyenin dosya listesi:
