@@ -328,6 +328,30 @@
   color: var(--text-dark);
 }
 
+/* --- BONUS HÜCRELER (H2/H3/K2) --- */
+/* Boş hücrede ortada filigran gibi rozet; harf/taş konunca taş üstünü kapatır,
+   hücre kilitlenince ton .locked kuralıyla kalkar. */
+.cell-bonus {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.6rem, 2.5vw, 0.95rem);
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  line-height: 1;
+}
+.cell-bonus-h2 { color: #c08a2e; }   /* bal/amber */
+.cell-bonus-h3 { color: #b0451f; }   /* kiremit (daha güçlü) */
+.cell-bonus-k2 { color: #2f7a72; }   /* teal (kelime bonusu) */
+
+/* Boş (kilitsiz) bonus hücrelerine hafif ton — .locked/.opp-locked'da kalkar */
+.cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fbf1d8; }
+.cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #f8e6d6; }
+.cg-cell.letter-box.bonus-k2:not(.locked):not(.opp-locked) { background-color: #e4f0ee; }
+
 /* Sürüklenen taşın parmağı/ imleci takip eden görseli.
    Parmağın hafif sağ-üst çaprazında durur ki harf parmakla örtülmeden görünsün. */
 .drag-ghost {
