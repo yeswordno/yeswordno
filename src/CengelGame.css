@@ -346,25 +346,35 @@
 .cell-bonus-h2 { color: #c08a2e; }   /* bal/amber */
 .cell-bonus-h3 { color: #b0451f; }   /* kiremit (daha güçlü) */
 
-/* K2: kelimenin SORU kutucuğunda ★ + 2× rozeti (köşede küçük beyaz pill, bal zeminde okunsun) */
-.clue-k2 {
+/* K2: kelimenin SORU kutucuğu — su yeşili zemin + 4 köşe yıldız + altta K²
+   (yalnız tek yönlü, kısa metinli sorulara konur → dekor taşmaz). */
+.cg-cell.clue.clue-k2-cell { background-color: #d4ece6; }
+
+.k2-star {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  padding: 0 2px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.82);
-  font-size: clamp(0.44rem, 1.7vw, 0.6rem);
-  font-weight: 800;
-  color: #b5790a;
-  line-height: 1.35;
+  font-size: clamp(0.32rem, 1.15vw, 0.48rem);
+  color: #e0a514;             /* altın yıldız */
+  line-height: 1;
+  z-index: 3;
   pointer-events: none;
-  z-index: 2;
 }
-.clue-k2-star { color: #e0a514; font-size: 1.1em; }
+.k2-tl { top: 1.5px; left: 2px; }
+.k2-tr { top: 1.5px; right: 2px; }
+.k2-bl { bottom: 1.5px; left: 2px; }
+.k2-br { bottom: 1.5px; right: 2px; }
+
+.k2-label {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(0.42rem, 1.5vw, 0.58rem);
+  font-weight: 800;
+  color: #1f6f64;            /* koyu teal, açık zeminde okunur */
+  line-height: 1;
+  z-index: 3;
+  pointer-events: none;
+}
 
 /* Sürüklenmekte olan taşın kaynağı (raf taşı / hücre harfi) gizlenir → "raftan kalktı" hissi.
    Yeri korunur (opacity), raf yeniden akmaz. */

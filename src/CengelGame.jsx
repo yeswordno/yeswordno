@@ -27,18 +27,23 @@ function computeBonuses(puzzle) {
   const letterCells = puzzle.cells.filter(c => c.type === 'letter').map(c => c.id);
   const wordIds = Object.keys(puzzle.words || {});
 
-  // Kelime → TEK YÖNLÜ soru hücresi eşlemesi (K2 yıldızı o soruya net otursun;
-  // çift soru/X hücrelerinde hangi kelime olduğu belirsiz olurdu, onları tercih etmeyiz).
-  const singleClue = {};
-  puzzle.cells.forEach(c => { if (c.type === 'clue' && c.wordId) singleClue[c.wordId] = c.id; });
+  // Kelime → TEK YÖNLÜ soru hücresi eşlemesi (K2 dekoru o soruya net otursun;
+  // çift soru/X hücrelerinde dekor taşar + hangi kelime belirsiz olur → onları alma).
+  const clueByWord = {};
+  puzzle.cells.forEach(c => { if (c.type === 'clue' && c.wordId) clueByWord[c.wordId] = c; });
+  const clueLen = w => (clueByWord[w]?.text || '').length;
+  const isRight = w => clueByWord[w]?.dir === 'right';   // alttaki K² ▼ aşağı-ok ile çakışmasın
 
-  // K2: 3+ harfli ve tek yönlü sorusu olan kelimelerden seç (2 katı anlamlı + yıldız net)
-  let pool = wordIds.filter(w => puzzle.words[w].length >= 3 && singleClue[w]);
-  if (!pool.length) pool = wordIds.filter(w => puzzle.words[w].length >= 3);
-  if (!pool.length) pool = wordIds;
+  // K2 seçimi (kademeli): SAĞ yönlü tek soruları tercih et (alt şerit K² için serbest,
+  // ok yanda). Önce 4+ harf + KISA metin (dekor sığsın), sonra gevşet. En kötü ihtimalde
+  // herhangi bir tek yönlü soru (aşağı okta K² azıcık yaklaşabilir ama nadir).
+  let pool = wordIds.filter(w => clueByWord[w] && isRight(w) && puzzle.words[w].length >= 4 && clueLen(w) <= 14);
+  if (!pool.length) pool = wordIds.filter(w => clueByWord[w] && isRight(w) && puzzle.words[w].length >= 3);
+  if (!pool.length) pool = wordIds.filter(w => clueByWord[w] && puzzle.words[w].length >= 4 && clueLen(w) <= 14);
+  if (!pool.length) pool = wordIds.filter(w => clueByWord[w]);
   const k2 = pool.length ? pool[Math.floor(rand() * pool.length)] : null;
-  // K2 kelimesinin soru hücresi (yıldız + 2× buraya konur)
-  const k2Clue = k2 ? (singleClue[k2] || null) : null;
+  // K2 kelimesinin soru hücresi (dekor + K² buraya konur)
+  const k2Clue = k2 ? (clueByWord[k2]?.id || null) : null;
   const k2Cells = new Set(k2 ? puzzle.words[k2].cells : []);
 
   // H2/H3: K2 kelimesinin hücreleri DIŞINDAN 3 farklı hücre (deterministik karıştır)
@@ -853,24 +858,28 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                   {/* Oklar hücrenin doğrudan çocuğu — yarım-kutu overflow'u kırpmasın */}
                   <span className="arrow-right-both">{'▶︎'}</span>
                   <span className="arrow-down-both">{'▼︎'}</span>
-                  {bonuses.k2Clue === cell.id && (
-                    <span className="clue-k2"><span className="clue-k2-star">★</span>2×</span>
-                  )}
                 </div>
               );
             }
             // Tek yönlü soru hücresi (R veya D)
+            const isK2Clue = bonuses.k2Clue === cell.id;
             return (
               <div
                 key={cell.id}
-                className={`cg-cell clue${activeClue === cell.id ? ' clue-active' : ''}`}
+                className={`cg-cell clue${activeClue === cell.id ? ' clue-active' : ''}${isK2Clue ? ' clue-k2-cell' : ''}`}
                 onClick={(e) => handleClueClick(e, cell.id)}
               >
                 <AutoFitText className="clue-text" text={cell.text} />
                 {cell.dir === "right" && <span className="arrow-right">{'▶︎'}</span>}
                 {cell.dir === "down" && <span className="arrow-down">{'▼︎'}</span>}
-                {bonuses.k2Clue === cell.id && (
-                  <span className="clue-k2"><span className="clue-k2-star">★</span>2×</span>
+                {isK2Clue && (
+                  <span className="clue-k2-deco" aria-hidden="true">
+                    <span className="k2-star k2-tl">★</span>
+                    <span className="k2-star k2-tr">★</span>
+                    <span className="k2-star k2-bl">★</span>
+                    <span className="k2-star k2-br">★</span>
+                    <span className="k2-label">K²</span>
+                  </span>
                 )}
               </div>
             );
@@ -1049,7 +1058,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               <li><b>🎯 Amaç:</b> Bulmacadaki harf hücrelerini doğru harflerle doldur — rakibe karşı yarış, çoğunu sen kap.</li>
               <li><b>✍️ Taş koy:</b> Alttaki raftan bir harf seç, ipucuna uyan hücreye dokun (ya da sürükle).</li>
               <li><b>✅ ONAYLA:</b> Doğruysa hücre kilitlenir ve <b>+1</b> kazanırsın; yanlışsa <b>−1</b> ve taş rafa döner.</li>
-              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. Sorusunda <b>★2×</b> olan kelimeyi tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
+              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. Yeşil <b>★K²</b> sorusuna ait kelimeyi tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
               <li><b>⇄ DEĞİŞTİR:</b> Raftaki taşları karıştırır. <b>↺ GERİ:</b> bu turda koyduklarını geri alır.</li>
               <li><b>❓ Sorular:</b> Sarı hücredeki ipucuna dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
               <li><b>🤖 Rakip:</b> O da hücre doldurur. Taşın bitince kalanları rakip tamamlar; en çok puanı toplayan kazanır.</li>
