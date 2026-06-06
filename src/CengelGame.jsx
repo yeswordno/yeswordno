@@ -589,12 +589,16 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       finalizeRack();
     }
 
+    // Oyuncu bu turda en az bir hücre kilitledi mi? (Saf "pas" mı?) → rakibin kota
+    // kapısını gevşetmek için runOpponentTurn'e taşınır.
+    const playerProgressed = newLocked.length > lockedCells.length;
+
     // Sıra rakibe geçer (oyuncu animasyonları tamamen bitsin, sonra kısa nefes)
-    setTimeout(() => runOpponentTurn(newLocked, newCompleted), 3500);
+    setTimeout(() => runOpponentTurn(newLocked, newCompleted, playerProgressed), 3500);
   };
 
   // Rakip: orta seviye — her el 1–3 doğru harf koyar
-  const runOpponentTurn = (playerLocked, completedSoFar) => {
+  const runOpponentTurn = (playerLocked, completedSoFar, playerProgressed = true) => {
     // Güncel state'i ref'ten oku (setTimeout closure'ı bayatlamasın)
     const curPool = poolRef.current;
     const curGrid = gridStateRef.current;
@@ -623,12 +627,24 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     let count = r < 0.30 ? 1 : r < 0.75 ? 2 : 3;
     count = Math.min(count, available.length);
 
-    // Rakip HEDEF PAYINI AŞMASIN: payını oyun boyunca dengeli doldursun, sona da pay
-    // kalsın (erken bitirip son hücreleri oyuncuya bırakmasın). Payını doldurduysa pas.
-    const totalLettersOpp = puzzle.cells.filter(c => c.type === 'letter').length;
-    const oppRemainingTurn = Math.max(0, Math.round(totalLettersOpp * OPP_SHARE) - curOppLocked.length);
-    count = Math.min(count, oppRemainingTurn);
-    if (count === 0) { setBusy(false); return; }
+    // KOTA KAPISI — yalnızca normal orta oyunda geçerli:
+    // Rakip HEDEF PAYINI AŞMASIN: payını oyun boyunca dengeli doldursun (erken bitirip
+    // son hücreleri oyuncuya bırakmasın). AMA bu kapı oyun sonunda kilitlenmeye yol
+    // açıyordu: kota dolduktan sonra rakip havuzdaki (rezerv) hücreleri bile oynamıyor,
+    // oyuncu pas geçince hiç kimse oynamıyor → boş hücreler "hep oyuncununmuş" gibi takılıyor.
+    // ÇÖZÜM: (a) oyun sonunda (≤ENDGAME_CELLS boş hücre) veya (b) oyuncu pas geçtiyse
+    // kotayı KALDIR → rakip havuzda oynayabildiğini oynasın ("kim oynayabilirse oynar").
+    // Rakip zaten yalnızca HAVUZDAKİ harflerden oynar (oyuncunun rafındakileri alamaz),
+    // yani havuzun kendisi rakibi doğal olarak ~%40 rezervle sınırlar; kota gevşese de
+    // rakip oyuncunun taşlarını çalamaz.
+    const ENDGAME_CELLS = 10;
+    const endgame = available.length <= ENDGAME_CELLS;
+    if (playerProgressed && !endgame) {
+      const totalLettersOpp = puzzle.cells.filter(c => c.type === 'letter').length;
+      const oppRemainingTurn = Math.max(0, Math.round(totalLettersOpp * OPP_SHARE) - curOppLocked.length);
+      count = Math.min(count, oppRemainingTurn);
+      if (count === 0) { setBusy(false); return; }
+    }
 
     // Karıştır; harfi havuzda olan hücreleri seç. (Rakibin payı finalizeRack'teki
     // REZERV ile havuzda tutulduğu için, oyun sonunda da havuzda rakibe ait harfler
@@ -696,7 +712,8 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
         !gridStateRef.current[c.id]
       );
       if (stillEmpty && rackRef.current.length === 0) {
-        setTimeout(() => runOpponentTurn(playerLocked, newCompleted), 950);
+        // Oyuncunun rafı boş → rakip bitirme turu: kota gevşek (playerProgressed=false)
+        setTimeout(() => runOpponentTurn(playerLocked, newCompleted, false), 950);
       } else {
         setBusy(false);
       }
