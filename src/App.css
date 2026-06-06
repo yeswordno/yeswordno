@@ -169,7 +169,8 @@ html,
 /* 1. MOBİL ÜST BAR (Header) */
 .mobile-top-bar {
   flex-shrink: 0;
-  padding: 10px 15px;
+  /* PWA standalone: status bar (black-translucent) içeriği kaplar → üst barı çentik/status altından indir */
+  padding: max(10px, env(safe-area-inset-top)) 15px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -778,9 +779,9 @@ html,
 /* Sadece yüksekliği 700px'den az olan telefonlarda çalışır */
 @media (max-height: 700px) {
 
-  /* Üst barı biraz sıkıştır */
+  /* Üst barı biraz sıkıştır (safe-area üst korunur) */
   .mobile-top-bar {
-    padding: 5px 10px;
+    padding: max(5px, env(safe-area-inset-top)) 10px 5px;
   }
 
   .btn-circle {
