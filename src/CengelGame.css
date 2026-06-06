@@ -384,7 +384,7 @@
 /* Boş (kilitsiz) bonus hücrelerine hafif ton — .locked/.opp-locked'da kalkar.
    H2 soru hücrelerinden (bal #f4ead0) ayrışsın diye daha AÇIK krem. */
 .cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fdf8ec; }
-.cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #f8e6d6; }
+.cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #fcf0e8; }
 
 /* Sürüklenen taşın parmağı/ imleci takip eden görseli.
    Parmağın hafif sağ-üst çaprazında durur ki harf parmakla örtülmeden görünsün. */
