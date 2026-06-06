@@ -347,9 +347,8 @@
 .cell-bonus-h3 { color: #b0451f; }   /* kiremit (daha güçlü) */
 
 /* K2: kelimenin SORU kutucuğu — su yeşili zemin + 4 köşe yıldız + altta K²
-   (yalnız tek yönlü, kısa metinli sorulara konur → dekor taşmaz). */
-.cg-cell.clue.clue-k2-cell { background-color: #d4ece6; }
-
+   (yalnız tek yönlü, kısa metinli sorulara konur → dekor taşmaz).
+   Zemin diğer soru hücreleriyle aynı (bal); ayırt edici işaret yıldızlar + K². */
 .k2-star {
   position: absolute;
   font-size: clamp(0.32rem, 1.15vw, 0.48rem);
@@ -381,10 +380,8 @@
 .rack-tile.dragging,
 .letter-tile.dragging { opacity: 0; }
 
-/* Boş (kilitsiz) bonus hücrelerine hafif ton — .locked/.opp-locked'da kalkar.
-   H2 soru hücrelerinden (bal #f4ead0) ayrışsın diye daha AÇIK krem. */
-.cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fdf8ec; }
-.cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #fcf0e8; }
+/* H2/H3 hücrelerinde zemin tonu YOK — diğer harf hücreleri gibi beyaz kalır;
+   ayırt edici işaret yalnızca ortadaki H²/H³ rozetidir. */
 
 /* Sürüklenen taşın parmağı/ imleci takip eden görseli.
    Parmağın hafif sağ-üst çaprazında durur ki harf parmakla örtülmeden görünsün. */
