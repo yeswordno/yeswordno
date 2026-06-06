@@ -113,6 +113,8 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   const [flyingOppTiles, setFlyingOppTiles] = useState([]);
   // Sürüklenen taşın parmağı takip eden görseli: {letter, x, y}
   const [dragView, setDragView] = useState(null);
+  // Sürüklenmekte olan taşın id'si — kaynağı (raf taşı / hücre harfi) sürüklerken gizlemek için
+  const [draggingId, setDraggingId] = useState(null);
   const [error, setError] = useState(false);
   // Mobil tap-to-select için seçili raf taşı
   const [selectedRackItem, setSelectedRackItem] = useState(null);
@@ -470,6 +472,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       if (!d.moved && Math.hypot(dx, dy) > 8) {
         d.moved = true;
         setSelectedRackItem(null);
+        setDraggingId(d.item.id);   // kaynağı gizle (raftan/hücreden kalksın)
       }
       if (d.moved) {
         if (ev.cancelable) ev.preventDefault();
@@ -482,6 +485,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       const d = dragRef.current;
       dragRef.current = null;
       setDragView(null);
+      setDraggingId(null);   // kaynak gizleme bitti
       if (!d || !d.moved) return; // hareket yoksa: normal tıklama (tap) devreye girsin
       // Sürükleme sonrası oluşacak click olayını bastır
       suppressClickRef.current = true;
@@ -903,7 +907,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               {lockedByOpp ? (
                 <span className="letter-tile opp-tile">{cell.expected}</span>
               ) : placed ? (
-                <span className="letter-tile">{placed.letter}</span>
+                <span className={`letter-tile${draggingId === placed.id ? ' dragging' : ''}`}>{placed.letter}</span>
               ) : null}
             </div>
           );
@@ -943,7 +947,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
           {rack.map(item => (
             <div
               key={item.id}
-              className={`rack-tile${selectedRackItem?.id === item.id ? ' selected' : ''}`}
+              className={`rack-tile${selectedRackItem?.id === item.id ? ' selected' : ''}${draggingId === item.id ? ' dragging' : ''}`}
               onPointerDown={(e) => beginDrag(e, item, 'rack', null)}
               onClick={() => handleRackTileClick(item)}
             >

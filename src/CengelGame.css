@@ -347,8 +347,14 @@
 .cell-bonus-h3 { color: #b0451f; }   /* kiremit (daha güçlü) */
 .cell-bonus-k2 { color: #2f7a72; }   /* teal (kelime bonusu) */
 
-/* Boş (kilitsiz) bonus hücrelerine hafif ton — .locked/.opp-locked'da kalkar */
-.cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fbf1d8; }
+/* Sürüklenmekte olan taşın kaynağı (raf taşı / hücre harfi) gizlenir → "raftan kalktı" hissi.
+   Yeri korunur (opacity), raf yeniden akmaz. */
+.rack-tile.dragging,
+.letter-tile.dragging { opacity: 0; }
+
+/* Boş (kilitsiz) bonus hücrelerine hafif ton — .locked/.opp-locked'da kalkar.
+   H2 soru hücrelerinden (bal #f4ead0) ayrışsın diye daha AÇIK krem. */
+.cg-cell.letter-box.bonus-h2:not(.locked):not(.opp-locked) { background-color: #fdf8ec; }
 .cg-cell.letter-box.bonus-h3:not(.locked):not(.opp-locked) { background-color: #f8e6d6; }
 .cg-cell.letter-box.bonus-k2:not(.locked):not(.opp-locked) { background-color: #e4f0ee; }
 
