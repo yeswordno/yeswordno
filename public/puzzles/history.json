@@ -73,5 +73,80 @@
       "TV",
       "BY"
     ]
+  },
+  {
+    "date": "2026-06-13",
+    "level": "easy",
+    "words": [
+      "AS",
+      "CARAFE",
+      "MOUSE",
+      "IT",
+      "EAR",
+      "COMMENT",
+      "AT",
+      "OAK",
+      "TIRED",
+      "RETURN",
+      "ONE",
+      "AXIS",
+      "GO",
+      "ITS",
+      "FOREIGN",
+      "EVE",
+      "TIE",
+      "CD",
+      "SO"
+    ]
+  },
+  {
+    "date": "2026-06-13",
+    "level": "medium",
+    "words": [
+      "NO",
+      "NUMBER",
+      "HYENA",
+      "AN",
+      "EEL",
+      "NOWHERE",
+      "UP",
+      "YES",
+      "SAUTE",
+      "MYSELF",
+      "RYE",
+      "BEAN",
+      "OR",
+      "LAB",
+      "EQUALLY",
+      "RAT",
+      "ALE",
+      "ME",
+      "BY"
+    ]
+  },
+  {
+    "date": "2026-06-13",
+    "level": "hard",
+    "words": [
+      "BE",
+      "FORMER",
+      "WARES",
+      "UP",
+      "AWE",
+      "FORWARD",
+      "OR",
+      "AWL",
+      "GRIMY",
+      "REGRET",
+      "YEN",
+      "MERE",
+      "MY",
+      "OPT",
+      "EPISODE",
+      "RAM",
+      "PAN",
+      "BY",
+      "TO"
+    ]
   }
 ]
