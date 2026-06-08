@@ -1058,9 +1058,9 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               <li><b>🎯 Amaç:</b> Bulmacadaki harf hücrelerini doğru harflerle doldur — rakibe karşı yarış, çoğunu sen kap.</li>
               <li><b>✍️ Taş koy:</b> Alttaki raftan bir harf seç, ipucuna uyan hücreye dokun (ya da sürükle).</li>
               <li><b>✅ ONAYLA:</b> Doğruysa hücre kilitlenir ve <b>+1</b> kazanırsın; yanlışsa <b>−1</b> ve taş rafa döner.</li>
-              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. Yeşil <b>★K²</b> sorusuna ait kelimeyi tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
+              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. <b>★K²</b> işaretli sorunun kelimesini tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
               <li><b>⇄ DEĞİŞTİR:</b> Raftaki taşları karıştırır. <b>↺ GERİ:</b> bu turda koyduklarını geri alır.</li>
-              <li><b>❓ Sorular:</b> Sarı hücredeki ipucuna dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
+              <li><b>❓ Sorular:</b> İpucu hücresine dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
               <li><b>🤖 Rakip:</b> O da hücre doldurur. Taşın bitince kalanları rakip tamamlar; en çok puanı toplayan kazanır.</li>
               <li><b>📅 Her gün:</b> Yeni bulmaca (3 zorluk). Skorun 🏆 tabloya işler — günün ve haftanın birincisi ol!</li>
             </ul>
