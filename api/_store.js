@@ -51,6 +51,14 @@ export function isoWeekKey(dateStr) {
   return `${year}-W${String(week).padStart(2, '0')}`;
 }
 
+// Günlük Düello seviyeleri + Kutu Kutu Pense kategorileri.
+// Skor tablosu: her oyun KENDİ alt-skorlarının ortalamasını alır, genel günlük =
+// oynanan OYUNLARIN ortalaması (duello + pense)/oynanan.
 export const LEVELS = ['easy', 'medium', 'hard'];
+export const PENSE_LEVELS = ['a1_a2', 'b1_b2', 'c1_c2', 'academic'];
+export const GAMES = {
+  duello: LEVELS,
+  pense: PENSE_LEVELS,
+};
 export const DAY_TTL = 60 * 60 * 24 * 9;    // günlük anahtarlar ~9 gün
 export const WEEK_TTL = 60 * 60 * 24 * 40;  // haftalık anahtarlar ~40 gün

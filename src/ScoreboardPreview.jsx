@@ -4,7 +4,7 @@ import { fetchLeaderboard } from './utils/leaderboard';
 
 // Günlük Düello ekranında gösterilen kompakt ilk-5 önizleme.
 // "Tümünü Gör" tam tabloyu (modal) açar.
-export default function ScoreboardPreview({ onExpand }) {
+export default function ScoreboardPreview({ onExpand, limit = 5 }) {
   const [data, setData] = useState(null);
   const [state, setState] = useState('loading'); // 'loading' | 'ok' | 'error'
 
@@ -17,7 +17,7 @@ export default function ScoreboardPreview({ onExpand }) {
   }, []);
 
   const medal = (r) => (r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : `${r}`);
-  const top = (data?.list || []).slice(0, 5);
+  const top = (data?.list || []).slice(0, limit);
 
   return (
     <div className="sb-preview">

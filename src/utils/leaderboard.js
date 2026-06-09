@@ -31,22 +31,39 @@ export async function register(nick, emoji) {
   return data;
 }
 
-// Bir seviyenin skorunu gönder (kayıtlı değilse sessizce atlar; hata oyunu bozmaz).
-export async function submitScore(level, score) {
+// Bir alt-oyunun skorunu gönder.
+//   game: 'duello' (level: easy|medium|hard) | 'pense' (level: a1_a2|b1_b2|c1_c2|academic)
+//   score: 0–100
+// Kayıtlı değilse sessizce atlar; hata oyunu bozmaz.
+export async function submitScore(game, level, score) {
   if (!isRegistered()) return null;
   try {
     const res = await fetch('/api/submit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ deviceKey: getDeviceKey(), level, score }),
+      body: JSON.stringify({ deviceKey: getDeviceKey(), game, level, score }),
     });
     if (!res.ok) return null;
     return await res.json();
   } catch { return null; }
 }
 
+// Kullanıcının bugünkü günlük dökümü { duelloDaily, penseDaily, overallDaily } (yoksa null alanlar).
+export async function fetchMyDaily() {
+  if (!isRegistered()) return null;
+  try {
+    const res = await fetch(`/api/mydaily?device=${encodeURIComponent(getDeviceKey())}`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
 export async function fetchLeaderboard(type = 'day') {
-  const res = await fetch(`/api/leaderboard?type=${type}&device=${encodeURIComponent(getDeviceKey())}`);
+  // cache: 'no-store' → bayat skor gösterip sonra düzelmesin (hep taze çek)
+  const res = await fetch(
+    `/api/leaderboard?type=${type}&device=${encodeURIComponent(getDeviceKey())}`,
+    { cache: 'no-store' }
+  );
   if (!res.ok) throw new Error('hata');
   return await res.json();
 }

@@ -14,12 +14,14 @@ import { PuzzleIcon, DuelIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
 import Scoreboard from './Scoreboard';
 import ScoreboardPreview from './ScoreboardPreview';
+import { submitScore, fetchMyDaily } from './utils/leaderboard';
 
 function App() {
   // --- STATE YÖNETİMİ ---
   const [screen, setScreen] = useState('lang'); // 'lang', 'level', 'game'
   const [dailyLevel, setDailyLevel] = useState(null); // Günlük Düello zorluğu: 'easy'|'medium'|'hard'
   const [showScoreboard, setShowScoreboard] = useState(false); // 🏆 skor tablosu modalı
+  const [openSection, setOpenSection] = useState(null); // ana ekran akordeonu: 'duello' | 'kutu' | null
   const [showWinModal, setShowWinModal] = useState(false);
   const [mode, setMode] = useState('EN_TR');
   const [sourceWords, setSourceWords] = useState([]);
@@ -43,14 +45,21 @@ function App() {
 
   const [timer, setTimer] = useState(0); // Süre sayacı
   const [isGameActive, setIsGameActive] = useState(false); // Oyun başladı mı?
-  const [currentScore, setCurrentScore] = useState(0); // O anki puan
+  const [currentScore, setCurrentScore] = useState(0); // O anki puan (0–100)
+  const [scoreBreakdown, setScoreBreakdown] = useState(null); // { base, hint, time } kazanma dökümü
   const [isNewRecord, setIsNewRecord] = useState(false); // Rekor kırıldı mı?
   const [currentLevelKey, setCurrentLevelKey] = useState(''); // Hangi leveldayız?
+  const [penseDaily, setPenseDaily] = useState(null); // Kutu Pense bugünkü ortalama (kategori ekranı)
 
   // Rekorları LocalStorage'dan çek
   const [highScores, setHighScores] = useState(() => {
     const saved = localStorage.getItem('wordHunter_highScores');
-    return saved ? JSON.parse(saved) : {};
+    const obj = saved ? JSON.parse(saved) : {};
+    // Eski 1000+ ölçekli rekorları temizle (yeni ölçek 0–100) → yeni puanlar rekor kırabilsin
+    let changed = false;
+    for (const k in obj) { if (obj[k] > 100) { delete obj[k]; changed = true; } }
+    if (changed) localStorage.setItem('wordHunter_highScores', JSON.stringify(obj));
+    return obj;
   });
 
   // Koleksiyon Verisi (LocalStorage'dan çekeceğiz)
@@ -128,6 +137,13 @@ function App() {
 
   // --- OYUN BAŞLATMA ---
   const handleLangSelect = (m) => { setMode(m); setScreen('level'); };
+
+  // Kutu Pense kategori ekranına girince kullanıcının BUGÜNKÜ ortalamasını çek
+  useEffect(() => {
+    if (screen !== 'level') return;
+    setPenseDaily(null);
+    fetchMyDaily().then(d => { if (d && d.penseDaily != null) setPenseDaily(d.penseDaily); }).catch(() => {});
+  }, [screen]);
 
   const handleLevelSelect = (lvl) => {
     let data;
@@ -361,18 +377,22 @@ function App() {
     if (win) {
       setIsGameActive(false); // ✅ DOĞRUSU BURADA: Sadece kazanınca durdur.
 
-      let rawScore = 1000 + (totalLetters * 10) - (timer * 1) - (hintsUsed * 15);
-      if (rawScore < 0) rawScore = 0;
+      // 0–100 puan: temel 100, ipucu −5/adet, süre <04:00 +10 / >07:00 −10
+      const hintAdj = -(hintsUsed * 5);
+      const timeAdj = timer < 240 ? 10 : (timer > 420 ? -10 : 0);
+      const score = Math.max(0, Math.min(100, 100 + hintAdj + timeAdj));
 
-      setCurrentScore(rawScore);
+      setCurrentScore(score);
+      setScoreBreakdown({ base: 100, hint: hintAdj, time: timeAdj, total: score });
 
       const oldBest = highScores[currentLevelKey] || 0;
-      if (rawScore > oldBest) {
+      if (score > oldBest) {
         setIsNewRecord(true);
-        const newScores = { ...highScores, [currentLevelKey]: rawScore };
+        const newScores = { ...highScores, [currentLevelKey]: score };
         setHighScores(newScores);
         localStorage.setItem('wordHunter_highScores', JSON.stringify(newScores));
       }
+      submitScore('pense', currentLevelKey, score);   // skor tablosuna işle (kayıtlıysa)
       processGameResult();
       setTimeout(() => setShowWinModal(true), 500);
     }
@@ -481,94 +501,80 @@ function App() {
       <Analytics />
       {/* 1. DİL EKRANI */}
       {screen === 'lang' && (
-        <div className="menu-screen">
-          <div className="logo-icon"><PuzzleIcon size={72} color="#ffffff" /></div>
-          <h1 className="app-title">Kelime Avcısı</h1>
+        <div className="menu-screen menu-home">
+          <div className="logo-icon" style={{ marginBottom: 8 }}><PuzzleIcon size={60} color="#ffffff" /></div>
+          <h1 className="app-title" style={{ marginBottom: 30 }}>Kelime Avcısı</h1>
 
-          {/* YENİ MOD: Günlük Çengel Düellosu (Sen vs Rakip) */}
-          <button className="btn-main btn-lang" onClick={() => { setDailyLevel(null); setScreen('daily'); }}>
-            <DuelIcon size={24} color="var(--accent-purple)" />
-            <span>Günlük Düello</span>
-          </button>
+          {/* AKORDEON 1: Günlük Düello → seviye seçimi altta açılır */}
+          <div className={`accordion${openSection === 'duello' ? ' open' : ''}`}>
+            <button
+              className="btn-main btn-lang accordion-head"
+              onClick={() => setOpenSection(s => (s === 'duello' ? null : 'duello'))}
+            >
+              <DuelIcon size={24} color="var(--accent-purple)" />
+              <span>Günlük Düello</span>
+              <span className="accordion-caret">▾</span>
+            </button>
+            <div className="accordion-body">
+              <button className="acc-item acc-level lvl-easy" onClick={() => { setDailyLevel('easy'); setScreen('daily'); }}>
+                <span className="acc-emoji">😊</span>
+                <span className="acc-text"><b>Kolay</b><small>Easy</small></span>
+              </button>
+              <button className="acc-item acc-level lvl-medium" onClick={() => { setDailyLevel('medium'); setScreen('daily'); }}>
+                <span className="acc-emoji">🙂</span>
+                <span className="acc-text"><b>Orta</b><small>Medium</small></span>
+              </button>
+              <button className="acc-item acc-level lvl-hard" onClick={() => { setDailyLevel('hard'); setScreen('daily'); }}>
+                <span className="acc-emoji">🔥</span>
+                <span className="acc-text"><b>Zor</b><small>Hard</small></span>
+              </button>
+            </div>
+          </div>
 
-          {/* BUTON 1: İngilizce -> Türkçe */}
-          <button className="btn-main btn-lang" onClick={() => handleLangSelect('EN_TR')}>
-            <div className="lang-icon-wrapper"><GbFlag /></div>
-            <span>İngilizce</span>
-            <span className="arrow">➔</span>
-            <div className="lang-icon-wrapper"><TrFlag /></div>
-            <span>Türkçe</span>
-          </button>
+          {/* AKORDEON 2: Kutu Kutu Pense → dil yönü altta açılır */}
+          <div className={`accordion${openSection === 'kutu' ? ' open' : ''}`}>
+            <button
+              className="btn-main btn-lang accordion-head"
+              onClick={() => setOpenSection(s => (s === 'kutu' ? null : 'kutu'))}
+            >
+              <PuzzleIcon size={22} color="var(--accent-purple)" />
+              <span>Kutu Kutu Pense</span>
+              <span className="accordion-caret">▾</span>
+            </button>
+            <div className="accordion-body">
+              <button className="acc-item acc-lang" onClick={() => handleLangSelect('EN_TR')}>
+                <div className="lang-icon-wrapper"><GbFlag /></div><span>İngilizce</span>
+                <span className="arrow">➔</span>
+                <div className="lang-icon-wrapper"><TrFlag /></div><span>Türkçe</span>
+              </button>
+              <button className="acc-item acc-lang" onClick={() => handleLangSelect('TR_EN')}>
+                <div className="lang-icon-wrapper"><TrFlag /></div><span>Türkçe</span>
+                <span className="arrow">➔</span>
+                <div className="lang-icon-wrapper"><GbFlag /></div><span>İngilizce</span>
+              </button>
+            </div>
+          </div>
 
-          {/* BUTON 2: Türkçe -> İngilizce */}
-          <button className="btn-main btn-lang" onClick={() => handleLangSelect('TR_EN')}>
-            <div className="lang-icon-wrapper"><TrFlag /></div>
-            <span>Türkçe</span>
-            <span className="arrow">➔</span>
-            <div className="lang-icon-wrapper"><GbFlag /></div>
-            <span>İngilizce</span>
-          </button>
-
+          {/* Tek sıralama tablosu — ana ekranda (ilk 3 + Tümünü Gör) */}
+          <ScoreboardPreview limit={3} onExpand={() => setShowScoreboard(true)} />
         </div>
       )}
 
-      {/* GÜNLÜK ÇENGEL — ZORLUK SEÇİMİ + SKOR ÖNİZLEME */}
-      {screen === 'daily' && !dailyLevel && (
-        <div
-          className="menu-screen"
-          style={{ position: 'relative', justifyContent: 'flex-start', overflowY: 'auto', gap: '10px',
-                   paddingTop: 'max(54px, calc(env(safe-area-inset-top) + 38px))' }}
-        >
-          {/* Sol-üst geri oku (alttaki Geri butonunun yerine) */}
-          <button className="daily-back" onClick={() => setScreen('lang')}>← Geri</button>
-
-          <div className="logo-icon" style={{ marginBottom: 0 }}><DuelIcon size={50} color="#ffffff" /></div>
-          <h2 className="screen-title" style={{ margin: '2px 0 0' }}>Günlük Düello</h2>
-          <p style={{ margin: '0 0 4px', textAlign: 'center', lineHeight: 1.15 }}>
-            <span style={{ display: 'block', fontSize: '1.05rem', fontWeight: 800, color: '#2d3436' }}>
-              Zorluk Seç
-            </span>
-            <span style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#8a93a0' }}>
-              Choose Difficulty
-            </span>
-          </p>
-
-          <button className="btn-main btn-level" onClick={() => setDailyLevel('easy')}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
-              <span>😊 Kolay</span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Easy</span>
-            </div>
-          </button>
-          <button className="btn-main btn-level" onClick={() => setDailyLevel('medium')}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
-              <span>🙂 Orta</span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Medium</span>
-            </div>
-          </button>
-          <button className="btn-main btn-level" onClick={() => setDailyLevel('hard')}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.2 }}>
-              <span>🔥 Zor</span>
-              <span style={{ fontSize: '0.8rem', fontWeight: 600, opacity: 0.55 }}>Hard</span>
-            </div>
-          </button>
-
-          {/* Kompakt ilk-5 sıralama önizlemesi */}
-          <ScoreboardPreview onExpand={() => setShowScoreboard(true)} />
-        </div>
-      )}
-
-      {/* GÜNLÜK ÇENGEL — OYUN (seviye seçilince) */}
+      {/* GÜNLÜK ÇENGEL — OYUN (ana ekrandaki akordeondan seviye seçilince) */}
       {screen === 'daily' && dailyLevel && (
         <CengelGame
           key={dailyLevel}
           level={dailyLevel}
-          onBack={() => setDailyLevel(null)}
+          onBack={() => { setScreen('lang'); setDailyLevel(null); }}
         />
       )}
 
       {/* 2. SEVİYE EKRANI */}
       {screen === 'level' && (
         <div className="menu-screen">
+          {penseDaily != null && (
+            <div className="daily-avg-badge">🏆 Günlük ortalama puanınız: <b>{penseDaily}</b></div>
+          )}
           <h2 className="screen-title">Zorluk Seç</h2>
 
           {/* A1 & A2 BUTONU */}
@@ -859,6 +865,20 @@ function App() {
 
                 {/* Süre Bilgisi */}
                 <div className="score-time">⏱ Süre: {formatTime(timer)}</div>
+
+                {/* Puan dökümü: temel + ipucu kesintisi + süre etkisi */}
+                {scoreBreakdown && (
+                  <div className="score-breakdown">
+                    <span>Temel <b>100</b></span>
+                    {scoreBreakdown.hint !== 0 && (
+                      <span>İpucu <b>{scoreBreakdown.hint}</b></span>
+                    )}
+                    <span>
+                      Süre <b>{scoreBreakdown.time > 0 ? `+${scoreBreakdown.time}` : scoreBreakdown.time}</b>
+                      <small> {timer < 240 ? '(<4dk)' : timer > 420 ? '(>7dk)' : ''}</small>
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* --- 2. MEVCUT BÖLÜM: DETAYLAR (Yan Yana Kutular Halinde) --- */}

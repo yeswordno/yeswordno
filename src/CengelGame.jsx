@@ -229,7 +229,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   useEffect(() => {
     if (gameOver && !submittedRef.current) {
       submittedRef.current = true;
-      submitScore(level, score);
+      submitScore('duello', level, score);
     }
   }, [gameOver, level, score]);
 
@@ -462,10 +462,11 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
       if (el && !el.dataset.animated) {
         el.dataset.animated = '1';
         el.animate([
-          { transform: 'translate(-50%, -50%) scale(0.55)', opacity: 0, offset: 0 },
-          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.18 },
-          { transform: `translate(calc(-50% + ${ft.dx}px), calc(-50% + ${ft.dy}px)) scale(1)`, opacity: 1, offset: 0.9 },
-          { transform: `translate(calc(-50% + ${ft.dx}px), calc(-50% + ${ft.dy}px)) scale(0.95)`, opacity: 0.85, offset: 1 },
+          { transform: 'translate(-50%, -50%) scale(0.6)', opacity: 0, offset: 0 },
+          { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.2 },
+          // Hedef hücreye TAM boyda (scale 1, opacity 1) varır → inince gerçek taşla
+          // birebir örtüşür, "yerleşip sonra büyüme" sıçraması olmaz.
+          { transform: `translate(calc(-50% + ${ft.dx}px), calc(-50% + ${ft.dy}px)) scale(1)`, opacity: 1, offset: 1 },
         ], { duration: 880, easing: 'cubic-bezier(.35,0,.25,1)', fill: 'forwards' });
       }
     });
@@ -796,8 +797,21 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
   };
 
   if (error) return (
-    <div style={{ padding: "20px", color: "red" }}>
-      <b>daily.json</b> bulunamadı! Önce <i>node generator.js</i> komutunu çalıştırarak bulmacayı üret.
+    <div className="cengel-root">
+      <div className="conn-error">
+        <div className="conn-error-emoji">📡</div>
+        <h2 className="conn-error-title">Bağlantı sorunu</h2>
+        <p className="conn-error-sub">
+          Günün bulmacası yüklenemedi. İnternet bağlantınız kopmuş olabilir —
+          kontrol edip tekrar deneyin.
+        </p>
+        <button className="conn-error-btn" onClick={() => window.location.reload()}>
+          ↻ Tekrar Dene
+        </button>
+        {onBack && (
+          <button className="conn-error-back" onClick={onBack}>Menüye Dön</button>
+        )}
+      </div>
     </div>
   );
   if (!puzzle) return <div className="cengel-root"><div className="loading">Yükleniyor...</div></div>;
@@ -873,13 +887,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
                 {cell.dir === "right" && <span className="arrow-right">{'▶︎'}</span>}
                 {cell.dir === "down" && <span className="arrow-down">{'▼︎'}</span>}
                 {isK2Clue && (
-                  <span className="clue-k2-deco" aria-hidden="true">
-                    <span className="k2-star k2-tl">★</span>
-                    <span className="k2-star k2-tr">★</span>
-                    <span className="k2-star k2-bl">★</span>
-                    <span className="k2-star k2-br">★</span>
-                    <span className="k2-label">K²</span>
-                  </span>
+                  <span className="k2-badge" aria-hidden="true">×2</span>
                 )}
               </div>
             );
@@ -1058,7 +1066,7 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               <li><b>🎯 Amaç:</b> Bulmacadaki harf hücrelerini doğru harflerle doldur — rakibe karşı yarış, çoğunu sen kap.</li>
               <li><b>✍️ Taş koy:</b> Alttaki raftan bir harf seç, ipucuna uyan hücreye dokun (ya da sürükle).</li>
               <li><b>✅ ONAYLA:</b> Doğruysa hücre kilitlenir ve <b>+1</b> kazanırsın; yanlışsa <b>−1</b> ve taş rafa döner.</li>
-              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. <b>★K²</b> işaretli sorunun kelimesini tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
+              <li><b>⭐ Bonuslar:</b> <b>H²</b> harften <b>2 kat</b>, <b>H³</b> harften <b>3 kat</b> puan. <b>×2</b> işaretli sorunun kelimesini tamamlayan, kelime bonusunu <b>2 kat</b> alır!</li>
               <li><b>⇄ DEĞİŞTİR:</b> Raftaki taşları karıştırır. <b>↺ GERİ:</b> bu turda koyduklarını geri alır.</li>
               <li><b>❓ Sorular:</b> İpucu hücresine dokununca büyür. Çift oklu (X) hücrede iki yönlü iki soru vardır.</li>
               <li><b>🤖 Rakip:</b> O da hücre doldurur. Taşın bitince kalanları rakip tamamlar; en çok puanı toplayan kazanır.</li>
