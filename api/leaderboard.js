@@ -5,6 +5,9 @@ import { redis, redisConfigured, istanbulDate, isoWeekKey } from './_store.js';
 const TOP_N = 20;
 
 export default async function handler(req, res) {
+  // Sıralama her zaman TAZE olmalı — önbellek bayat skor gösterip "önce yanlış sonra
+  // düzeliyor" etkisine yol açmasın (browser/Vercel edge cache'i kapat).
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   if (!redisConfigured()) return res.status(503).json({ error: 'backend-yok' });
 
   const type = req.query.type === 'week' ? 'week' : 'day';

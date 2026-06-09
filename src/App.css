@@ -121,6 +121,132 @@ html,
   color: var(--text-dark);
 }
 
+/* ─── ANA EKRAN: AKORDEON + TEK SIRALAMA ─── */
+.menu-home {
+  justify-content: flex-start;
+  overflow-y: auto;
+  gap: 12px;
+  padding-top: max(40px, calc(env(safe-area-inset-top) + 24px));
+}
+
+.accordion {
+  width: 100%;
+  max-width: 350px;
+}
+
+.accordion-head {
+  width: 100%;
+  position: relative;              /* ok mutlak konumlansın */
+  justify-content: center;         /* ikon + başlık ortalı */
+  margin-bottom: 0 !important;     /* gövde hemen altında otursun */
+}
+
+.accordion-caret {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  opacity: 0.65;
+  transition: transform 0.25s ease;
+}
+.accordion.open .accordion-caret { transform: translateY(-50%) rotate(180deg); }
+/* Açıkken başlığın alt köşeleri düzleşir → alttaki tepsiyle tek parça (perde gibi iner) */
+.accordion.open .accordion-head { border-radius: 16px 16px 0 0; }
+
+/* Katmanlı tepsi: başlığa BAĞLI, iki yanda bağlayıcı kenarlık (perde ipi hissi) */
+.accordion-body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);   /* sağ+sol+alt bağlayıcı çerçeve */
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  box-shadow: inset 0 6px 14px rgba(60, 40, 120, 0.18);  /* üstten içe gölge → katman derinliği */
+  transition: max-height 0.32s ease, opacity 0.25s ease, padding 0.28s ease;
+}
+.accordion.open .accordion-body {
+  max-height: 360px;
+  opacity: 1;
+  padding: 13px 12px 14px;
+}
+
+.acc-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 13px;
+  background: linear-gradient(180deg, #ffffff, #f3f1fb);
+  color: var(--text-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(40, 25, 90, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.acc-item:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(40, 25, 90, 0.22); }
+.acc-item:active { transform: scale(0.98); }
+.acc-item small { font-weight: 600; opacity: 0.5; font-size: 0.8rem; }
+.acc-item.acc-lang { font-size: 0.95rem; }
+
+/* Seviye öğeleri: solda renk şeridi + büyük emoji + iki satır etiket → şık/anlamlı */
+.acc-level {
+  justify-content: flex-start;
+  gap: 13px;
+  padding-left: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.acc-level::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  border-radius: 13px 0 0 13px;
+}
+.lvl-easy::before   { background: #34c759; }   /* yeşil */
+.lvl-medium::before { background: #ff9f0a; }   /* amber */
+.lvl-hard::before   { background: #ff453a; }   /* kırmızı */
+.acc-emoji { font-size: 1.5rem; line-height: 1; }
+.acc-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.12; }
+.acc-text b { font-size: 1.05rem; font-weight: 800; }
+.acc-text small { font-size: 0.72rem; }
+
+/* Kutu Pense puan dökümü (kazanma ekranı) */
+.score-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  opacity: 0.92;
+}
+.score-breakdown span { white-space: nowrap; }
+.score-breakdown small { opacity: 0.7; }
+
+/* Kategori (Zorluk Seç) ekranı — günlük ortalama rozeti */
+.daily-avg-badge {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.daily-avg-badge b { font-weight: 800; }
+
 /* App.css */
 
 .btn-back {
@@ -1027,7 +1153,8 @@ html,
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  padding: 20px;
+  /* PWA (standalone): üstte çentik/status bar kadar boşluk bırak → başlık + X tıklanabilir */
+  padding: max(20px, calc(env(safe-area-inset-top) + 10px)) 20px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
