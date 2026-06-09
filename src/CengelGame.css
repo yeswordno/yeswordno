@@ -435,6 +435,8 @@
   z-index: 5;
   pointer-events: none;
 }
+/* K2 soru hücresinde metin rozetin ALTINDA başlasın (×2 üstüne binmesin) */
+.cg-cell.clue.clue-k2-cell { padding-top: 16px; }
 
 /* Sürüklenmekte olan taşın kaynağı (raf taşı / hücre harfi) gizlenir → "raftan kalktı" hissi.
    Yeri korunur (opacity), raf yeniden akmaz. */
@@ -950,6 +952,27 @@
 
 .result-score.rival strong {
   color: #9ca3af;
+}
+
+/* "+N seviye puanı" rozeti — kazanınca puanın altında belirir */
+.level-bonus {
+  margin-top: 4px;
+  font-size: 0.72rem !important;
+  font-weight: 800;
+  color: #1f9d57 !important;
+  background: rgba(31, 157, 87, 0.12);
+  border: 1px solid rgba(31, 157, 87, 0.35);
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  /* Puanın üstünden kayarak gelip altına oturur */
+  animation: bonusSlide 0.5s cubic-bezier(.34,1.56,.64,1) 0.6s both;
+}
+@keyframes bonusSlide {
+  0%   { transform: translateY(-14px); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
 }
 
 .result-vs {

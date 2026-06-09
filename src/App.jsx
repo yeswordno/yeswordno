@@ -378,15 +378,18 @@ function App() {
     if (win) {
       setIsGameActive(false); // ✅ DOĞRUSU BURADA: Sadece kazanınca durdur.
 
-      // Puan: her doğru harf +1 (kazanınca tüm harfler doğru), ipucu −2/adet,
-      // süre <04:00 +10 / >07:00 −10. Üst sınır yok; alttan 0'da durur.
+      // Puan: (toplam harf×1 − ipucu×2 + süre) × ZORLUK çarpanı.
+      //   süre: <04:00 +10 / >07:00 −10.  Zorluk: a1_a2 1.00 · b1_b2 1.08 · c1_c2 1.10 · academic 1.10.
+      // Üst sınır yok; alttan 0'da durur. (Skor tablosuna giderken 0–100'e kırpılır.)
+      const FACTOR = { a1_a2: 1, b1_b2: 1.08, c1_c2: 1.1, academic: 1.1 };
+      const factor = FACTOR[currentLevelKey] || 1;
       const letterPts = totalLetters;
       const hintAdj = -(hintsUsed * 2);
       const timeAdj = timer < 240 ? 10 : (timer > 420 ? -10 : 0);
-      const score = Math.max(0, letterPts + hintAdj + timeAdj);
+      const score = Math.max(0, Math.round((letterPts + hintAdj + timeAdj) * factor));
 
       setCurrentScore(score);
-      setScoreBreakdown({ letters: letterPts, hint: hintAdj, time: timeAdj, total: score });
+      setScoreBreakdown({ letters: letterPts, hint: hintAdj, time: timeAdj, factor, total: score });
 
       const oldBest = highScores[currentLevelKey] || 0;
       if (score > oldBest) {
@@ -880,6 +883,9 @@ function App() {
                       Süre <b>{scoreBreakdown.time > 0 ? `+${scoreBreakdown.time}` : scoreBreakdown.time}</b>
                       <small> {timer < 240 ? '(<4dk)' : timer > 420 ? '(>7dk)' : ''}</small>
                     </span>
+                    {scoreBreakdown.factor !== 1 && (
+                      <span>Zorluk <b>×{scoreBreakdown.factor}</b></span>
+                    )}
                   </div>
                 )}
               </div>

@@ -223,15 +223,35 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
     } catch { /* kota dolu vb. — sessiz geç */ }
   }, [puzzle, gridState, lockedCells, opponentLockedCells, score, opponentScore, completedWords, rack, pool, gameOver]);
 
-  // Oyun bitince bu seviyenin skorunu skor tablosuna gönder (yalnız bir kez,
-  // kayıtlı kullanıcı için; kayıtsızsa sessizce atlanır, oyunu etkilemez).
+  // Oyun bitince: KAZANDIYSA zorluk seviyesi bonusu ekle (medium ×1.08, hard ×1.10,
+  // easy yok), skoru tabloya gönder, sonuç kartında puanı sayaçla artır + "+N seviye
+  // puanı" göster. (Yalnız bir kez; kayıtsızsa submit sessizce atlanır.)
   const submittedRef = useRef(false);
+  const [levelBonus, setLevelBonus] = useState(0);   // kazanınca eklenen seviye bonusu
+  const [shownScore, setShownScore] = useState(0);   // sonuç kartındaki animasyonlu puan
   useEffect(() => {
-    if (gameOver && !submittedRef.current) {
-      submittedRef.current = true;
-      submitScore('duello', level, score);
+    if (!gameOver || submittedRef.current) return;
+    submittedRef.current = true;
+    const won = score > opponentScore;
+    const factor = won ? ({ easy: 1, medium: 1.08, hard: 1.1 }[level] || 1) : 1;
+    const finalScore = Math.round(score * factor);
+    const bonus = finalScore - score;
+    setLevelBonus(bonus);
+    submitScore('duello', level, finalScore);
+    if (bonus > 0) {
+      setShownScore(score);    // önce ham puanı (80) göster
+      let cur = score;
+      const tick = () => {
+        cur += 1;
+        setShownScore(cur);
+        if (cur < finalScore) setTimeout(tick, 90);
+      };
+      // Rozet yukarıdan kayıp alta oturduktan SONRA sayaç başlasın
+      setTimeout(tick, 1150);
+    } else {
+      setShownScore(finalScore);
     }
-  }, [gameOver, level, score]);
+  }, [gameOver, level, score, opponentScore]);
 
   // Tüm harf hücreleri dolunca oyunu bitir. Son +1/+N puan uçuşları skora varıp
   // işlensin diye birkaç saniye bekle, SONRA sonucu göster (anında değil).
@@ -1095,7 +1115,10 @@ const CengelGame = ({ onBack, level = 'medium' } = {}) => {
               <div className="result-scores">
                 <div className="result-score you">
                   <span>You</span>
-                  <strong>{score}</strong>
+                  <strong>{shownScore || score}</strong>
+                  {levelBonus > 0 && (
+                    <span className="level-bonus">+{levelBonus} seviye puanı</span>
+                  )}
                 </div>
                 <div className="result-vs">–</div>
                 <div className="result-score rival">
