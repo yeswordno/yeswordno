@@ -55,9 +55,10 @@ function App() {
   const [highScores, setHighScores] = useState(() => {
     const saved = localStorage.getItem('wordHunter_highScores');
     const obj = saved ? JSON.parse(saved) : {};
-    // Eski 1000+ ölçekli rekorları temizle (yeni ölçek 0–100) → yeni puanlar rekor kırabilsin
+    // Eski 1000+ ölçekli rekorları temizle (yeni ölçek harf-bazlı, ~150 altı) → yeni
+    // puanlar rekor kırabilsin. Eşik 300: eski (1000+) silinir, yeni (≤~150) korunur.
     let changed = false;
-    for (const k in obj) { if (obj[k] > 100) { delete obj[k]; changed = true; } }
+    for (const k in obj) { if (obj[k] > 300) { delete obj[k]; changed = true; } }
     if (changed) localStorage.setItem('wordHunter_highScores', JSON.stringify(obj));
     return obj;
   });
@@ -377,13 +378,15 @@ function App() {
     if (win) {
       setIsGameActive(false); // ✅ DOĞRUSU BURADA: Sadece kazanınca durdur.
 
-      // 0–100 puan: temel 100, ipucu −5/adet, süre <04:00 +10 / >07:00 −10
-      const hintAdj = -(hintsUsed * 5);
+      // Puan: her doğru harf +1 (kazanınca tüm harfler doğru), ipucu −2/adet,
+      // süre <04:00 +10 / >07:00 −10. Üst sınır yok; alttan 0'da durur.
+      const letterPts = totalLetters;
+      const hintAdj = -(hintsUsed * 2);
       const timeAdj = timer < 240 ? 10 : (timer > 420 ? -10 : 0);
-      const score = Math.max(0, Math.min(100, 100 + hintAdj + timeAdj));
+      const score = Math.max(0, letterPts + hintAdj + timeAdj);
 
       setCurrentScore(score);
-      setScoreBreakdown({ base: 100, hint: hintAdj, time: timeAdj, total: score });
+      setScoreBreakdown({ letters: letterPts, hint: hintAdj, time: timeAdj, total: score });
 
       const oldBest = highScores[currentLevelKey] || 0;
       if (score > oldBest) {
@@ -869,7 +872,7 @@ function App() {
                 {/* Puan dökümü: temel + ipucu kesintisi + süre etkisi */}
                 {scoreBreakdown && (
                   <div className="score-breakdown">
-                    <span>Temel <b>100</b></span>
+                    <span>Harf <b>+{scoreBreakdown.letters}</b></span>
                     {scoreBreakdown.hint !== 0 && (
                       <span>İpucu <b>{scoreBreakdown.hint}</b></span>
                     )}
