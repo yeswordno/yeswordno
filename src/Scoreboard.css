@@ -230,6 +230,7 @@
 }
 .sb-preview-list { display: flex; flex-direction: column; gap: 5px; }
 .sb-prow {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -240,6 +241,15 @@
 }
 .sb-prow.first { background: linear-gradient(135deg, #fff7e0, #ffeec0); }
 .sb-prow.me { background: #eef1ff; outline: 2px solid #667eea; }
+/* İlk 3 dışındaki kendi satırın → üstte ufak "⋯" ayraçla ayrılır */
+.sb-prow-self { margin-top: 12px; }
+.sb-prow-self::before {
+  content: "⋯";
+  position: absolute;
+  top: -13px; left: 50%; transform: translateX(-50%);
+  color: #b6bdc7;
+  font-size: 1rem; letter-spacing: 1px;
+}
 .sb-prank { min-width: 24px; text-align: center; font-weight: 800; color: #636e72; }
 .sb-pnick {
   flex: 1;

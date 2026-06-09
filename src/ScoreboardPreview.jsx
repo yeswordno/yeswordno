@@ -17,7 +17,11 @@ export default function ScoreboardPreview({ onExpand, limit = 5 }) {
   }, []);
 
   const medal = (r) => (r === 1 ? '🥇' : r === 2 ? '🥈' : r === 3 ? '🥉' : `${r}`);
-  const top = (data?.list || []).slice(0, limit);
+  const list = data?.list || [];
+  const top = list.slice(0, limit);
+  // Kullanıcı ilk-3'te değilse kendi satırını ayrıca göster (list top-20 + data.me top-20 dışı)
+  const meRow = list.find((r) => r.me) || data?.me || null;
+  const meShown = top.some((r) => r.me);
 
   return (
     <div className="sb-preview">
@@ -39,6 +43,15 @@ export default function ScoreboardPreview({ onExpand, limit = 5 }) {
                 <span className="sb-pscore">{r.score}</span>
               </div>
             ))}
+
+            {/* İlk 3'te değilsen kendi sıran */}
+            {meRow && !meShown && (
+              <div className="sb-prow me sb-prow-self">
+                <span className="sb-prank">{meRow.rank}</span>
+                <span className="sb-pnick"><span className="sb-pav">{meRow.emoji}</span>{meRow.nick}</span>
+                <span className="sb-pscore">{meRow.score}</span>
+              </div>
+            )}
           </div>
         )
       )}
