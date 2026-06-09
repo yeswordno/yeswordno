@@ -181,10 +181,9 @@ function App() {
 
       if (!rawAnswer) return null;
 
-      // Çapraz bulmacada boşluk gösterilemez → cevabı ÇOK KELİMELİ olanları ele
-      // (ör. "harekete geçmek", "kafa karıştırıcı" → "KAFAKARIŞTIRICI" gibi saçma dizi).
-      // İpucu (clue) çok kelimeli olabilir, sorun değil; sadece CEVAP tek kelime olmalı.
-      if (rawAnswer.trim().includes(' ')) return null;
+      // Çok kelimeli cevaplar ARTIK eleniyor değil: cevaptaki boşluklar aşağıdaki
+      // regex ile silinir (ör. "swimming pool" → "SWIMMINGPOOL"), ipucu boşluklu kalır.
+      // Izgaraya sığması için uzunluk sınırı (≤ GRID_SIZE) aşağıdaki filter'da uygulanır.
 
       let clean = mode === 'TR_EN'
         ? rawAnswer.toUpperCase().replace(/[^A-Z]/g, '')
