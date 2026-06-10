@@ -8,6 +8,7 @@ import { speakText, ttsSupported } from './utils/tts';
 import { submitScore } from './utils/leaderboard';
 import { GhostIcon } from './utils/MenuIcons';
 import { Warden, CellDoor, CellBlock } from './KabusStage';
+import { clang, snap, whoosh, sfxEnabled, setSfxEnabled } from './utils/sfx';
 import {
   pickSessionWords, buildOptions, computeScore, isTypedCorrect,
   GHOST_HP_PER_WORD, PLAYER_LIVES, NORMAL_DAMAGE, CRIT_DAMAGE,
@@ -57,6 +58,7 @@ const KabusGame = ({ onBack } = {}) => {
   const [won, setWon] = useState(false);
   // Sinematik koreografi (SADECE görsel): '' | 'crack' (kritik vuruş) | 'shake' (kapı çarpması)
   const [sceneFx, setSceneFx] = useState('');
+  const [sfxOn, setSfxOn] = useState(sfxEnabled());   // ses efektleri açık mı (intro toggle)
   const flashFx = (fx, ms = 450) => {
     setSceneFx(fx);
     setTimeout(() => setSceneFx(c => (c === fx ? '' : c)), ms);
@@ -154,11 +156,13 @@ const KabusGame = ({ onBack } = {}) => {
       setHitFx('ghost');
       setCombo(c => c + 1);
       correctRef.current += 1;
-      if (crit) { critRef.current += 1; flashFx('crack'); }   // kritik → duvar çatlağı flaşı
+      snap();                                                 // zincir kırılışı sesi
+      if (crit) { critRef.current += 1; flashFx('crack'); whoosh(); }   // kritik → çatlak + kurtuluş
       rescuedRef.current = [...rescuedRef.current, current];
       setRescued(rescuedRef.current);
     } else {
       setCombo(0);
+      clang();                                                // kapı çarpması sesi
       if (!noPenalty) {
         livesRef.current = Math.max(0, livesRef.current - 1);
         setLives(livesRef.current);
@@ -281,6 +285,11 @@ const KabusGame = ({ onBack } = {}) => {
                 >🔇 Sessiz (yazılı)</button>
               </div>
             )}
+            {/* Ses efektleri (WebAudio sentez) aç/kapa */}
+            <button
+              className={`kabus-sfxtoggle${sfxOn ? ' active' : ''}`}
+              onClick={() => { const n = !sfxOn; setSfxEnabled(n); setSfxOn(n); }}
+            >{sfxOn ? '🔊 Ses efektleri açık' : '🔇 Ses efektleri kapalı'}</button>
             <button className="kabus-btn" onClick={startGame}>BAŞLA</button>
           </div>
         )

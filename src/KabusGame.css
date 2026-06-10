@@ -150,6 +150,19 @@
   font-weight: 700;
 }
 
+/* Ses efektleri aç/kapa düğmesi (giriş ekranı) */
+.kabus-sfxtoggle {
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0.75;
+}
+.kabus-sfxtoggle.active { opacity: 1; border-color: var(--kabus-accent); }
+
 .kabus-combo { font-size: 0.95rem; color: #ffeaa7; font-weight: 700; }
 
 /* Seçenekler */
