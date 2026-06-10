@@ -337,10 +337,10 @@ const KabusGame = ({ onBack } = {}) => {
           )}
           {phase === 'play' && isTyping && (
             <form className="kabus-type" onSubmit={(e) => { e.preventDefault(); handleTyped(); }}>
-              <div className="kabus-crithint">⚡ Kritik vuruş şansı! Kelimeyi yaz:</div>
+              <div className="kabus-crithint">⚡ Kritik vuruş şansı! {useSilent ? 'Gördüğün' : 'Duyduğun'} kelimeyi (İngilizce) ya da Türkçesini yaz:</div>
               <input
                 className="kabus-input" value={typed} autoFocus autoComplete="off"
-                onChange={(e) => setTyped(e.target.value.toLocaleUpperCase('tr'))}
+                onChange={(e) => setTyped(e.target.value.toUpperCase())}
                 placeholder="..."
               />
               <button type="submit" className="kabus-btn">VUR ⚡</button>

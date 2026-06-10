@@ -53,12 +53,21 @@ export function computeScore({ correct, total, livesLeft, criticals }) {
   );
 }
 
-// Cevabın doğru olup olmadığını kontrol et (yazma sorusu için normalize).
-export function normalizeTyped(s) {
-  return (s || '').trim().toLocaleUpperCase('tr').replace(/\s+/g, ' ');
+// Karşılaştırma için "katla": büyük/küçük harf, boşluk, noktalama ve Türkçe
+// noktalı/noktasız i farkı (i/İ/I/ı) önemsiz olsun. Aksanlar da sadeleşir.
+// Böylece "win" yazınca tr-locale'in ürettiği "WİN" gibi farklar sorun olmaz.
+export function fold(s) {
+  return (s || '')
+    .replace(/[İIı]/g, 'i')          // tüm i varyantlarını sade i'ye indir
+    .toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')   // birleşik aksan işaretlerini at
+    .replace(/[^a-z0-9]/g, '');      // yalnız harf/rakam (boşluk/tire/noktalama yok)
 }
 
 export function isTypedCorrect(typed, word) {
-  // İngilizce kelimeyi yazar (seslendirilen kelime İngilizce'dir).
-  return normalizeTyped(typed) === normalizeTyped(word.en);
+  // Yazma turunda HEM İngilizce kelime HEM Türkçe karşılık kabul edilir
+  // (oyuncu hangisini yazarsa yazsın); karşılaştırma harf-katlamalıdır.
+  const t = fold(typed);
+  if (!t) return false;
+  return t === fold(word.en) || t === fold(word.tr);
 }
