@@ -131,6 +131,25 @@
 }
 .kabus-silent { font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; }
 
+/* Sesli / sessiz mod seçimi (giriş ekranı) */
+.kabus-modepick { display: flex; gap: 10px; width: 100%; }
+.kabus-modebtn {
+  flex: 1;
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.kabus-modebtn.active {
+  background: rgba(162, 155, 254, 0.25);
+  border-color: var(--kabus-accent);
+  font-weight: 700;
+}
+
 .kabus-combo { font-size: 0.95rem; color: #ffeaa7; font-weight: 700; }
 
 /* Seçenekler */

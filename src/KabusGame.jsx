@@ -34,6 +34,10 @@ const KabusGame = ({ onBack } = {}) => {
 
   // phase: 'intro' | 'play' | 'feedback' | 'over'
   const [phase, setPhase] = useState('intro');
+  // Sessiz mod: kullanıcı seçer (ör. sesli dinleyemediği ortamda) → kelime YAZIYLA sorulur.
+  // TTS hiç desteklenmiyorsa zaten zorunlu sessiz. Varsayılan: TTS varsa sesli.
+  const [silentMode, setSilentMode] = useState(!TTS_OK);
+  const useSilent = silentMode || !TTS_OK;   // efektif sessiz mi
   const [words, setWords] = useState([]);          // oturum kelimeleri
   const [turnIdx, setTurnIdx] = useState(0);
   const [options, setOptions] = useState([]);
@@ -89,8 +93,8 @@ const KabusGame = ({ onBack } = {}) => {
     setOptions(typingTurn ? [] : buildOptions(current, DISTRACTOR_POOL));
     setTimeLeft(TURN_SECONDS);
 
-    // Kelimeyi seslendir (TTS varsa). Sesler gecikebileceği için küçük gecikme.
-    if (TTS_OK) {
+    // Kelimeyi seslendir (sesli moddaysa). Sesler gecikebileceği için küçük gecikme.
+    if (!useSilent) {
       const t = setTimeout(() => speakText(current.en), 250);
       return () => clearTimeout(t);
     }
@@ -249,6 +253,19 @@ const KabusGame = ({ onBack } = {}) => {
             <p className="kabus-msg">
               Bu gece <b>{Math.min(12, review.length)}</b> kelime seni bekliyor.
             </p>
+            {/* Ses / sessiz mod seçimi */}
+            {TTS_OK && (
+              <div className="kabus-modepick">
+                <button
+                  className={`kabus-modebtn${!silentMode ? ' active' : ''}`}
+                  onClick={() => setSilentMode(false)}
+                >🔊 Sesli</button>
+                <button
+                  className={`kabus-modebtn${silentMode ? ' active' : ''}`}
+                  onClick={() => setSilentMode(true)}
+                >🔇 Sessiz (yazılı)</button>
+              </div>
+            )}
             <button className="kabus-btn" onClick={startGame}>BAŞLA</button>
           </div>
         )
@@ -268,9 +285,9 @@ const KabusGame = ({ onBack } = {}) => {
             <GhostIcon size={96} color="#a29bfe" />
           </div>
 
-          {/* Hoparlör / yazılı fallback */}
+          {/* Hoparlör / yazılı (sessiz) mod */}
           <div className="kabus-audio">
-            {TTS_OK ? (
+            {!useSilent ? (
               <>
                 <div className="kabus-speaker" aria-hidden="true">🔊</div>
                 <button className="kabus-replay" onClick={() => speakText(current.en)}>
