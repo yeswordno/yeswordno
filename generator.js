@@ -30,10 +30,48 @@ const FILLERS = [
     { tr: "BENİM", en: "MY" }, { tr: "HAYIR", en: "NO" },
     { tr: "SELAM", en: "HI" }, { tr: "AİT / -NİN", en: "OF" },
     { tr: "BİR (BELİRTEÇ)", en: "AN" }, { tr: "KİMLİK", en: "ID" },
-    { tr: "TELEVİZYON", en: "TV" }
+    { tr: "TELEVİZYON", en: "TV" },
+
+    // ── HAVUZ GENİŞLETME (Sorun 3a) — köprü çeşitliliği için ~60 ek 2 harfli ──
+    // Element sembolleri (buildDictionary'deki SİMGES elemesini FILLERS atlar; bunlar
+    // bilinçli köprüdür). FILLER_SET'tekilerle çakışanlar (HE/BE/AS/IN/AT) eklenmedi.
+    { tr: "LİTYUM SİMGESİ", en: "LI" }, { tr: "NEON SİMGESİ", en: "NE" },
+    { tr: "SODYUM SİMGESİ", en: "NA" }, { tr: "MAGNEZYUM SİMGESİ", en: "MG" },
+    { tr: "ALÜMİNYUM SİMGESİ", en: "AL" }, { tr: "SİLİSYUM SİMGESİ", en: "SI" },
+    { tr: "KLOR SİMGESİ", en: "CL" }, { tr: "ARGON SİMGESİ", en: "AR" },
+    { tr: "KALSİYUM SİMGESİ", en: "CA" }, { tr: "TİTANYUM SİMGESİ", en: "TI" },
+    { tr: "KROM SİMGESİ", en: "CR" }, { tr: "MANGANEZ SİMGESİ", en: "MN" },
+    { tr: "DEMİR SİMGESİ", en: "FE" }, { tr: "KOBALT SİMGESİ", en: "CO" },
+    { tr: "NİKEL SİMGESİ", en: "NI" }, { tr: "BAKIR SİMGESİ", en: "CU" },
+    { tr: "ÇİNKO SİMGESİ", en: "ZN" }, { tr: "BROM SİMGESİ", en: "BR" },
+    { tr: "KRİPTON SİMGESİ", en: "KR" }, { tr: "STRONSİYUM SİMGESİ", en: "SR" },
+    { tr: "ZİRKONYUM SİMGESİ", en: "ZR" }, { tr: "MOLİBDEN SİMGESİ", en: "MO" },
+    { tr: "GÜMÜŞ SİMGESİ", en: "AG" }, { tr: "KALAY SİMGESİ", en: "SN" },
+    { tr: "ANTİMON SİMGESİ", en: "SB" }, { tr: "TELLÜR SİMGESİ", en: "TE" },
+    { tr: "KSENON SİMGESİ", en: "XE" }, { tr: "BARYUM SİMGESİ", en: "BA" },
+    { tr: "LANTAN SİMGESİ", en: "LA" }, { tr: "SERYUM SİMGESİ", en: "CE" },
+    { tr: "NEODİM SİMGESİ", en: "ND" }, { tr: "PLATİN SİMGESİ", en: "PT" },
+    { tr: "ALTIN SİMGESİ", en: "AU" }, { tr: "CIVA SİMGESİ", en: "HG" },
+    { tr: "KURŞUN SİMGESİ", en: "PB" }, { tr: "BİZMUT SİMGESİ", en: "BI" },
+    { tr: "RADON SİMGESİ", en: "RN" }, { tr: "RADYUM SİMGESİ", en: "RA" },
+    { tr: "AKTİNYUM SİMGESİ", en: "AC" }, { tr: "TORYUM SİMGESİ", en: "TH" },
+    { tr: "OSMİYUM SİMGESİ", en: "OS" }, { tr: "İRİDYUM SİMGESİ", en: "IR" },
+    { tr: "SELENYUM SİMGESİ", en: "SE" },
+
+    // Nota isimleri (DO/SO/LA başka köprülerle çakışıyor — eklenmedi)
+    { tr: "BİR NOTA", en: "RE" }, { tr: "BİR NOTA", en: "MI" }, { tr: "BİR NOTA", en: "FA" },
+
+    // Yaygın kısaltmalar
+    { tr: "KİŞİSEL BİLGİSAYAR", en: "PC" }, { tr: "KOMPAKT DİSK", en: "CD" },
+    { tr: "MÜZİK YAYINCISI", en: "DJ" }, { tr: "AVRUPA BİRLİĞİ", en: "EU" },
+    { tr: "BİRLEŞİK KRALLIK", en: "UK" }, { tr: "ÖĞLEDEN ÖNCE", en: "AM" },
+    { tr: "ÖĞLEDEN SONRA", en: "PM" }, { tr: "KİLOGRAM", en: "KG" },
+    { tr: "KİLOMETRE", en: "KM" }, { tr: "SANTİMETRE", en: "CM" },
+    { tr: "MİLİMETRE", en: "MM" }, { tr: "DOKTOR (KISALTMA)", en: "DR" },
+    { tr: "BAY (KISALTMA)", en: "MR" }, { tr: "BAYAN (KISALTMA)", en: "MS" },
+    { tr: "DOĞRU AKIM", en: "DC" }
 ];
-// Köprü kelimeler tekrar-önleme (cooldown) muafıdır — yoksa az sayıda 2 harfli
-// köprü 60 gün içinde tükenir ve X şablonları tıkanır.
+// Köprü kelimeler için KISA cooldown (Sorun 3b): tam muafiyet yerine son birkaç gün.
 const FILLER_SET = new Set(FILLERS.map(f => f.en));
 
 // Sözlük dosyalarını bir kez oku, önbelleğe al
@@ -70,7 +108,8 @@ function buildDictionary(files) {
 // 2. TEKRAR ÖNLEME — her seviye KENDİ geçmişiyle değerlendirilir.
 //    (2 harfli köprüler muaf; eski/level'sız kayıtlar tüm seviyelere sayılır)
 // ─────────────────────────────────────────────────────────────────
-const COOLDOWN_DAYS = 60;                       // bu kadar gün aynı kelime tekrar çıkmaz
+const COOLDOWN_DAYS = 60;                       // normal kelime: bu kadar gün tekrar çıkmaz
+const FILLER_COOLDOWN_DAYS = 5;                 // köprü/2 harfli: kısa cooldown (tam muafiyet yerine)
 const HISTORY_PATH = './public/puzzles/history.json';
 
 let history = [];
@@ -81,10 +120,10 @@ if (fs.existsSync(HISTORY_PATH)) {
 
 // refDateStr: hangi günün bakış açısından "son 60 gün"? (kuyruk için ileri tarihlerde
 // her gün KENDİ tarihine göre değerlendirilir; verilmezse bugün.)
-function recentWordsForLevel(levelKey, refDateStr) {
+function recentWordsForLevel(levelKey, refDateStr, days = COOLDOWN_DAYS) {
     const ref = refDateStr ? new Date(refDateStr + 'T00:00:00Z') : new Date();
     const cutoff = new Date(ref);
-    cutoff.setDate(cutoff.getDate() - COOLDOWN_DAYS);
+    cutoff.setDate(cutoff.getDate() - days);
     const recent = new Set();
     for (const entry of history) {
         if (!entry || !entry.date) continue;
@@ -94,6 +133,11 @@ function recentWordsForLevel(levelKey, refDateStr) {
         if (d >= cutoff && d < ref) (entry.words || []).forEach(w => recent.add(w));
     }
     return recent;
+}
+
+// Köprü/2 harfli kelimeler için kısa pencere (Sorun 3b)
+function recentFillersForLevel(levelKey, refDateStr) {
+    return recentWordsForLevel(levelKey, refDateStr, FILLER_COOLDOWN_DAYS);
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -274,31 +318,57 @@ function shuffle(arr) {
 // 6. BULMACA ÜRETİCİ — bir seviye için bir günlük bulmaca üretir.
 //    Dönüş: kullanılan İngilizce kelimeler (history için) | null (başarısız)
 // ─────────────────────────────────────────────────────────────────
-function generatePuzzle(dateString, level) {
-    // Bu seviyenin sözlüğü + cooldown filtresi.
-    // MUAF: köprü kelimeler (FILLER_SET) ve 2 harfliler — bunlar her gün gerekir.
+function generatePuzzle(dateString, level, sameDayUsed = new Set()) {
+    // Bu seviyenin sözlüğü + KADEMELİ cooldown (Sorun 3b) + aynı-gün dedup (Sorun 2).
+    //   - normal kelime: son 60 günde kullanılmamış olmalı,
+    //   - köprü/2 harfli: son 5 günde kullanılmamış olmalı (tam muafiyet kaldırıldı),
+    //   - sameDayUsed: o TARİH için diğer seviyelerde kullanılan kelimeler (köprüler dahil) elenir.
     const recent = recentWordsForLevel(level.key, dateString);
+    const recentFillers = recentFillersForLevel(level.key, dateString);
     const fullDict = buildDictionary(level.files);
-    const dictionary = fullDict.filter(w =>
-        w.en.length <= 2 || FILLER_SET.has(w.en) || !recent.has(w.en)
-    );
-    console.log(`[${level.label}] sözlük: ${fullDict.length} → cooldown sonrası ${dictionary.length} (son ${COOLDOWN_DAYS} günde ${recent.size} kelime kullanılmış)`);
 
-    // Pozisyon indeksi (bu seviyeye özel): byLenPosChar[len][pos][char] = kelime[]
-    const byLen = {};
-    const byLenPosChar = {};
-    for (const w of dictionary) {
-        const len = w.en.length;
-        if (!byLen[len]) byLen[len] = [];
-        byLen[len].push(w);
-        if (!byLenPosChar[len]) byLenPosChar[len] = {};
-        for (let i = 0; i < len; i++) {
-            const ch = w.en[i];
-            if (!byLenPosChar[len][i]) byLenPosChar[len][i] = {};
-            if (!byLenPosChar[len][i][ch]) byLenPosChar[len][i][ch] = [];
-            byLenPosChar[len][i][ch].push(w);
+    // relaxFiller: filler cooldown'u kaldır (havuz darsa). relaxSameDay: aynı-gün kuralını gevşet (emniyet supabı).
+    function buildDict({ relaxFiller = false, relaxSameDay = false } = {}) {
+        return fullDict.filter(w => {
+            if (!relaxSameDay && sameDayUsed.has(w.en)) return false;
+            const isFiller = w.en.length <= 2 || FILLER_SET.has(w.en);
+            if (isFiller) return relaxFiller || !recentFillers.has(w.en);
+            return !recent.has(w.en);
+        });
+    }
+
+    // Pozisyon indeksi: byLenPosChar[len][pos][char] = kelime[]. Sözlük değişince yeniden kurulur.
+    let byLen = {};
+    let byLenPosChar = {};
+    function buildIndex(dictionary) {
+        byLen = {};
+        byLenPosChar = {};
+        for (const w of dictionary) {
+            const len = w.en.length;
+            if (!byLen[len]) byLen[len] = [];
+            byLen[len].push(w);
+            if (!byLenPosChar[len]) byLenPosChar[len] = {};
+            for (let i = 0; i < len; i++) {
+                const ch = w.en[i];
+                if (!byLenPosChar[len][i]) byLenPosChar[len][i] = {};
+                if (!byLenPosChar[len][i][ch]) byLenPosChar[len][i][ch] = [];
+                byLenPosChar[len][i][ch].push(w);
+            }
         }
     }
+
+    // Katı sözlük. Köprü havuzu darsa (2 harfli aday < eşik) filler cooldown'u kaldır + uyar (3b emniyet supabı).
+    let strictRelaxFiller = false;
+    let dictionary = buildDict();
+    const MIN_FILLER_CANDIDATES = 12;
+    const twoLetterCount = dictionary.filter(w => w.en.length <= 2).length;
+    if (twoLetterCount < MIN_FILLER_CANDIDATES) {
+        strictRelaxFiller = true;
+        dictionary = buildDict({ relaxFiller: true });
+        console.log(`⚠ köprü havuzu dar (${twoLetterCount}<${MIN_FILLER_CANDIDATES}) → filler cooldown gevşetildi (${dateString}, ${level.label})`);
+    }
+    buildIndex(dictionary);
+    console.log(`[${level.label}] sözlük: ${fullDict.length} → filtre sonrası ${dictionary.length} (normal cooldown ${COOLDOWN_DAYS}g/${recent.size} kelime · filler ${FILLER_COOLDOWN_DAYS}g · aynı-gün eleme ${sameDayUsed.size})`);
 
     // Şablon GÜNE GÖRE belirlenir: her gün bir sonraki şablon, 5'te başa döner
     // (bugün=şablon A, yarın=B … böylece görsel her gün değişir, tüm seviyeler aynı).
@@ -400,11 +470,19 @@ function generatePuzzle(dateString, level) {
     let success = false;
     let attempts = 0;
     const MAX_ATTEMPTS = 50;
+    const RELAX_AFTER = 35;          // ilk 35 deneme katı; sonra aynı-gün kuralı gevşer (emniyet supabı)
+    let sameDayRelaxed = false;
 
     console.log(`[${dateString}] için bulmaca aranıyor...`);
 
     while (!success && attempts < MAX_ATTEMPTS) {
         attempts++;
+        // Son 15 denemede hâlâ çözüm yoksa aynı-gün dedup kuralını gevşet (Sorun 2 supabı).
+        if (attempts > RELAX_AFTER && !sameDayRelaxed && sameDayUsed.size > 0) {
+            sameDayRelaxed = true;
+            buildIndex(buildDict({ relaxFiller: strictRelaxFiller, relaxSameDay: true }));
+            console.log(`⚠ aynı-gün tekrar gevşetildi (${dateString}, ${level.label})`);
+        }
         pickTemplate(attempts);      // güne göre şablon (tıkanırsa diğerlerine düşer)
         iterations = 0;
         gridLetters = {};
@@ -548,37 +626,51 @@ function loadExistingPuzzles(levelKey) {
 let totalGenerated = 0, totalReused = 0, todayFails = 0;
 let mediumToday = null;
 
-for (const level of LEVELS) {
-    console.log(`───── ${level.label.toUpperCase()} (${level.key}) ─────`);
-    const existing = loadExistingPuzzles(level.key);
-    const queue = [];
+// Sorun 2: döngü DIŞTA tarih, İÇTE seviye (easy→medium→hard). Böylece bir gün
+// için önceki seviyelerin kelimeleri elde olur ve sameDayUsed ile o gün başka
+// seviyede TEKRAR edilmesi engellenir (köprüler dahil; "TV aynı gün 2 seviyede" giderilir).
+const levelStates = LEVELS.map(level => ({
+    level,
+    existing: loadExistingPuzzles(level.key),
+    queue: [],
+}));
 
-    for (const date of targetDates) {            // tarihler artan sırada (cooldown kronolojisi doğru)
-        if (existing[date]) {                    // zaten üretilmiş günü yeniden üretme
-            queue.push(existing[date]);
+for (const date of targetDates) {                // tarihler artan sırada (cooldown kronolojisi doğru)
+    const sameDayUsed = new Set();               // o GÜN tüm seviyelerde kullanılan en'ler
+    for (const st of levelStates) {
+        const { level } = st;
+        let puzzle = null;
+        if (st.existing[date]) {                 // zaten üretilmiş günü yeniden üretme (dedup kaynağı olur)
+            puzzle = st.existing[date];
             totalReused++;
-            console.log(`   ↺ ${date} kuyrukta hazır (yeniden üretilmedi).`);
-            continue;
-        }
-        const res = generatePuzzle(date, level);
-        if (res) {
-            queue.push(res.puzzle);
-            totalGenerated++;
-            // Geçmişi ANINDA güncelle ki kuyruktaki sonraki günler bu kelimeleri tekrar etmesin
-            history = history.filter(e => !(e && e.date === date && e.level === level.key));
-            history.push({ date, level: level.key, words: res.usedEn });
+            console.log(`   ↺ ${date} [${level.label}] kuyrukta hazır (yeniden üretilmedi).`);
         } else {
-            console.error(`   ⚠️  ${date} üretilemedi (${level.label}).`);
-            if (date === istanbulDate) todayFails++;   // sadece BUGÜNün eksikliği kritiktir
+            const res = generatePuzzle(date, level, sameDayUsed);
+            if (res) {
+                puzzle = res.puzzle;
+                totalGenerated++;
+                // Geçmişi ANINDA güncelle ki kuyruktaki sonraki GÜNLER bu kelimeleri tekrar etmesin
+                history = history.filter(e => !(e && e.date === date && e.level === level.key));
+                history.push({ date, level: level.key, words: res.usedEn });
+            } else {
+                console.error(`   ⚠️  ${date} üretilemedi (${level.label}).`);
+                if (date === istanbulDate) todayFails++;   // sadece BUGÜNün eksikliği kritiktir
+            }
+        }
+        if (puzzle) {
+            st.queue.push(puzzle);
+            // Bu günün kelimelerini sonraki seviyeler için ele (köprüler dahil)
+            Object.values(puzzle.words).forEach(w => sameDayUsed.add(w.en));
         }
     }
+}
 
-    queue.sort((a, b) => (a.id < b.id ? -1 : 1));
-    const out = { level: level.key, generated: new Date().toISOString(), puzzles: queue };
-    fs.writeFileSync(`${OUT_DIR}/daily-${level.key}.json`, JSON.stringify(out, null, 2));
-    console.log(`🗂  daily-${level.key}.json yazıldı — ${queue.length} günlük kuyruk.\n`);
-
-    if (level.key === 'medium') mediumToday = queue.find(p => p.id === istanbulDate) || queue[0] || null;
+for (const st of levelStates) {
+    st.queue.sort((a, b) => (a.id < b.id ? -1 : 1));
+    const out = { level: st.level.key, generated: new Date().toISOString(), puzzles: st.queue };
+    fs.writeFileSync(`${OUT_DIR}/daily-${st.level.key}.json`, JSON.stringify(out, null, 2));
+    console.log(`🗂  daily-${st.level.key}.json yazıldı — ${st.queue.length} günlük kuyruk.`);
+    if (st.level.key === 'medium') mediumToday = st.queue.find(p => p.id === istanbulDate) || st.queue[0] || null;
 }
 
 // Geriye dönük uyumluluk: eski tek-mod istemciler için daily.json = BUGÜNün medium'u (tek obje)
@@ -586,7 +678,9 @@ if (mediumToday) {
     fs.writeFileSync(`${OUT_DIR}/daily.json`, JSON.stringify(mediumToday, null, 2));
 }
 
-history = history.slice(-1500);  // 3 seviye × ~60 gün cooldown + tampon için bolca pay
+// 3 seviye × ~67 gün (60 cooldown + 7 tampon) × ~22 kelime ≈ 4400 kayıt gerekir;
+// eski 1500 sınırı 60 günlük pencereyi kırpıyordu (gizli bug) → 6000'e çıkarıldı.
+history = history.slice(-6000);
 fs.writeFileSync(HISTORY_PATH, JSON.stringify(history, null, 2));
 console.log(`✅ Üretildi: ${totalGenerated} yeni, ${totalReused} hazır. Geçmiş: ${history.length} kayıt.\n`);
 
