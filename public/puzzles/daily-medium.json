@@ -1,747 +1,7 @@
 {
   "level": "medium",
-  "generated": "2026-06-09T12:12:19.832Z",
+  "generated": "2026-06-10T12:31:15.901Z",
   "puzzles": [
-    {
-      "id": "2026-06-09",
-      "level": "medium",
-      "templateIndex": 4,
-      "grid": {
-        "cols": 8,
-        "rows": 8
-      },
-      "cells": [
-        {
-          "id": "0-0",
-          "x": 0,
-          "y": 0,
-          "type": "empty"
-        },
-        {
-          "id": "1-0",
-          "x": 1,
-          "y": 0,
-          "type": "clue",
-          "dir": "both",
-          "textRight": "VEYA",
-          "wordIdRight": "w1",
-          "textDown": "GÖRÜNÜR",
-          "wordIdDown": "w2"
-        },
-        {
-          "id": "2-0",
-          "x": 2,
-          "y": 0,
-          "type": "letter",
-          "expected": "O"
-        },
-        {
-          "id": "3-0",
-          "x": 3,
-          "y": 0,
-          "type": "letter",
-          "expected": "R"
-        },
-        {
-          "id": "4-0",
-          "x": 4,
-          "y": 0,
-          "type": "clue",
-          "dir": "down",
-          "text": "OY",
-          "wordId": "w3"
-        },
-        {
-          "id": "5-0",
-          "x": 5,
-          "y": 0,
-          "type": "clue",
-          "dir": "both",
-          "textRight": "BENİ",
-          "wordIdRight": "w4",
-          "textDown": "ZARİF",
-          "wordIdDown": "w5"
-        },
-        {
-          "id": "6-0",
-          "x": 6,
-          "y": 0,
-          "type": "letter",
-          "expected": "M"
-        },
-        {
-          "id": "7-0",
-          "x": 7,
-          "y": 0,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "0-1",
-          "x": 0,
-          "y": 1,
-          "type": "clue",
-          "dir": "right",
-          "text": "KADİFEMSİ",
-          "wordId": "w6"
-        },
-        {
-          "id": "1-1",
-          "x": 1,
-          "y": 1,
-          "type": "letter",
-          "expected": "V"
-        },
-        {
-          "id": "2-1",
-          "x": 2,
-          "y": 1,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "3-1",
-          "x": 3,
-          "y": 1,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "4-1",
-          "x": 4,
-          "y": 1,
-          "type": "letter",
-          "expected": "V"
-        },
-        {
-          "id": "5-1",
-          "x": 5,
-          "y": 1,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "6-1",
-          "x": 6,
-          "y": 1,
-          "type": "letter",
-          "expected": "T"
-        },
-        {
-          "id": "7-1",
-          "x": 7,
-          "y": 1,
-          "type": "letter",
-          "expected": "Y"
-        },
-        {
-          "id": "0-2",
-          "x": 0,
-          "y": 2,
-          "type": "clue",
-          "dir": "right",
-          "text": "İÇİNDE",
-          "wordId": "w7"
-        },
-        {
-          "id": "1-2",
-          "x": 1,
-          "y": 2,
-          "type": "letter",
-          "expected": "I"
-        },
-        {
-          "id": "2-2",
-          "x": 2,
-          "y": 2,
-          "type": "letter",
-          "expected": "N"
-        },
-        {
-          "id": "3-2",
-          "x": 3,
-          "y": 2,
-          "type": "clue",
-          "dir": "both",
-          "textRight": "ESKİ",
-          "wordIdRight": "w8",
-          "textDown": "SULU KAR",
-          "wordIdDown": "w9"
-        },
-        {
-          "id": "4-2",
-          "x": 4,
-          "y": 2,
-          "type": "letter",
-          "expected": "O"
-        },
-        {
-          "id": "5-2",
-          "x": 5,
-          "y": 2,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "6-2",
-          "x": 6,
-          "y": 2,
-          "type": "letter",
-          "expected": "D"
-        },
-        {
-          "id": "7-2",
-          "x": 7,
-          "y": 2,
-          "type": "empty"
-        },
-        {
-          "id": "0-3",
-          "x": 0,
-          "y": 3,
-          "type": "clue",
-          "dir": "right",
-          "text": "ABLA",
-          "wordId": "w10"
-        },
-        {
-          "id": "1-3",
-          "x": 1,
-          "y": 3,
-          "type": "letter",
-          "expected": "S"
-        },
-        {
-          "id": "2-3",
-          "x": 2,
-          "y": 3,
-          "type": "letter",
-          "expected": "I"
-        },
-        {
-          "id": "3-3",
-          "x": 3,
-          "y": 3,
-          "type": "letter",
-          "expected": "S"
-        },
-        {
-          "id": "4-3",
-          "x": 4,
-          "y": 3,
-          "type": "letter",
-          "expected": "T"
-        },
-        {
-          "id": "5-3",
-          "x": 5,
-          "y": 3,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "6-3",
-          "x": 6,
-          "y": 3,
-          "type": "letter",
-          "expected": "R"
-        },
-        {
-          "id": "7-3",
-          "x": 7,
-          "y": 3,
-          "type": "clue",
-          "dir": "down",
-          "text": "İZİN",
-          "wordId": "w11"
-        },
-        {
-          "id": "0-4",
-          "x": 0,
-          "y": 4,
-          "type": "clue",
-          "dir": "right",
-          "text": "YASADIŞI",
-          "wordId": "w12"
-        },
-        {
-          "id": "1-4",
-          "x": 1,
-          "y": 4,
-          "type": "letter",
-          "expected": "I"
-        },
-        {
-          "id": "2-4",
-          "x": 2,
-          "y": 4,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "3-4",
-          "x": 3,
-          "y": 4,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "4-4",
-          "x": 4,
-          "y": 4,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "5-4",
-          "x": 5,
-          "y": 4,
-          "type": "letter",
-          "expected": "G"
-        },
-        {
-          "id": "6-4",
-          "x": 6,
-          "y": 4,
-          "type": "letter",
-          "expected": "A"
-        },
-        {
-          "id": "7-4",
-          "x": 7,
-          "y": 4,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "0-5",
-          "x": 0,
-          "y": 5,
-          "type": "clue",
-          "dir": "right",
-          "text": "ARI",
-          "wordId": "w13"
-        },
-        {
-          "id": "1-5",
-          "x": 1,
-          "y": 5,
-          "type": "letter",
-          "expected": "B"
-        },
-        {
-          "id": "2-5",
-          "x": 2,
-          "y": 5,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "3-5",
-          "x": 3,
-          "y": 5,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "4-5",
-          "x": 4,
-          "y": 5,
-          "type": "clue",
-          "dir": "right",
-          "text": "YAŞ",
-          "wordId": "w14"
-        },
-        {
-          "id": "5-5",
-          "x": 5,
-          "y": 5,
-          "type": "letter",
-          "expected": "A"
-        },
-        {
-          "id": "6-5",
-          "x": 6,
-          "y": 5,
-          "type": "letter",
-          "expected": "G"
-        },
-        {
-          "id": "7-5",
-          "x": 7,
-          "y": 5,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "0-6",
-          "x": 0,
-          "y": 6,
-          "type": "clue",
-          "dir": "right",
-          "text": "YALAN",
-          "wordId": "w15"
-        },
-        {
-          "id": "1-6",
-          "x": 1,
-          "y": 6,
-          "type": "letter",
-          "expected": "L"
-        },
-        {
-          "id": "2-6",
-          "x": 2,
-          "y": 6,
-          "type": "letter",
-          "expected": "I"
-        },
-        {
-          "id": "3-6",
-          "x": 3,
-          "y": 6,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "4-6",
-          "x": 4,
-          "y": 6,
-          "type": "clue",
-          "dir": "right",
-          "text": "SİRKE (BİT YUMURTASI)",
-          "wordId": "w16"
-        },
-        {
-          "id": "5-6",
-          "x": 5,
-          "y": 6,
-          "type": "letter",
-          "expected": "N"
-        },
-        {
-          "id": "6-6",
-          "x": 6,
-          "y": 6,
-          "type": "letter",
-          "expected": "I"
-        },
-        {
-          "id": "7-6",
-          "x": 7,
-          "y": 6,
-          "type": "letter",
-          "expected": "T"
-        },
-        {
-          "id": "0-7",
-          "x": 0,
-          "y": 7,
-          "type": "clue",
-          "dir": "right",
-          "text": "YEMEK",
-          "wordId": "w17"
-        },
-        {
-          "id": "1-7",
-          "x": 1,
-          "y": 7,
-          "type": "letter",
-          "expected": "E"
-        },
-        {
-          "id": "2-7",
-          "x": 2,
-          "y": 7,
-          "type": "letter",
-          "expected": "A"
-        },
-        {
-          "id": "3-7",
-          "x": 3,
-          "y": 7,
-          "type": "letter",
-          "expected": "T"
-        },
-        {
-          "id": "4-7",
-          "x": 4,
-          "y": 7,
-          "type": "clue",
-          "dir": "right",
-          "text": "TELEVİZYON",
-          "wordId": "w18"
-        },
-        {
-          "id": "5-7",
-          "x": 5,
-          "y": 7,
-          "type": "letter",
-          "expected": "T"
-        },
-        {
-          "id": "6-7",
-          "x": 6,
-          "y": 7,
-          "type": "letter",
-          "expected": "V"
-        },
-        {
-          "id": "7-7",
-          "x": 7,
-          "y": 7,
-          "type": "empty"
-        }
-      ],
-      "words": {
-        "w1": {
-          "en": "OR",
-          "tr": "VEYA",
-          "length": 2,
-          "cells": [
-            "2-0",
-            "3-0"
-          ]
-        },
-        "w2": {
-          "en": "VISIBLE",
-          "tr": "GÖRÜNÜR",
-          "length": 7,
-          "cells": [
-            "1-1",
-            "1-2",
-            "1-3",
-            "1-4",
-            "1-5",
-            "1-6",
-            "1-7"
-          ]
-        },
-        "w3": {
-          "en": "VOTE",
-          "tr": "OY",
-          "length": 4,
-          "cells": [
-            "4-1",
-            "4-2",
-            "4-3",
-            "4-4"
-          ]
-        },
-        "w4": {
-          "en": "ME",
-          "tr": "BENİ",
-          "length": 2,
-          "cells": [
-            "6-0",
-            "7-0"
-          ]
-        },
-        "w5": {
-          "en": "ELEGANT",
-          "tr": "ZARİF",
-          "length": 7,
-          "cells": [
-            "5-1",
-            "5-2",
-            "5-3",
-            "5-4",
-            "5-5",
-            "5-6",
-            "5-7"
-          ]
-        },
-        "w6": {
-          "en": "VELVETY",
-          "tr": "KADİFEMSİ",
-          "length": 7,
-          "cells": [
-            "1-1",
-            "2-1",
-            "3-1",
-            "4-1",
-            "5-1",
-            "6-1",
-            "7-1"
-          ]
-        },
-        "w7": {
-          "en": "IN",
-          "tr": "İÇİNDE",
-          "length": 2,
-          "cells": [
-            "1-2",
-            "2-2"
-          ]
-        },
-        "w8": {
-          "en": "OLD",
-          "tr": "ESKİ",
-          "length": 3,
-          "cells": [
-            "4-2",
-            "5-2",
-            "6-2"
-          ]
-        },
-        "w9": {
-          "en": "SLEET",
-          "tr": "SULU KAR",
-          "length": 5,
-          "cells": [
-            "3-3",
-            "3-4",
-            "3-5",
-            "3-6",
-            "3-7"
-          ]
-        },
-        "w10": {
-          "en": "SISTER",
-          "tr": "ABLA",
-          "length": 6,
-          "cells": [
-            "1-3",
-            "2-3",
-            "3-3",
-            "4-3",
-            "5-3",
-            "6-3"
-          ]
-        },
-        "w11": {
-          "en": "LET",
-          "tr": "İZİN",
-          "length": 3,
-          "cells": [
-            "7-4",
-            "7-5",
-            "7-6"
-          ]
-        },
-        "w12": {
-          "en": "ILLEGAL",
-          "tr": "YASADIŞI",
-          "length": 7,
-          "cells": [
-            "1-4",
-            "2-4",
-            "3-4",
-            "4-4",
-            "5-4",
-            "6-4",
-            "7-4"
-          ]
-        },
-        "w13": {
-          "en": "BEE",
-          "tr": "ARI",
-          "length": 3,
-          "cells": [
-            "1-5",
-            "2-5",
-            "3-5"
-          ]
-        },
-        "w14": {
-          "en": "AGE",
-          "tr": "YAŞ",
-          "length": 3,
-          "cells": [
-            "5-5",
-            "6-5",
-            "7-5"
-          ]
-        },
-        "w15": {
-          "en": "LIE",
-          "tr": "YALAN",
-          "length": 3,
-          "cells": [
-            "1-6",
-            "2-6",
-            "3-6"
-          ]
-        },
-        "w16": {
-          "en": "NIT",
-          "tr": "SİRKE (BİT YUMURTASI)",
-          "length": 3,
-          "cells": [
-            "5-6",
-            "6-6",
-            "7-6"
-          ]
-        },
-        "w17": {
-          "en": "EAT",
-          "tr": "YEMEK",
-          "length": 3,
-          "cells": [
-            "1-7",
-            "2-7",
-            "3-7"
-          ]
-        },
-        "w18": {
-          "en": "TV",
-          "tr": "TELEVİZYON",
-          "length": 2,
-          "cells": [
-            "5-7",
-            "6-7"
-          ]
-        }
-      },
-      "letterPool": [
-        "O",
-        "R",
-        "I",
-        "M",
-        "D",
-        "L",
-        "G",
-        "A",
-        "L",
-        "V",
-        "T",
-        "L",
-        "Y",
-        "V",
-        "I",
-        "V",
-        "G",
-        "E",
-        "E",
-        "E",
-        "T",
-        "O",
-        "T",
-        "R",
-        "E",
-        "I",
-        "L",
-        "I",
-        "A",
-        "E",
-        "S",
-        "E",
-        "N",
-        "S",
-        "L",
-        "A",
-        "E",
-        "L",
-        "B",
-        "I",
-        "T",
-        "E",
-        "E",
-        "N",
-        "E",
-        "T"
-      ]
-    },
     {
       "id": "2026-06-10",
       "level": "medium",
@@ -5212,6 +4472,746 @@
         "E",
         "O",
         "O"
+      ]
+    },
+    {
+      "id": "2026-06-16",
+      "level": "medium",
+      "templateIndex": 1,
+      "grid": {
+        "cols": 8,
+        "rows": 8
+      },
+      "cells": [
+        {
+          "id": "0-0",
+          "x": 0,
+          "y": 0,
+          "type": "empty"
+        },
+        {
+          "id": "1-0",
+          "x": 1,
+          "y": 0,
+          "type": "clue",
+          "dir": "both",
+          "textRight": "İLE",
+          "wordIdRight": "w1",
+          "textDown": "MUTSUZ",
+          "wordIdDown": "w2"
+        },
+        {
+          "id": "2-0",
+          "x": 2,
+          "y": 0,
+          "type": "letter",
+          "expected": "B"
+        },
+        {
+          "id": "3-0",
+          "x": 3,
+          "y": 0,
+          "type": "letter",
+          "expected": "Y"
+        },
+        {
+          "id": "4-0",
+          "x": 4,
+          "y": 0,
+          "type": "clue",
+          "dir": "down",
+          "text": "AYRI",
+          "wordId": "w3"
+        },
+        {
+          "id": "5-0",
+          "x": 5,
+          "y": 0,
+          "type": "clue",
+          "dir": "both",
+          "textRight": "BENİM",
+          "wordIdRight": "w4",
+          "textDown": "İLGİLİ",
+          "wordIdDown": "w5"
+        },
+        {
+          "id": "6-0",
+          "x": 6,
+          "y": 0,
+          "type": "letter",
+          "expected": "M"
+        },
+        {
+          "id": "7-0",
+          "x": 7,
+          "y": 0,
+          "type": "letter",
+          "expected": "Y"
+        },
+        {
+          "id": "0-1",
+          "x": 0,
+          "y": 1,
+          "type": "clue",
+          "dir": "right",
+          "text": "YUKARI",
+          "wordId": "w6"
+        },
+        {
+          "id": "1-1",
+          "x": 1,
+          "y": 1,
+          "type": "letter",
+          "expected": "U"
+        },
+        {
+          "id": "2-1",
+          "x": 2,
+          "y": 1,
+          "type": "letter",
+          "expected": "P"
+        },
+        {
+          "id": "3-1",
+          "x": 3,
+          "y": 1,
+          "type": "letter",
+          "expected": "W"
+        },
+        {
+          "id": "4-1",
+          "x": 4,
+          "y": 1,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "5-1",
+          "x": 5,
+          "y": 1,
+          "type": "letter",
+          "expected": "R"
+        },
+        {
+          "id": "6-1",
+          "x": 6,
+          "y": 1,
+          "type": "letter",
+          "expected": "D"
+        },
+        {
+          "id": "7-1",
+          "x": 7,
+          "y": 1,
+          "type": "letter",
+          "expected": "S"
+        },
+        {
+          "id": "0-2",
+          "x": 0,
+          "y": 2,
+          "type": "clue",
+          "dir": "right",
+          "text": "HAYIR",
+          "wordId": "w7"
+        },
+        {
+          "id": "1-2",
+          "x": 1,
+          "y": 2,
+          "type": "letter",
+          "expected": "N"
+        },
+        {
+          "id": "2-2",
+          "x": 2,
+          "y": 2,
+          "type": "letter",
+          "expected": "O"
+        },
+        {
+          "id": "3-2",
+          "x": 3,
+          "y": 2,
+          "type": "clue",
+          "dir": "right",
+          "text": "MANDAL",
+          "wordId": "w8"
+        },
+        {
+          "id": "4-2",
+          "x": 4,
+          "y": 2,
+          "type": "letter",
+          "expected": "P"
+        },
+        {
+          "id": "5-2",
+          "x": 5,
+          "y": 2,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "6-2",
+          "x": 6,
+          "y": 2,
+          "type": "letter",
+          "expected": "G"
+        },
+        {
+          "id": "7-2",
+          "x": 7,
+          "y": 2,
+          "type": "empty"
+        },
+        {
+          "id": "0-3",
+          "x": 0,
+          "y": 3,
+          "type": "clue",
+          "dir": "right",
+          "text": "O",
+          "wordId": "w9"
+        },
+        {
+          "id": "1-3",
+          "x": 1,
+          "y": 3,
+          "type": "letter",
+          "expected": "H"
+        },
+        {
+          "id": "2-3",
+          "x": 2,
+          "y": 3,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "3-3",
+          "x": 3,
+          "y": 3,
+          "type": "clue",
+          "dir": "both",
+          "textRight": "TÜM",
+          "wordIdRight": "w10",
+          "textDown": "KAZANMAK",
+          "wordIdDown": "w11"
+        },
+        {
+          "id": "4-3",
+          "x": 4,
+          "y": 3,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "5-3",
+          "x": 5,
+          "y": 3,
+          "type": "letter",
+          "expected": "L"
+        },
+        {
+          "id": "6-3",
+          "x": 6,
+          "y": 3,
+          "type": "letter",
+          "expected": "L"
+        },
+        {
+          "id": "7-3",
+          "x": 7,
+          "y": 3,
+          "type": "clue",
+          "dir": "down",
+          "text": "HATA YAPMAK",
+          "wordId": "w12"
+        },
+        {
+          "id": "0-4",
+          "x": 0,
+          "y": 4,
+          "type": "clue",
+          "dir": "right",
+          "text": "ORTALAMA",
+          "wordId": "w13"
+        },
+        {
+          "id": "1-4",
+          "x": 1,
+          "y": 4,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "2-4",
+          "x": 2,
+          "y": 4,
+          "type": "letter",
+          "expected": "V"
+        },
+        {
+          "id": "3-4",
+          "x": 3,
+          "y": 4,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "4-4",
+          "x": 4,
+          "y": 4,
+          "type": "letter",
+          "expected": "R"
+        },
+        {
+          "id": "5-4",
+          "x": 5,
+          "y": 4,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "6-4",
+          "x": 6,
+          "y": 4,
+          "type": "letter",
+          "expected": "G"
+        },
+        {
+          "id": "7-4",
+          "x": 7,
+          "y": 4,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "0-5",
+          "x": 0,
+          "y": 5,
+          "type": "clue",
+          "dir": "right",
+          "text": "BÜYÜK TABAK",
+          "wordId": "w14"
+        },
+        {
+          "id": "1-5",
+          "x": 1,
+          "y": 5,
+          "type": "letter",
+          "expected": "P"
+        },
+        {
+          "id": "2-5",
+          "x": 2,
+          "y": 5,
+          "type": "letter",
+          "expected": "L"
+        },
+        {
+          "id": "3-5",
+          "x": 3,
+          "y": 5,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "4-5",
+          "x": 4,
+          "y": 5,
+          "type": "letter",
+          "expected": "T"
+        },
+        {
+          "id": "5-5",
+          "x": 5,
+          "y": 5,
+          "type": "letter",
+          "expected": "T"
+        },
+        {
+          "id": "6-5",
+          "x": 6,
+          "y": 5,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "7-5",
+          "x": 7,
+          "y": 5,
+          "type": "letter",
+          "expected": "R"
+        },
+        {
+          "id": "0-6",
+          "x": 0,
+          "y": 6,
+          "type": "clue",
+          "dir": "right",
+          "text": "BAŞINA",
+          "wordId": "w15"
+        },
+        {
+          "id": "1-6",
+          "x": 1,
+          "y": 6,
+          "type": "letter",
+          "expected": "P"
+        },
+        {
+          "id": "2-6",
+          "x": 2,
+          "y": 6,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "3-6",
+          "x": 3,
+          "y": 6,
+          "type": "letter",
+          "expected": "R"
+        },
+        {
+          "id": "4-6",
+          "x": 4,
+          "y": 6,
+          "type": "clue",
+          "dir": "right",
+          "text": "KULAK",
+          "wordId": "w16"
+        },
+        {
+          "id": "5-6",
+          "x": 5,
+          "y": 6,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "6-6",
+          "x": 6,
+          "y": 6,
+          "type": "letter",
+          "expected": "A"
+        },
+        {
+          "id": "7-6",
+          "x": 7,
+          "y": 6,
+          "type": "letter",
+          "expected": "R"
+        },
+        {
+          "id": "0-7",
+          "x": 0,
+          "y": 7,
+          "type": "clue",
+          "dir": "right",
+          "text": "ÖZLEM",
+          "wordId": "w17"
+        },
+        {
+          "id": "1-7",
+          "x": 1,
+          "y": 7,
+          "type": "letter",
+          "expected": "Y"
+        },
+        {
+          "id": "2-7",
+          "x": 2,
+          "y": 7,
+          "type": "letter",
+          "expected": "E"
+        },
+        {
+          "id": "3-7",
+          "x": 3,
+          "y": 7,
+          "type": "letter",
+          "expected": "N"
+        },
+        {
+          "id": "4-7",
+          "x": 4,
+          "y": 7,
+          "type": "clue",
+          "dir": "right",
+          "text": "YAPMAK",
+          "wordId": "w18"
+        },
+        {
+          "id": "5-7",
+          "x": 5,
+          "y": 7,
+          "type": "letter",
+          "expected": "D"
+        },
+        {
+          "id": "6-7",
+          "x": 6,
+          "y": 7,
+          "type": "letter",
+          "expected": "O"
+        },
+        {
+          "id": "7-7",
+          "x": 7,
+          "y": 7,
+          "type": "empty"
+        }
+      ],
+      "words": {
+        "w1": {
+          "en": "BY",
+          "tr": "İLE",
+          "length": 2,
+          "cells": [
+            "2-0",
+            "3-0"
+          ]
+        },
+        "w2": {
+          "en": "UNHAPPY",
+          "tr": "MUTSUZ",
+          "length": 7,
+          "cells": [
+            "1-1",
+            "1-2",
+            "1-3",
+            "1-4",
+            "1-5",
+            "1-6",
+            "1-7"
+          ]
+        },
+        "w3": {
+          "en": "APART",
+          "tr": "AYRI",
+          "length": 5,
+          "cells": [
+            "4-1",
+            "4-2",
+            "4-3",
+            "4-4",
+            "4-5"
+          ]
+        },
+        "w4": {
+          "en": "MY",
+          "tr": "BENİM",
+          "length": 2,
+          "cells": [
+            "6-0",
+            "7-0"
+          ]
+        },
+        "w5": {
+          "en": "RELATED",
+          "tr": "İLGİLİ",
+          "length": 7,
+          "cells": [
+            "5-1",
+            "5-2",
+            "5-3",
+            "5-4",
+            "5-5",
+            "5-6",
+            "5-7"
+          ]
+        },
+        "w6": {
+          "en": "UPWARDS",
+          "tr": "YUKARI",
+          "length": 7,
+          "cells": [
+            "1-1",
+            "2-1",
+            "3-1",
+            "4-1",
+            "5-1",
+            "6-1",
+            "7-1"
+          ]
+        },
+        "w7": {
+          "en": "NO",
+          "tr": "HAYIR",
+          "length": 2,
+          "cells": [
+            "1-2",
+            "2-2"
+          ]
+        },
+        "w8": {
+          "en": "PEG",
+          "tr": "MANDAL",
+          "length": 3,
+          "cells": [
+            "4-2",
+            "5-2",
+            "6-2"
+          ]
+        },
+        "w9": {
+          "en": "HE",
+          "tr": "O",
+          "length": 2,
+          "cells": [
+            "1-3",
+            "2-3"
+          ]
+        },
+        "w10": {
+          "en": "ALL",
+          "tr": "TÜM",
+          "length": 3,
+          "cells": [
+            "4-3",
+            "5-3",
+            "6-3"
+          ]
+        },
+        "w11": {
+          "en": "EARN",
+          "tr": "KAZANMAK",
+          "length": 4,
+          "cells": [
+            "3-4",
+            "3-5",
+            "3-6",
+            "3-7"
+          ]
+        },
+        "w12": {
+          "en": "ERR",
+          "tr": "HATA YAPMAK",
+          "length": 3,
+          "cells": [
+            "7-4",
+            "7-5",
+            "7-6"
+          ]
+        },
+        "w13": {
+          "en": "AVERAGE",
+          "tr": "ORTALAMA",
+          "length": 7,
+          "cells": [
+            "1-4",
+            "2-4",
+            "3-4",
+            "4-4",
+            "5-4",
+            "6-4",
+            "7-4"
+          ]
+        },
+        "w14": {
+          "en": "PLATTER",
+          "tr": "BÜYÜK TABAK",
+          "length": 7,
+          "cells": [
+            "1-5",
+            "2-5",
+            "3-5",
+            "4-5",
+            "5-5",
+            "6-5",
+            "7-5"
+          ]
+        },
+        "w15": {
+          "en": "PER",
+          "tr": "BAŞINA",
+          "length": 3,
+          "cells": [
+            "1-6",
+            "2-6",
+            "3-6"
+          ]
+        },
+        "w16": {
+          "en": "EAR",
+          "tr": "KULAK",
+          "length": 3,
+          "cells": [
+            "5-6",
+            "6-6",
+            "7-6"
+          ]
+        },
+        "w17": {
+          "en": "YEN",
+          "tr": "ÖZLEM",
+          "length": 3,
+          "cells": [
+            "1-7",
+            "2-7",
+            "3-7"
+          ]
+        },
+        "w18": {
+          "en": "DO",
+          "tr": "YAPMAK",
+          "length": 2,
+          "cells": [
+            "5-7",
+            "6-7"
+          ]
+        }
+      },
+      "letterPool": [
+        "O",
+        "A",
+        "T",
+        "Y",
+        "R",
+        "P",
+        "E",
+        "P",
+        "E",
+        "W",
+        "Y",
+        "N",
+        "E",
+        "U",
+        "T",
+        "A",
+        "R",
+        "L",
+        "A",
+        "O",
+        "Y",
+        "E",
+        "R",
+        "G",
+        "B",
+        "E",
+        "E",
+        "L",
+        "R",
+        "P",
+        "A",
+        "P",
+        "R",
+        "M",
+        "L",
+        "D",
+        "G",
+        "S",
+        "N",
+        "E",
+        "A",
+        "D",
+        "V",
+        "E",
+        "A",
+        "H"
       ]
     }
   ]
