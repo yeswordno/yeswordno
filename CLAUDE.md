@@ -7,17 +7,19 @@ React + Vite kelime oyunu. Türkçe arayüz. Vercel'de yayında, GitHub: `yeswor
 - `npm run build` → production build
 - `node generator.js` → günlük çengel bulmacasını yeniden üretir (aşağıya bak)
 
-## Oyun modları (giriş ekranı: `screen === 'lang'`)
+## Oyun modları + ANA EKRAN (giriş: `screen === 'lang'`)
 `src/App.jsx` tek bir `screen` state'iyle ekran yönetir: `'lang' | 'level' | 'game' | 'collection' | 'daily'`.
-Menüdeki sıra (lang ekranı):
+
+**Ana ekran AKORDEON yapısı** (`openSection: 'duello' | 'kutu' | null` — aynı anda biri açık):
 1. **Kelime Avcısı** (başlık)
-2. **⚔️ Günlük Düello** → `setScreen('daily')` → **seviye seçimi** (`dailyLevel`) → `<CengelGame level=... />` (çengel bulmaca)
-3. İngilizce → Türkçe (mevcut oyun, `handleLangSelect('EN_TR')`)
-4. Türkçe → İngilizce (`handleLangSelect('TR_EN')`)
+2. **⚔️ Günlük Düello** akordeonu → açılınca altta **Kolay/Orta/Zor** (renkli zorluk şeritli `.acc-level lvl-easy/medium/hard`) → seçince `setDailyLevel(lvl); setScreen('daily')` → `<CengelGame level=.. />`. **Ayrı zorluk ekranı KALDIRILDI** (eski `screen==='daily' && !dailyLevel` bloğu yok); CengelGame `onBack` → `setScreen('lang')`.
+3. **🧩 Kutu Kutu Pense** akordeonu (= eski "Kelime Avcısı" çapraz oyunun ADI) → açılınca **İngilizce→Türkçe / Türkçe→İngilizce** → `handleLangSelect('EN_TR'|'TR_EN')` → `screen==='level'` (kategori: a1_a2/b1_b2/c1_c2/academic).
+4. **🏆 Sıralama (ilk 3)** ana ekranda: `<ScoreboardPreview limit={3} />` → "Tümünü Gör" tam tabloyu açar (`showScoreboard`). **Tek tablo, ana ekranda** (zorluk ekranındaki eski önizleme kaldırıldı).
+- Akordeon/öğe CSS'i `App.css`: `.accordion(.open)`, `.accordion-head/-body/-caret`, `.acc-item`, `.acc-level`, `.daily-avg-badge`.
 
-> Mevcut "Kelime Avcısı" akışı (lang/level/game/collection) **bozulmamalı**. Çengel ayrı bir bileşendir.
+> Kelime Avcısı (Kutu Kutu Pense) akış (lang/level/game/collection) **bozulmamalı**. Çengel ayrı bileşendir.
 
-**Kelime Avcısı kelime seçimi (`startGame`):** Çapraz bulmacada boşluk gösterilemez → **cevabı çok kelimeli olan kayıtlar elenir** (`rawAnswer.trim().includes(' ')` → atla; ör. "harekete geçmek", "kafa karıştırıcı" → "KAFAKARIŞTIRICI" gibi saçma dizi olmasın). İpucu (clue) çok kelimeli olabilir, sorun değil. (Tek-kelimeye kısaltılmış YANLIŞ çeviriler — ör. veri "mobilize=harekete" — otomatik tespit edilemez, elle düzeltilir.) Izgara `gameLogic.js` `generateCrossword`, `GRID_SIZE=15`.
+**Çok-kelimeli cevaplar artık ELENMİYOR** (eski filtre kaldırıldı): cevaptaki boşluk regex ile silinir (`swimming pool → SWIMMINGPOOL`), **ipucu boşluklu kalır**, ızgaraya sığması için `≤ GRID_SIZE(15)` sınırı sürer. Her iki oyunda da böyle (Günlük Düello generator `en`'i zaten `[^A-Z]` ile boşluksuzlaştırır). Izgara `gameLogic.js` `generateCrossword`, `GRID_SIZE=15`.
 
 ## Çengel "Günlük Düello" modu — `src/CengelGame.jsx` + `src/CengelGame.css`
 Kendi kendine yeten bir bileşen. `App.jsx` içinde `import CengelGame from './CengelGame'` ile gelir, `<CengelGame onBack={() => setScreen('lang')} />` olarak render edilir.
@@ -38,14 +40,16 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 5. CSS: `:root`→`.cengel-root`, `body`/`*` kapsama, `.cell`→`.cg-cell` (replace-all), sonuna `.cengel-back` stili
 
 ### Zorluk seviyeleri (Günlük Düello)
-- `App.jsx` `screen==='daily'` iken önce **seviye seçim ekranı** gösterir (😊 Kolay/Easy · 🙂 Orta/Medium · 🔥 Zor/Hard). Seçilince `<CengelGame level={dailyLevel} key={dailyLevel} onBack={()=>setDailyLevel(null)} />` render edilir (`key` → her seviye taze mount, state sıfırlama derdi yok).
+- Seviye **ana ekrandaki Günlük Düello akordeonundan** seçilir (ayrı ekran yok). Seçilince `<CengelGame level={dailyLevel} key={dailyLevel} onBack={()=>{setScreen('lang');setDailyLevel(null);}} />` (`key` → taze mount).
 - `CengelGame` `level` prop'una göre `fetch('/puzzles/daily-<level>.json')` çeker. **Header:** sol-üstte yuvarlak **✕** (`.cengel-close`, menüye/seviye seçimine döner) + sağ-üstte yuvarlak **?** (`.cengel-help`, "Nasıl Oynanır?" modalı `showHelp`) — ikisi simetrik. Ortada `WORD TR` logosu, altında Sen/Rakip skor tablosu. Alt kontroller: **↺ GERİ** (undo), **⇄ DEĞİŞTİR** (`shuffleRack`, `.shuffle-icon`), **ONAYLA/PAS** (`submitTurn`).
 - **Bulmaca dosyası artık KUYRUK formatı:** `{ level, generated, puzzles: [ {id:<tarih>, ...}, ... ] }` (7 günlük tampon). Fetch handler İstanbul tarihine göre **bugünün** kaydını seçer (`puzzles.find(id===today)` → yoksa `id<=today` en günceli → yoksa son eleman). **Eski tek-obje formatıyla geri uyumlu** (`raw.puzzles` yoksa `raw`'ı doğrudan kullanır) → deploy uyumsuzluğunda kırılmaz. Bkz. "Kuyruk/tampon" başlığı.
 - **Seviye save anahtarı:** `cengel_save_<level>_<puzzleId>` (her seviye ayrı ilerleme).
 
 ### Önemli davranışlar (CengelGame)
-- **Renk teması:** monokrom temel (Rams × Ive) + **soru/pasif hücreler açık bal tonu** (`--clue-bg: #f4ead0`, `--empty-bg: #ebdcb8`). Harf hücreleri beyaz. Accent hâlâ antrasit. Değişkenler `.cengel-root`'ta.
-- **Taş durumları:** raf taşı açık (`--tile-bg`), tahtaya konmuş-onaylanmamış **koyu** (`--placed-bg`), onaylanmış doğru **açık gri** (`--confirmed-bg`).
+- **TEMA = Açık Glassmorphism (göl/iskele fotoğrafı zemini).** Değişkenler `.cengel-root`'ta; tek **mavi accent** (`--accent:#4c8dff`, `--accent-gradient`). Zemin: `public/bg.jpg` (45 KB), **sabit `.cengel-root::before`** katmanı (`background-attachment:fixed` mobilde takıldığı için kullanılmadı). Paneller buzlu cam (`--glass-bg/strong/border`, `backdrop-filter`). Izgara hücreleri **bitişik** (`gap:2px`).
+  - **Hücre tipleri:** soru = **bal** (`--clue-bg: rgba(224,192,120,.8)`, tüm sorular AYNI ton; çift-soru orta çizgi+oklarla ayrışır) · doldurulabilir boş = beyaz buzlu **iç gölgeli yuva** · **pasif/blok = OPAK siyaha-yakın gri, kabarık** (dışbükey gölge, zeminden bağımsız).
+- **Taş durumları (TAKAS edildi):** koyulan-onaylanmamış = **beyaz + mavi ışıltı**; onaylanmış-doğru = **mavi gradient** (`--accent-gradient`). **Oyuncu ve rakip onaylı taşı AYNI** (renk ayrımı yok). Raf taşı = beyaz 3D klavye tuşu (seçili → mavi parıltılı yükselen).
+- **Tamamlanan kelime çerçevesi = beyaz** (ışıltılı), `.word-box`.
 - **Skor anında işlenmez:** `+1/−1/+N` puanlar hücreden skor tablosuna **uçar** (`flyingPoints` + Web Animations API). Skor, uçuş bitince `landScore(who, value)` ile işlenir. Oyuncu skoru `Math.max(0, ...)` ile 0 tabanlı.
 - **Yanlış harf:** köşede `−1` belirir, sonra **koyu taşı** rafa geri uçar (`flyingTiles`).
 - **Rakip taşı uçar (yerleşme):** rakip hamlede taşlar **"Rakip" yazısının sağından** (`oppLabelRef`, skor sayısından DEĞİL) hücreye kademeli uçar (`flyingOppTiles`, `flyOppTileToCell`, ~880ms, 280ms arayla); inince hücre kilitlenir + `+1` skora uçar.
@@ -53,23 +57,29 @@ yeswordno'nun kendi `App.css`'i ile çakışmasın diye çengel stilleri izole e
 - **REZERV mekanizması (son taşlar hep oyuncuya kalmasın):** `OPP_SHARE=0.4` → rakip harf hücrelerinin ~%40'ını doldurur. (a) `runOpponentTurn` rakibi **hedef payını aşmaktan alıkoyar** (`oppRemaining = OPP_SHARE*N - oppLocked`, payını oyun boyunca dengeli doldurur). (b) `finalizeRack` raf kapağını `cap = min(5, kalanBoşHücre − oppRemaining)` yapar → rakibin payı kadar harf **havuzda rezerv** tutulur, oyuncunun rafına çekilmez → o hücreleri rakip doldurur. Böylece bitiş 3/2 gibi karışır, son hamle bazen rakipte. *(Önceki "CLAIM_PROB kapma" yaklaşımı kaldırıldı — finalizeRack refill'i son harfi hep oyuncuya çekiyordu.)*
   - **KOTA KAPISI İSTİSNASI (kilitlenme düzeltmesi):** Kota kapısı yalnızca **normal orta oyunda** (oyuncu ilerliyorken VE >10 boş hücre varken) geçerli. **Oyun sonunda (`available.length <= ENDGAME_CELLS=10`) VEYA oyuncu o turda hiç hücre kilitlemediyse (saf PAS)** kota KALDIRILIR → rakip havuzda oynayabildiği her şeyi oynar ("kim oynayabilirse oynar"). Önceki hata: kota dolduktan sonra rakip, havuzdaki rezerv hücreleri bile oynamayıp pas geçiyordu; oyuncu da pas geçince hiç kimse oynamıyor → kalan boş hücreler "hep oyuncununmuş" gibi takılıp **kilitleniyordu** (ör. 7 boş hücre / 5 raf taşı / 2 havuz → kimse oynamıyor). Rakip zaten yalnızca **havuzdaki** harflerden oynadığı için (oyuncunun rafını çalamaz) kota gevşese bile rakip oyuncunun payını alamaz; havuzun kendisi rakibi ~%40 ile sınırlar. `runOpponentTurn`'e `playerProgressed` parametresi eklendi; otomatik-bitirme çağrısı `false` geçer.
 - **Oyuncunun taşı bitince:** rakip hamlesi sonunda raf boş + hâlâ (rakibe ait) hücre varsa rakip **otomatik devam** eder (`busy` açık kalır, PAS gerekmez) → kalan hücreleri rakip bitirir.
-- **Bonus hücreler (H2/H3/K2):** Scrabble benzeri. **H2** harften +2, **H3** harften +3, **K2** işaretli kelime tamamlanınca **kelime bonusu 2 kat** (ör. 5 harflik kelime → +5 yerine +10; harf puanları ayrı). Adet: **2× H2, 1× H3, 1× K2**. `computeBonuses(puzzle)` bulmaca kimliğinden (tarih) **deterministik** üretir (`mulberry32` tohumu → her gün herkese aynı; yeniden generate gerekmez, save ile tutarlı). **K2 kelimesinin hücrelerine H2/H3 KONMAZ** (çakışma yok). Boş hücrede rozet görünür (`.cell-bonus`, ortada filigran) + hafif ton (`.bonus-h2/h3/k2`, `:not(.locked)`); harf/taş konunca taş kapatır, kilitlenince ton kalkar. **K² etiketi kelimenin İLK BOŞ hücresinde** gösterilir (render anında `k2LabelCell`; ilk hücre dolunca sonraki boş hücreye kayar), ton tüm kelimede kalır. Puanlama tek yoldan: `cellPoints(id)` (uçan harf puanı) ve `wordPoints(wid)` (uçan kelime puanı) → hem oyuncu (`submitTurn`) hem rakip (`runOpponentTurn`/`showWordBonus`). *(Not: prototip `cengel-oyunu` bu özelliği içermez; gerekirse ayrıca port edilir.)*
+- **Bonus hücreler (H2/H3/K2):** Scrabble benzeri. **H2** harften +2, **H3** harften +3, **K2** işaretli kelime tamamlanınca **kelime bonusu 2 kat** (ör. 5 harflik kelime → +5 yerine +10; harf puanları ayrı). Adet: **2× H2, 1× H3, 1× K2**. `computeBonuses(puzzle)` bulmaca kimliğinden (tarih) **deterministik** üretir (`mulberry32` tohumu → her gün herkese aynı; yeniden generate gerekmez, save ile tutarlı). **K2 kelimesinin hücrelerine H2/H3 KONMAZ** (çakışma yok). Boş harf hücresinde **H²/H³ rozeti** ortada büyükçe görünür (`.cell-bonus`, `clamp(1rem,4.5vw,1.6rem)`). **K² artık yıldız+etiket değil:** ilgili SORU hücresinin **sağ-üst köşesinde şık `×2` rozeti** (`.k2-badge`, lacivert chip; `.clue-k2-cell`'e `padding-top` ile metin rozetin altında). Puanlama tek yoldan: `cellPoints(id)` ve `wordPoints(wid)` → hem oyuncu hem rakip. *(Not: prototip `cengel-oyunu` bu özelliği içermez.)*
 - **Soru hücresi:** dokununca `scale(1.42)` büyür (`activeClue`). **X (çift soru) hücresi:** iki soru ortalı, oklar (▶ üst-sağ, ▼ alt-orta) yarım-kutu dışında render edilir (kırpılmaz).
-- **Oyun sonu:** tüm harf hücreleri kilitlenince **~3.2s** sonra `gameOver=true` (son +1/+N puan uçuşları skora varıp işlensin, sonuç ondan sonra çıksın). `.result-overlay`: "You won!" / "Not this time" / "It's a tie!".
+- **Oyun sonu:** tüm hücreler kilitlenince ~3.2s sonra `gameOver=true`. `.result-overlay` **cam kart** ("You won!"/"Not this time"/"It's a tie!"). **SEVİYE BONUSU (kazanınca):** medium ×1.08, hard ×1.10 (easy yok) → puan sayaçla **80→86** artar + "**+N seviye puanı**" yukarıdan kayarak iner (`levelBonus`, `shownScore`); skor tablosuna **bonuslu** skor gönderilir.
 - **Soru yazısı auto-fit:** `AutoFitText` bileşeni soru metnini kutusuna sığmazsa font'u kademeli küçültür (6px tabanına kadar), resize/döndürmede yeniden sığdırır. X (çift soru) hücrelerindeki uzun kelimeler kesilmez (line-clamp kaldırıldı).
-- **Renk uyumu:** `--placed-bg` (yerleştirilmiş taş, açık navy #54637d) aynı zamanda **TR logosu, oyuncu skoru ve ONAYLA butonu** için de kullanılır → tek değişkenle uyum.
+- **Renk uyumu:** tek mavi accent (`--placed-bg:#4c8dff` / `--accent-gradient`) — TR logosu, oyuncu skoru, ONAYLA butonu, onaylı taş hep bu.
+- **Bağlantı hatası:** fetch başarısızsa geliştirici mesajı yerine kullanıcı dostu **cam hata ekranı** (📡 + "İnternet bağlantınız…" + Tekrar Dene/Menüye Dön — `.conn-error`).
 - **Kalıcılık:** `localStorage` `cengel_save_<level>_<puzzleId>` (taşlar, raf, skorlar, kilitler, gameOver). Yeni gün/seviye = taze oyun.
 
+## 🎯 PUANLAMA (her iki oyun, 0–100 ölçeği)
+- **Günlük Düello:** doğru harf +1 (H²→+2, H³→+3), tamamlanan kelime +uzunluk (K² ×2), yanlış −1; 0 tabanlı. **Kazanınca seviye bonusu:** medium ×1.08, hard ×1.10.
+- **Kutu Kutu Pense** (`App.jsx checkWin`): `puan = (toplam harf×1) − (ipucu×2) + süre(±10)` × **kategori çarpanı** (a1_a2 ×1.00, b1_b2 ×1.08, c1_c2/academic ×1.10). süre: <04:00 +10, >07:00 −10. Üst sınır yok, 0 tabanlı. Kazanma ekranında **döküm** (`scoreBreakdown`: Harf/İpucu/Süre). `highScores` artık harf-bazlı (~150 altı); eski 1000+ rekorlar `>300` ise tek seferde temizlenir.
+
 ## 🏆 Skor Tablosu (leaderboard) — Upstash + serverless
-Günlük Düello için günlük/haftalık sıralama. **Şifresiz** kimlik (takma ad + cihaz anahtarı).
+**İKİ oyun tek tabloda** (duello + pense). **Şifresiz** kimlik (takma ad + cihaz anahtarı).
 - **Backend (`api/`, Vercel serverless, ek bağımlılık YOK — Upstash REST'e `fetch`):**
-  - `api/_store.js` (`_` → endpoint değil): Upstash REST yardımcıları (`redis(...)`, `parseHash`), İstanbul tarihi/ISO-hafta, `LEVELS`, TTL. Env: `UPSTASH_REDIS_REST_URL`/`TOKEN` **veya** `KV_REST_API_URL`/`TOKEN` (ikisini de kabul eder).
-  - `api/register.js`: `{deviceKey, nick, emoji}` → nick benzersiz (`nick:<lower>`→deviceKey), `user:<deviceKey>`={nick,emoji}. `_badwords.js` ile **uygunsuz nick filtresi** (iki katman: uzun küfür kökleri alt-dize + kısa kelimeler tam eşleşme; leetspeak çözer → Scunthorpe yanlış-pozitifi yok).
-  - `api/submit.js`: `{deviceKey, level, score}` → **günlük puan = o gün oynanan seviyelerin ORTALAMASI**; **haftalık = günlük puanların TOPLAMI** (ZSET `lb:day:<date>`, `lb:week:<isoweek>`; delta ile). En iyi skoru tutar; TTL ile gün/hafta düşer.
-  - `api/leaderboard.js`: `?type=day|week&device=` → ilk 20 + (ilk 20 dışındaysa) kendi sıran.
-  - `api/admin.js`: `?token=ADMIN_TOKEN&action=remove&nick=` → nick'i + kayıtlarını siler (moderasyon). `ADMIN_TOKEN` env elle eklenir.
-- **İstemci:** `src/utils/leaderboard.js` — `getDeviceKey()` (UUID, localStorage `wtr_device`), `register/submitScore/fetchLeaderboard`. CengelGame oyun bitince `submitScore(level, score)` (kayıtsızsa sessiz atlar).
-- **UI:** `src/Scoreboard.jsx`+`.css` (onboarding nick+emoji / Günlük·Haftalık tablo, 👑 birinciye, "sen" satırı vurgulu — modal). `src/ScoreboardPreview.jsx` Günlük Düello zorluk ekranında **ilk-5 önizleme** + "Tümünü Gör →" modalı açar (App.jsx `showScoreboard`).
+  - `api/_store.js`: Upstash REST yardımcıları, İstanbul tarihi/ISO-hafta, `LEVELS` (duello: easy/medium/hard), `PENSE_LEVELS` (a1_a2/b1_b2/c1_c2/academic), `GAMES={duello,pense}`, TTL. Env: `UPSTASH_*` **veya** `KV_REST_API_*`.
+  - `api/register.js`: nick benzersizleştirme + `_badwords.js` uygunsuz nick filtresi.
+  - `api/submit.js`: `{deviceKey, game, level, score}` (score 0–100'e **kırpılır**). Gün hash alanı `<game>:<level>`, en iyi tutulur. **Oyun günlüğü = o oyunun oynanan alt-skorlarının ortalaması**; **Genel günlük = oynanan OYUN TÜRLERİNİN ortalaması** `(duelloDaily+penseDaily)/oynanan` (1 veya 2'ye böler, tur sayısına DEĞİL) → `lb:day` ZSET. **Haftalık = genel günlüklerin toplamı** (delta). Geri uyum: `game` yoksa seviyeden çıkarır.
+  - `api/mydaily.js` (YENİ): `?device=` → `{duelloDaily, penseDaily, overallDaily}` (Kutu Pense kategori ekranında "Günlük ortalama puanınız" için).
+  - `api/leaderboard.js`: `?type=day|week&device=` → ilk 20 + (dışındaysa) kendi sıran. **`Cache-Control: no-store`** (bayat skor gösterimi giderildi).
+  - `api/admin.js`: `?token=ADMIN_TOKEN&action=remove&nick=`.
+- **İstemci:** `src/utils/leaderboard.js` — `submitScore(game, level, score)` (kayıtsızsa sessiz atlar; fetch `no-store`), `fetchMyDaily()`, `fetchLeaderboard`. CengelGame → `submitScore('duello', level, bonusluSkor)`; Kelime Avcısı `checkWin` → `submitScore('pense', kategori, puan)`.
+- **UI:** `src/Scoreboard.jsx`+`.css` (onboarding + Günlük/Haftalık tablo, modal). `src/ScoreboardPreview.jsx` **ANA EKRANDA** `limit={3}` (ilk-3 + ilk-3 dışındaysan **kendi satırın** `.sb-prow-self`) + "Tümünü Gör →".
 - **Kurulum:** Vercel → Storage → Upstash Redis bağla (env'ler otomatik) → redeploy. Tablo **sadece canlıda** çalışır (Vite dev'de `/api` yok). Anonim olduğu için banlanan yeni nick'le dönebilir; asıl koruma önleyici filtre.
 
 ## Günlük bulmaca üretimi — `generator.js`
@@ -79,7 +89,8 @@ Günlük Düello için günlük/haftalık sıralama. **Şifresiz** kimlik (takma
   - `hard` = `b1_b2.json` + `c1_c2.json` + `academic.json` + `common_short.json`
 - **`common_short.json`** (≈1250 küratörlü yaygın kısa kelime, 3-6 harf) bu oturumda eklendi; her seviyede "harç". Özellikle hard'ın az olan kısa-kelime havuzunu besler (havuzlar: easy ~2900, medium ~4900, hard ~4900).
 - **Köprü kelimeler (`FILLERS`, 27 adet 2 harfli)** her seviyede bulunur (b1_b2/c1_c2/academic'te 2 harfli kelime yok; bunlar olmazsa X şablonları tıkanır). `FILLER_SET` ile cooldown'dan **muaf**tır.
-- Sözlükler `src/data/`'dan okunur (format: `{en, tr}`). Türkçe `toLocaleUpperCase('tr-TR')`. **Element sembolleri elenir** (`/SİMGES/` → "CİVA SİMGESİ"=HG gibi tuhaf köprüler). Kelimeler `en` bazında benzersizleştirilir.
+- Sözlükler `src/data/`'dan okunur (format: `{en, tr}`). Türkçe `toLocaleUpperCase('tr-TR')`. **Element sembolleri elenir** (`/SİMGES/`). Kelimeler `en` bazında benzersizleştirilir. **Çok-kelime:** `en` `[^A-Z]` ile boşluksuzlaşır (ipucu `tr` boşluklu kalır) → cevap birleşik. Sayılar (~): a1_a2 1762, b1_b2 2342, c1_c2 1414, academic 617.
+  - **Veri içe aktarım dersi:** `kelimelistesi.xlsx` (üst=İng, alt=Tr alternatif) içe aktarıldı (+307). **DİKKAT:** alternatif listede bir kelimenin çevirisi eksikse (ör. "the") tüm eşleşme kayar → en/tr swap olur. İçe aktarımdan sonra **`en` sütununda Türkçe karakter var mı** diye doğrula (0 olmalı). Bozuk/kısaltılmış çeviriler elle düzeltilir (ör. revise=gözden geçirmek, overlook=göz ardı etmek).
 - **Çıktı = KUYRUK/TAMPON (`BUFFER_DAYS=7`):** Her `daily-<level>.json` artık tek gün değil, `{ level, generated, puzzles: [...] }` formatında **7 günlük** kuyruk tutar (bugün + 6 ileri gün). Geri uyum için `daily.json` = **bugünün** medium'u (tek obje). Uygulama yine `fetch('/puzzles/daily-<level>.json')` çeker, içinden bugünü seçer.
   - **Neden:** Kullanıcıya görünen "bugün" cron'un ne zaman koştuğundan **bağımsız** olsun. Dosyada bugün hazır beklediği için 00:00'da uygulama **hiç beklemeden** açılır; GitHub cron gecikse/atlasa bile (tampon < boşluk olmadıkça) kimse boşluk görmez.
   - **Kendini onarır + idempotent:** Her koşu `targetDates=[bugün..bugün+6]` için eksik günleri üretir, **var olanları yeniden üretmez** (`loadExistingPuzzles` ile okur). Geçmiş günler `targetDates`'te olmadığı için kuyruktan otomatik düşer. Cron birkaç gece atlasa bir sonraki koşu boşlukları doldurur.
@@ -95,6 +106,7 @@ Günlük Düello için günlük/haftalık sıralama. **Şifresiz** kimlik (takma
 Şablonlarda alt alta yatay kelimelerin harfleri dikeyde sorusu olmayan "sahte sütun" oluşturur (col2/col6 ~8 hücre). Bunu yok etmek = "tam kesişimli ızgara" = klasik *word-square* problemi. **Bu 6k'lık iki dilli sözlükle ÇÖZÜLEMEZ** — ~2M deneme yapıldı (rastgele, kurgusal tam-kesişim, mutasyon, +1250 kelime sonrası), hepsi 0/0% çözüm. Karar: **mevcut şablonlar kalsın** (her hücrenin yatay sorusu var; standart çengel). Gerçek çözüm 10-100× büyük kısa-kelime DB + özel word-square algoritması ister (ayrı/büyük proje).
 
 ## İkonlar / PWA
+- `public/bg.jpg` (~45 KB) — Günlük Düello'nun göl/iskele cam zemini (`.cengel-root::before`).
 - `public/icon.svg` — ince monoline "WTR" logosu (mor gradyan), favicon + manifest kaynağı.
 - `public/apple-touch-icon.png` (180), `icon-192.png`, `icon-512.png` — SVG'den üretildi (iOS ana ekran + Android PWA).
 - `public/manifest.webmanifest` (`display: standalone`) + `index.html`'de favicon/apple-touch/manifest/theme-color + `viewport-fit=cover` + `apple-mobile-web-app-status-bar-style: black-translucent`.
