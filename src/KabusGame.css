@@ -1,0 +1,225 @@
+/* 👻 KÂBUS MODU — gece/kâbus teması. Stiller .kabus-root altında izole. */
+.kabus-root {
+  --kabus-bg: linear-gradient(160deg, #1a1a2e 0%, #16213e 100%);
+  --kabus-accent: #a29bfe;      /* hayalet moru */
+  --kabus-glow: #6c5ce7;
+  --correct: #00b894;
+  --wrong: #ff7675;
+  --kabus-panel: rgba(255, 255, 255, 0.06);
+  --kabus-border: rgba(162, 155, 254, 0.35);
+
+  position: fixed;
+  inset: 0;
+  background: var(--kabus-bg);
+  color: #eef0ff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 20px);
+  z-index: 50;
+  font-family: inherit;
+}
+
+.kabus-back {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px);
+  left: 14px;
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.kabus-screen {
+  width: 100%;
+  max-width: 480px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.kabus-title {
+  font-size: 1.5rem;
+  margin: 4px 0;
+  text-shadow: 0 0 18px rgba(108, 92, 231, 0.6);
+}
+.kabus-msg { font-size: 1rem; line-height: 1.5; opacity: 0.92; }
+
+/* Hayalet + animasyonlar */
+.kabus-ghost { filter: drop-shadow(0 0 22px rgba(108, 92, 231, 0.55)); }
+.kabus-ghost.float { animation: kabus-float 3s ease-in-out infinite; }
+.kabus-ghost.weak { opacity: 0.5; }
+.kabus-ghost.defeated { opacity: 0.4; filter: grayscale(1); }
+.kabus-ghost.combat { animation: kabus-float 2.4s ease-in-out infinite; }
+.kabus-ghost.combat.hit { animation: kabus-shake 0.4s; }
+
+@keyframes kabus-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes kabus-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-10px) rotate(-4deg); }
+  40% { transform: translateX(10px) rotate(4deg); }
+  60% { transform: translateX(-7px); }
+  80% { transform: translateX(7px); }
+}
+
+/* Butonlar */
+.kabus-btn {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(108, 92, 231, 0.45);
+}
+.kabus-btn.ghost {
+  background: transparent;
+  border: 1px solid var(--kabus-border);
+  box-shadow: none;
+}
+
+/* HP barı */
+.kabus-hpbar {
+  position: relative;
+  width: 100%;
+  height: 26px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--kabus-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.kabus-hpfill {
+  height: 100%;
+  background: linear-gradient(90deg, #d63031, #e17055);
+  transition: width 0.4s ease;
+}
+.kabus-hptext {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Ses / yazılı fallback */
+.kabus-audio { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.kabus-speaker { font-size: 2.6rem; animation: kabus-pulse 1.4s ease-in-out infinite; }
+@keyframes kabus-pulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.15); opacity: 1; } }
+.kabus-replay {
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.kabus-silent { font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; }
+
+.kabus-combo { font-size: 0.95rem; color: #ffeaa7; font-weight: 700; }
+
+/* Seçenekler */
+.kabus-options { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.kabus-opt {
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 16px;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+.kabus-opt:active { transform: scale(0.97); background: rgba(162, 155, 254, 0.18); }
+
+/* Yazma turu */
+.kabus-type { display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center; }
+.kabus-crithint { color: #ffeaa7; font-weight: 700; }
+.kabus-input {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.3rem;
+  text-align: center;
+  letter-spacing: 2px;
+  border-radius: 14px;
+  border: 2px solid var(--kabus-accent);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* Süre çubuğu */
+.kabus-timer {
+  width: 100%;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.kabus-timerfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--kabus-glow), var(--kabus-accent));
+  transition: width 0.1s linear;
+}
+
+/* Canlar */
+.kabus-lives { font-size: 1.6rem; letter-spacing: 4px; }
+.kabus-lives.hit { animation: kabus-shake 0.4s; }
+.heart.lost { filter: grayscale(1); opacity: 0.6; }
+
+/* Geri bildirim kartı */
+.kabus-feedback {
+  width: 100%;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--kabus-panel);
+  border: 2px solid var(--kabus-border);
+}
+.kabus-feedback.good { border-color: var(--correct); }
+.kabus-feedback.bad { border-color: var(--wrong); }
+.kabus-fb-head { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
+.kabus-feedback.good .kabus-fb-head { color: var(--correct); }
+.kabus-feedback.bad .kabus-fb-head { color: var(--wrong); }
+.kabus-fb-word { font-size: 1.5rem; font-weight: 800; }
+.kabus-fb-tr { font-size: 1.1rem; opacity: 0.9; margin-top: 4px; }
+.kabus-fb-img { max-width: 120px; margin-top: 10px; }
+
+/* Bitiş */
+.kabus-over .kabus-score { font-size: 1.2rem; }
+.kabus-wordlist {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  width: 100%;
+  max-height: 40vh;
+  overflow-y: auto;
+  text-align: left;
+}
+.kabus-wordlist li {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
+}
+.kabus-over-actions { display: flex; gap: 12px; margin-top: 12px; }
+
+/* Hareket azaltma tercihi */
+@media (prefers-reduced-motion: reduce) {
+  .kabus-ghost, .kabus-ghost.float, .kabus-ghost.combat,
+  .kabus-speaker { animation: none !important; }
+  .kabus-ghost.combat.hit, .kabus-lives.hit { animation: none !important; }
+}
