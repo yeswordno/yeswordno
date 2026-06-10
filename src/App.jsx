@@ -10,11 +10,13 @@ import c1_c2 from './data/c1_c2.json';
 import academic from './data/academic.json';
 import { TrFlag, GbFlag } from './utils/FlagIcons';
 import { SpeakerIcon } from './utils/SpeakerIcon';
-import { PuzzleIcon, DuelIcon } from './utils/MenuIcons';
+import { PuzzleIcon, DuelIcon, GhostIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
 import Scoreboard from './Scoreboard';
 import ScoreboardPreview from './ScoreboardPreview';
 import { submitScore, fetchMyDaily } from './utils/leaderboard';
+import { speakText } from './utils/tts';
+import KabusGame from './KabusGame';
 
 function App() {
   // --- STATE YÖNETİMİ ---
@@ -79,32 +81,7 @@ function App() {
 
 
 
-  // --- SESLİ OKUMA MOTORU (TTS) ---
-  const speakText = (text) => {
-    if (!window.speechSynthesis) return;
-
-    // Varsa eski konuşmayı durdur
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; // Daima İngilizce okuyacak
-    utterance.rate = 0.9;     // Tane tane okunması için hız ayarı
-    utterance.pitch = 1;
-
-    // En kaliteli sesi bulma (Google, Siri vb.)
-    const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(voice =>
-      (voice.lang === 'en-US' || voice.lang === 'en_US') && (
-        voice.name.includes('Google') ||
-        voice.name.includes('Samantha') ||
-        voice.name.includes('Daniel') ||
-        voice.name.includes('Premium')
-      )
-    );
-
-    if (preferredVoice) utterance.voice = preferredVoice;
-    window.speechSynthesis.speak(utterance);
-  };
+  // --- SESLİ OKUMA MOTORU (TTS) --- artık src/utils/tts.js'te (speakText import edildi)
 
   // Sesleri önceden yüklemeyi tetikle
   useEffect(() => {
@@ -560,6 +537,12 @@ function App() {
             </div>
           </div>
 
+          {/* MOD 3: Kâbus Modu → tek dokunuşla başlar (review kelimeleriyle) */}
+          <button className="btn-main btn-lang" onClick={() => setScreen('kabus')}>
+            <GhostIcon size={24} color="var(--accent-purple)" />
+            <span>Kâbus Modu</span>
+          </button>
+
           {/* Tek sıralama tablosu — ana ekranda (ilk 3 + Tümünü Gör) */}
           <ScoreboardPreview limit={3} onExpand={() => setShowScoreboard(true)} />
         </div>
@@ -572,6 +555,11 @@ function App() {
           level={dailyLevel}
           onBack={() => { setScreen('lang'); setDailyLevel(null); }}
         />
+      )}
+
+      {/* KÂBUS MODU — review kelimeleriyle hayalet düellosu */}
+      {screen === 'kabus' && (
+        <KabusGame onBack={() => setScreen('lang')} />
       )}
 
       {/* 2. SEVİYE EKRANI */}

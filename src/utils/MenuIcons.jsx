@@ -36,3 +36,19 @@ export function DuelIcon({ size = 64, color = 'currentColor' }) {
     </svg>
   );
 }
+
+// Kâbus Modu: klasik hayalet silüeti — dalgalı etek, iki yuvarlak göz
+export function GhostIcon({ size = 64, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none"
+      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* gövde + dalgalı alt kenar */}
+      <path d="M14 30 a18 18 0 0 1 36 0 V52
+               l-5 -4 l-5 4 l-5 -4 l-5 4 l-5 -4 l-5 4 l-6 -4 Z"
+        stroke={color} strokeWidth="3.2" strokeLinejoin="round" />
+      {/* gözler */}
+      <circle cx="25" cy="29" r="3.4" fill={color} />
+      <circle cx="39" cy="29" r="3.4" fill={color} />
+    </svg>
+  );
+}
