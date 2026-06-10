@@ -236,9 +236,144 @@
 }
 .kabus-over-actions { display: flex; gap: 12px; margin-top: 12px; }
 
-/* Hareket azaltma tercihi */
+/* ═══════════════ KELİME ZİNDANI — sinematik sahne katmanı ═══════════════ */
+
+/* Ekran okuyucu için görünmez (kapı diegetik, süre buradan okunur) */
+.kabus-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ── Gardiyan + fener ── */
+.kabus-warden { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.kabus-warden-stage { position: relative; display: flex; justify-content: center; align-items: center; padding: 6px 0; }
+.kabus-lantern {
+  position: absolute; top: -4px; left: 50%; width: 180px; height: 120px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at top, rgba(255, 214, 130, 0.32), rgba(255, 214, 130, 0) 70%);
+  filter: blur(2px); pointer-events: none;
+  transform-origin: top center;
+  animation: lantern-sway 4s ease-in-out infinite;
+}
+.kabus-warden-stage.warden-weak .kabus-lantern { width: 110px; height: 80px; opacity: 0.5; }
+.kabus-warden-stage.warden-weak .kabus-ghost { opacity: 0.55; filter: grayscale(0.3); }
+@keyframes lantern-sway {
+  0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+  50% { transform: translateX(-50%) rotate(3deg); }
+}
+
+/* ── Spot alanı + kapanan parmaklıklı kapı ── */
+.kabus-spot {
+  position: relative; width: 100%; min-height: 96px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 14px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.10));
+  border: 1px solid var(--kabus-border);
+}
+.kabus-spot .kabus-audio { position: relative; z-index: 2; }
+/* alttan yükselen sis (tur açılışında) */
+.kabus-mist {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(0deg, rgba(162,155,254,0.18), transparent 60%);
+  animation: mist-rise 700ms ease-out;
+}
+@keyframes mist-rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* parmaklıklı kapı: üstten iner; yüksekliği geçen süreyle artar */
+.kabus-door {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 3; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(20,16,30,0.92) 0 8px, rgba(60,52,84,0.5) 8px 14px);
+  border-bottom: 3px solid #2a2440;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.kabus-door.door-urgent { animation: door-tremble 0.25s linear infinite; border-bottom-color: var(--wrong); }
+@keyframes door-tremble { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
+
+/* ── Hücre bloğu (kelime hapishanesi) ── */
+.kabus-cellblock {
+  width: 100%; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  max-height: 64px; margin-top: 2px;
+}
+.kabus-cell {
+  width: 30px; height: 30px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--kabus-border); position: relative;
+  background: rgba(255,255,255,0.04);
+}
+/* kilitli: parmaklık deseni, içerik gizli */
+.kabus-cell.cell-locked {
+  background:
+    repeating-linear-gradient(90deg, rgba(20,16,30,0.9) 0 4px, rgba(70,62,96,0.55) 4px 7px);
+}
+/* sıradaki: parmaklıklar açılır, spot sarısı parlar */
+.kabus-cell.cell-current {
+  background: radial-gradient(circle, rgba(255,214,130,0.4), rgba(255,214,130,0.08));
+  border-color: #ffd682; box-shadow: 0 0 10px rgba(255,214,130,0.5);
+  animation: bars-open 0.5s ease-out;
+}
+@keyframes bars-open { from { background-position: 0 0; filter: brightness(0.6); } to { filter: brightness(1); } }
+/* kurtarılan: kapı açık, altın kenar, ilk harf görünür */
+.kabus-cell.cell-freed {
+  background: linear-gradient(135deg, rgba(0,184,148,0.35), rgba(255,214,130,0.2));
+  border-color: #ffd682; animation: cell-land 0.45s ease-out;
+}
+.kabus-cell .cell-letter { font-weight: 800; color: #fff; font-size: 0.9rem; }
+@keyframes cell-land { 0% { transform: scale(1.4); filter: brightness(2); } 100% { transform: scale(1); filter: brightness(1); } }
+/* yanılınan: kapalı + çapraz ekstra zincir, kızıl ton */
+.kabus-cell.cell-failed {
+  background: rgba(214,48,49,0.25); border-color: var(--wrong);
+}
+.kabus-cell.cell-failed::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(45deg, transparent 44%, rgba(255,118,117,0.8) 46% 54%, transparent 56%);
+}
+/* zafer finali: kapılar sırayla parlar */
+.kabus-finale .kabus-cell.cell-freed { animation: cell-open-seq 0.5s ease-out backwards; }
+.kabus-finale .kabus-cell:nth-child(1) { animation-delay: 0ms; }
+.kabus-finale .kabus-cell:nth-child(2) { animation-delay: 120ms; }
+.kabus-finale .kabus-cell:nth-child(3) { animation-delay: 240ms; }
+.kabus-finale .kabus-cell:nth-child(4) { animation-delay: 360ms; }
+.kabus-finale .kabus-cell:nth-child(5) { animation-delay: 480ms; }
+.kabus-finale .kabus-cell:nth-child(6) { animation-delay: 600ms; }
+.kabus-finale .kabus-cell:nth-child(n+7) { animation-delay: 720ms; }
+@keyframes cell-open-seq { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.2); filter: brightness(2); } 100% { transform: scale(1); opacity: 1; } }
+
+/* ── Mizansenler: zincir kırılışı, duvar çatlağı, ekran sarsıntısı ── */
+.kabus-chain { display: flex; justify-content: center; gap: 0; font-size: 1.6rem; height: 0; }
+.kabus-chain span:first-child { animation: chain-snap-l 0.4s ease-out; }
+.kabus-chain span:last-child { animation: chain-snap-r 0.4s ease-out; }
+@keyframes chain-snap-l { 0% { transform: translateX(0) rotate(0); opacity: 1; } 100% { transform: translateX(-40px) rotate(-40deg); opacity: 0; } }
+@keyframes chain-snap-r { 0% { transform: translateX(0) rotate(0); opacity: 1; } 100% { transform: translateX(40px) rotate(40deg); opacity: 0; } }
+
+/* kritik vuruş → kenarlardan beyaz çatlak flaşı */
+.kabus-root.wall-crack::after {
+  content: ''; position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.5), transparent 12%),
+    linear-gradient(-90deg, rgba(255,255,255,0.5), transparent 12%),
+    linear-gradient(180deg, rgba(255,255,255,0.4), transparent 10%),
+    linear-gradient(0deg, rgba(255,255,255,0.4), transparent 10%);
+  animation: wall-crack 0.4s ease-out;
+}
+@keyframes wall-crack { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+
+/* kapı çarpması → ekran sarsıntısı */
+.kabus-root.screen-shake { animation: screen-shake 0.4s ease-in-out; }
+@keyframes screen-shake { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-4px,2px); } 40% { transform: translate(4px,-2px); } 60% { transform: translate(-3px,1px); } 80% { transform: translate(3px,-1px); } }
+
+/* ── Finaller: şafak / karanlık ── */
+.kabus-root.scene-dawn { background: linear-gradient(160deg, #1a1a2e 0%, #4a3f6b 100%); transition: background 1.2s ease; }
+.kabus-root.scene-dark { background: radial-gradient(circle at center, #16213e 0%, #050509 75%); transition: background 1.2s ease; }
+.kabus-root.scene-dark .kabus-ghost { animation: warden-grow 1.2s ease forwards; }
+@keyframes warden-grow { to { transform: scale(1.15); } }
+
+/* ═══════════════ Hareket azaltma tercihi ═══════════════ */
 @media (prefers-reduced-motion: reduce) {
   .kabus-ghost, .kabus-ghost.float, .kabus-ghost.combat,
-  .kabus-speaker { animation: none !important; }
+  .kabus-speaker, .kabus-lantern, .kabus-mist, .kabus-door,
+  .kabus-cell, .kabus-chain span, .kabus-finale .kabus-cell.cell-freed { animation: none !important; }
   .kabus-ghost.combat.hit, .kabus-lives.hit { animation: none !important; }
+  .kabus-root.wall-crack::after, .kabus-root.screen-shake,
+  .kabus-root.scene-dark .kabus-ghost { animation: none !important; }
+  .kabus-root.scene-dawn, .kabus-root.scene-dark { transition: none !important; }
 }

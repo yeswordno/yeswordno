@@ -7,6 +7,7 @@ import './KabusGame.css';
 import { speakText, ttsSupported } from './utils/tts';
 import { submitScore } from './utils/leaderboard';
 import { GhostIcon } from './utils/MenuIcons';
+import { Warden, CellDoor, CellBlock } from './KabusStage';
 import {
   pickSessionWords, buildOptions, computeScore, isTypedCorrect,
   GHOST_HP_PER_WORD, PLAYER_LIVES, NORMAL_DAMAGE, CRIT_DAMAGE,
@@ -54,6 +55,12 @@ const KabusGame = ({ onBack } = {}) => {
   const [wrongWords, setWrongWords] = useState([]); // yanılınan kelimeler
   const [finalScore, setFinalScore] = useState(0);
   const [won, setWon] = useState(false);
+  // Sinematik koreografi (SADECE görsel): '' | 'crack' (kritik vuruş) | 'shake' (kapı çarpması)
+  const [sceneFx, setSceneFx] = useState('');
+  const flashFx = (fx, ms = 450) => {
+    setSceneFx(fx);
+    setTimeout(() => setSceneFx(c => (c === fx ? '' : c)), ms);
+  };
 
   const timerRef = useRef(null);
   const livesRef = useRef(PLAYER_LIVES);
@@ -147,7 +154,7 @@ const KabusGame = ({ onBack } = {}) => {
       setHitFx('ghost');
       setCombo(c => c + 1);
       correctRef.current += 1;
-      if (crit) { critRef.current += 1; }
+      if (crit) { critRef.current += 1; flashFx('crack'); }   // kritik → duvar çatlağı flaşı
       rescuedRef.current = [...rescuedRef.current, current];
       setRescued(rescuedRef.current);
     } else {
@@ -183,6 +190,7 @@ const KabusGame = ({ onBack } = {}) => {
   };
 
   const handleTimeout = () => {
+    flashFx('shake');   // kapı çarpması → ekran sarsıntısı (görsel)
     // Yazma turunda süre dolarsa da can gitmez.
     resolveTurn(false, { noPenalty: isTyping });
   };
@@ -231,8 +239,15 @@ const KabusGame = ({ onBack } = {}) => {
   };
 
   // ─────────────────────────── RENDER ───────────────────────────
+  const rootCls = [
+    'kabus-root',
+    sceneFx === 'shake' ? 'screen-shake' : '',
+    sceneFx === 'crack' ? 'wall-crack' : '',
+    phase === 'over' ? (won ? 'scene-dawn' : 'scene-dark') : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="kabus-root">
+    <div className={rootCls}>
       <button className="kabus-back" onClick={onBack}>← Menü</button>
 
       {/* GİRİŞ EKRANI */}
@@ -271,33 +286,29 @@ const KabusGame = ({ onBack } = {}) => {
         )
       )}
 
-      {/* OYUN + GERİ BİLDİRİM */}
+      {/* OYUN + GERİ BİLDİRİM — "Kelime Zindanı" sahnesi */}
       {(phase === 'play' || phase === 'feedback') && current && (
         <div className="kabus-screen kabus-play">
-          {/* Hayalet HP barı */}
-          <div className="kabus-hpbar">
-            <div className="kabus-hpfill"
-              style={{ width: `${ghostMaxHp ? (ghostHp / ghostMaxHp) * 100 : 0}%` }} />
-            <span className="kabus-hptext">👻 {ghostHp}/{ghostMaxHp}</span>
-          </div>
+          {/* Gardiyan Hayalet + HP + fener */}
+          <Warden hp={ghostHp} maxHp={ghostMaxHp} hit={hitFx === 'ghost'} />
 
-          <div className={`kabus-ghost combat${hitFx === 'ghost' ? ' hit' : ''}`}>
-            <GhostIcon size={96} color="#a29bfe" />
-          </div>
-
-          {/* Hoparlör / yazılı (sessiz) mod */}
-          <div className="kabus-audio">
-            {!useSilent ? (
-              <>
-                <div className="kabus-speaker" aria-hidden="true">🔊</div>
-                <button className="kabus-replay" onClick={() => speakText(current.en)}>
-                  🔊 Tekrar dinle
-                </button>
-              </>
-            ) : (
-              // TTS yoksa: kelime yazılı gösterilir (sessiz kâbus)
-              <div className="kabus-silent">{current.en}</div>
-            )}
+          {/* SPOT ALANI: kapanan parmaklıklı kapı (süre) + kelime + sis */}
+          <div className="kabus-spot">
+            {phase === 'play' && <CellDoor timeLeft={timeLeft} total={TURN_SECONDS} />}
+            <div className="kabus-mist" key={turnIdx} aria-hidden="true" />
+            <div className="kabus-audio">
+              {!useSilent ? (
+                <>
+                  <div className="kabus-speaker" aria-hidden="true">🔊</div>
+                  <button className="kabus-replay" onClick={() => speakText(current.en)}>
+                    🔊 Tekrar dinle
+                  </button>
+                </>
+              ) : (
+                // TTS yoksa / sessiz mod: kelime yazılı gösterilir
+                <div className="kabus-silent">{current.en}</div>
+              )}
+            </div>
           </div>
 
           {/* Combo göstergesi */}
@@ -327,11 +338,12 @@ const KabusGame = ({ onBack } = {}) => {
             </form>
           )}
 
-          {/* Geri bildirim (doğru cevap kartı) */}
+          {/* Geri bildirim: doğru → zincir kırılır / yanlış → kapı çarpar (kart aynı, zindan boyalı) */}
           {phase === 'feedback' && feedback && (
             <div className={`kabus-feedback ${feedback.correct ? 'good' : 'bad'}`}>
+              {feedback.correct && <div className="kabus-chain" aria-hidden="true"><span>⛓</span><span>⛓</span></div>}
               <div className="kabus-fb-head">
-                {feedback.correct ? (feedback.crit ? '⚡ KRİTİK VURUŞ!' : '✓ Doğru!') : '✗ Yanlış'}
+                {feedback.correct ? (feedback.crit ? '⚡ KRİTİK VURUŞ!' : '✓ Zincir kırıldı!') : '✗ Kapı çarptı'}
               </div>
               <div className="kabus-fb-word">{feedback.word.en}</div>
               <div className="kabus-fb-tr">{feedback.word.tr}</div>
@@ -341,13 +353,8 @@ const KabusGame = ({ onBack } = {}) => {
             </div>
           )}
 
-          {/* Süre çubuğu */}
-          {phase === 'play' && (
-            <div className="kabus-timer">
-              <div className="kabus-timerfill"
-                style={{ width: `${(timeLeft / TURN_SECONDS) * 100}%` }} />
-            </div>
-          )}
+          {/* HÜCRE BLOĞU — oturumdaki her kelime bir zindan hücresi */}
+          <CellBlock words={words} rescued={rescued} wrongWords={wrongWords} currentIdx={turnIdx} phase={phase} />
 
           {/* Oyuncu canları */}
           <div className={`kabus-lives${hitFx === 'player' ? ' hit' : ''}`}>
@@ -367,6 +374,10 @@ const KabusGame = ({ onBack } = {}) => {
             <>
               <div className="kabus-ghost defeated"><GhostIcon size={100} color="#636e72" /></div>
               <h2 className="kabus-title">🕯️ Bu gece {rescued.length} kelime kurtardın</h2>
+              {/* Zafer finali: hücre kapıları sırayla açılır (CSS animation-delay) */}
+              <div className="kabus-finale">
+                <CellBlock words={words} rescued={rescued} wrongWords={wrongWords} currentIdx={-1} phase="over" />
+              </div>
               <div className="kabus-score">Skor: <b>{finalScore}</b></div>
               <ul className="kabus-wordlist">
                 {rescued.map((w, i) => (
