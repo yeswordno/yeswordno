@@ -1,6 +1,6 @@
-// 🏰 KÂBUS MODU — "KELİME ZİNDANI" sahne bileşenleri (SADECE sunum katmanı).
-// Buradaki hiçbir şey oyun mantığını/skoru/akışı değiştirmez; KabusGame'in
-// mevcut state'lerini (timeLeft, hp, rescued, wrongWords, turnIdx...) görselleştirir.
+// 🏰 KÂBUS MODU v2 — "Kelime Zindanı" sahne bileşenleri (sunum katmanı).
+// v2'de gardiyan HP'SİZDİR (anlatı öğesi); hücre bloğunda ZİNCİR SAYISI = kalan
+// kapı sayısıdır (3 zincir = stage 0 … zincirsiz açık kapı = kurtuldu).
 import { GhostIcon } from './utils/MenuIcons';
 
 // Hareket azaltma tercihi (kapı yerine düz bar; keyframe'ler CSS'te zaten kapanır).
@@ -9,35 +9,29 @@ const REDUCED_MOTION =
   window.matchMedia &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// ── 3c. Gardiyan Hayalet — HP barı + fener ışık konisi ──
-export function Warden({ hp, maxHp, hit }) {
-  const ratio = maxHp ? hp / maxHp : 0;
-  const weak = ratio < 0.34;            // %33 altında ışık daralır, gardiyan soluklaşır
+// ── Gardiyan Hayalet — HP'siz, fener ışığında anlatı öğesi ──
+export function Warden({ weak = false, hit = false }) {
   return (
     <div className="kabus-warden">
-      <div className="kabus-hpbar">
-        <div className="kabus-hpfill" style={{ width: `${ratio * 100}%` }} />
-        <span className="kabus-hptext">👻 {hp}/{maxHp}</span>
-      </div>
       <div className={`kabus-warden-stage${weak ? ' warden-weak' : ''}`}>
         <div className="kabus-lantern" aria-hidden="true" />
         <div className={`kabus-ghost combat${hit ? ' hit' : ''}`}>
-          <GhostIcon size={92} color="#a29bfe" />
+          <GhostIcon size={84} color="#a29bfe" />
         </div>
       </div>
     </div>
   );
 }
 
-// ── 3b. Kapanan parmaklıklı kapı = diegetik zamanlayıcı ──
-// Görsel kapı `timeLeft`'i yansıtır; ekran okuyucuya ayrıca role="timer" ile saniye verilir.
+// ── Kapanan parmaklıklı kapı = diegetik zamanlayıcı ──
+// Görsel kapı `timeLeft`'i yansıtır; ekran okuyucuya role="timer" ile saniye verilir.
 export function CellDoor({ timeLeft, total }) {
   const elapsed = total ? 1 - timeLeft / total : 0;       // 0 → açık, 1 → tam kapalı
   const urgent = timeLeft <= 3;
   const seconds = Math.ceil(timeLeft);
 
   if (REDUCED_MOTION) {
-    // Hareket azaltma: kapı yerine mevcut düz süre çubuğu (bilgi animasyona bağlı kalmasın).
+    // Hareket azaltma: kapı yerine düz süre çubuğu (bilgi animasyona bağlı kalmasın).
     return (
       <>
         <div className="kabus-timer" aria-hidden="true">
@@ -59,22 +53,29 @@ export function CellDoor({ timeLeft, total }) {
   );
 }
 
-// ── 3a. Hücre bloğu — oturumdaki her kelime bir zindan hücresi ──
-// Kelime İÇERİĞİ kilitli hücrede GÖSTERİLMEZ (sürpriz bozulmasın); kurtulanda
-// yalnız İLK HARF görünür (tam liste bitiş ekranında zaten var).
-export function CellBlock({ words, rescued, wrongWords, currentIdx, phase }) {
-  const freedSet = new Set(rescued.map(w => w.en));
-  const failedSet = new Set(wrongWords.map(w => w.en));
+// ── Hücre bloğu v2 — zincir sayısı = kalan kapı ──
+// stageOfEn(en) → 0|1|2|3(kurtuldu). failedSet: bu gece yanılınanlar (kızıl ton).
+// Kelime içeriği hücrede GÖSTERİLMEZ; kurtulanda ilk harf görünür.
+export function CellBlock({ words, stageOfEn, failedSet, currentEn }) {
   return (
     <div className="kabus-cellblock" aria-hidden="true">
       {words.map((w, i) => {
-        let state = 'locked';
-        if (freedSet.has(w.en)) state = 'freed';
-        else if (failedSet.has(w.en)) state = 'failed';
-        else if (i === currentIdx && phase !== 'over') state = 'current';
+        const stage = stageOfEn(w.en);
+        const freed = stage >= 3;
+        const failed = failedSet.has(w.en) && !freed;
+        const current = w.en === currentEn && !freed;
+        const cls = [
+          'kabus-cell',
+          `cell-stage${Math.min(stage, 3)}`,
+          freed ? 'cell-freed' : '',
+          failed ? 'cell-failed' : '',
+          current ? 'cell-current' : '',
+        ].filter(Boolean).join(' ');
         return (
-          <div key={i} className={`kabus-cell cell-${state}`}>
-            {state === 'freed' && <span className="cell-letter">{(w.en[0] || '').toUpperCase()}</span>}
+          <div key={i} className={cls}>
+            {freed
+              ? <span className="cell-letter">{(w.en[0] || '').toUpperCase()}</span>
+              : <span className="cell-chains">{'⛓'.repeat(Math.max(0, 3 - stage))}</span>}
           </div>
         );
       })}

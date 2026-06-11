@@ -90,32 +90,6 @@
   box-shadow: none;
 }
 
-/* HP barı */
-.kabus-hpbar {
-  position: relative;
-  width: 100%;
-  height: 26px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--kabus-border);
-  border-radius: 999px;
-  overflow: hidden;
-}
-.kabus-hpfill {
-  height: 100%;
-  background: linear-gradient(90deg, #d63031, #e17055);
-  transition: width 0.4s ease;
-}
-.kabus-hptext {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-}
-
 /* Ses / yazılı fallback */
 .kabus-audio { display: flex; flex-direction: column; align-items: center; gap: 10px; }
 .kabus-speaker { font-size: 2.6rem; animation: kabus-pulse 1.4s ease-in-out infinite; }
@@ -163,7 +137,12 @@
 }
 .kabus-sfxtoggle.active { opacity: 1; border-color: var(--kabus-accent); }
 
-.kabus-combo { font-size: 0.95rem; color: #ffeaa7; font-weight: 700; }
+/* Dalga + etap rozeti */
+.kabus-wavebadge {
+  font-size: 0.85rem; font-weight: 700; color: #ffeaa7;
+  background: var(--kabus-panel); border: 1px solid var(--kabus-border);
+  padding: 6px 14px; border-radius: 999px;
+}
 
 /* Seçenekler */
 .kabus-options { display: flex; flex-direction: column; gap: 12px; width: 100%; }
@@ -208,11 +187,6 @@
   background: linear-gradient(90deg, var(--kabus-glow), var(--kabus-accent));
   transition: width 0.1s linear;
 }
-
-/* Canlar */
-.kabus-lives { font-size: 1.6rem; letter-spacing: 4px; }
-.kabus-lives.hit { animation: kabus-shake 0.4s; }
-.heart.lost { filter: grayscale(1); opacity: 0.6; }
 
 /* Geri bildirim kartı */
 .kabus-feedback {
@@ -313,43 +287,34 @@
   border: 1px solid var(--kabus-border); position: relative;
   background: rgba(255,255,255,0.04);
 }
-/* kilitli: parmaklık deseni, içerik gizli */
-.kabus-cell.cell-locked {
-  background:
-    repeating-linear-gradient(90deg, rgba(20,16,30,0.9) 0 4px, rgba(70,62,96,0.55) 4px 7px);
+/* v2: ZİNCİR SAYISI = kalan kapı (3=stage0, 2=stage1, 1=stage2, 0=kurtuldu).
+   Renkler etap ilerledikçe karanlıktan altına ısınır. */
+.kabus-cell { width: 34px; height: 34px; }
+.kabus-cell .cell-chains { font-size: 0.5rem; letter-spacing: -2px; opacity: 0.85; }
+.kabus-cell.cell-stage0 { background: #2d2d44; }
+.kabus-cell.cell-stage1 { background: rgba(108, 92, 231, 0.35); border-color: var(--kabus-glow); }
+.kabus-cell.cell-stage2 {
+  background: rgba(108, 92, 231, 0.6); border-color: var(--kabus-accent);
+  box-shadow: 0 0 8px rgba(162, 155, 254, 0.4);
 }
-/* sıradaki: parmaklıklar açılır, spot sarısı parlar */
-.kabus-cell.cell-current {
-  background: radial-gradient(circle, rgba(255,214,130,0.4), rgba(255,214,130,0.08));
-  border-color: #ffd682; box-shadow: 0 0 10px rgba(255,214,130,0.5);
-  animation: bars-open 0.5s ease-out;
-}
-@keyframes bars-open { from { background-position: 0 0; filter: brightness(0.6); } to { filter: brightness(1); } }
-/* kurtarılan: kapı açık, altın kenar, ilk harf görünür */
+/* kurtuldu: kapı açık, altın, ilk harf görünür */
 .kabus-cell.cell-freed {
-  background: linear-gradient(135deg, rgba(0,184,148,0.35), rgba(255,214,130,0.2));
+  background: linear-gradient(135deg, rgba(0,184,148,0.35), rgba(255,214,130,0.3));
   border-color: #ffd682; animation: cell-land 0.45s ease-out;
+  box-shadow: 0 0 10px rgba(255,214,130,0.5);
 }
 .kabus-cell .cell-letter { font-weight: 800; color: #fff; font-size: 0.9rem; }
 @keyframes cell-land { 0% { transform: scale(1.4); filter: brightness(2); } 100% { transform: scale(1); filter: brightness(1); } }
-/* yanılınan: kapalı + çapraz ekstra zincir, kızıl ton */
-.kabus-cell.cell-failed {
-  background: rgba(214,48,49,0.25); border-color: var(--wrong);
+/* sıradaki: spot sarısı çerçeve */
+.kabus-cell.cell-current {
+  border-color: #ffd682; box-shadow: 0 0 10px rgba(255,214,130,0.55);
 }
+/* bu gece yanılınan: kızıl ton + çapraz zincir */
+.kabus-cell.cell-failed { background: rgba(214,48,49,0.3); border-color: var(--wrong); }
 .kabus-cell.cell-failed::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(45deg, transparent 44%, rgba(255,118,117,0.8) 46% 54%, transparent 56%);
 }
-/* zafer finali: kapılar sırayla parlar */
-.kabus-finale .kabus-cell.cell-freed { animation: cell-open-seq 0.5s ease-out backwards; }
-.kabus-finale .kabus-cell:nth-child(1) { animation-delay: 0ms; }
-.kabus-finale .kabus-cell:nth-child(2) { animation-delay: 120ms; }
-.kabus-finale .kabus-cell:nth-child(3) { animation-delay: 240ms; }
-.kabus-finale .kabus-cell:nth-child(4) { animation-delay: 360ms; }
-.kabus-finale .kabus-cell:nth-child(5) { animation-delay: 480ms; }
-.kabus-finale .kabus-cell:nth-child(6) { animation-delay: 600ms; }
-.kabus-finale .kabus-cell:nth-child(n+7) { animation-delay: 720ms; }
-@keyframes cell-open-seq { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.2); filter: brightness(2); } 100% { transform: scale(1); opacity: 1; } }
 
 /* ── Mizansenler: zincir kırılışı, duvar çatlağı, ekran sarsıntısı ── */
 .kabus-chain { display: flex; justify-content: center; gap: 0; font-size: 1.6rem; height: 0; }
@@ -357,18 +322,6 @@
 .kabus-chain span:last-child { animation: chain-snap-r 0.4s ease-out; }
 @keyframes chain-snap-l { 0% { transform: translateX(0) rotate(0); opacity: 1; } 100% { transform: translateX(-40px) rotate(-40deg); opacity: 0; } }
 @keyframes chain-snap-r { 0% { transform: translateX(0) rotate(0); opacity: 1; } 100% { transform: translateX(40px) rotate(40deg); opacity: 0; } }
-
-/* kritik vuruş → kenarlardan beyaz çatlak flaşı */
-.kabus-root.wall-crack::after {
-  content: ''; position: fixed; inset: 0; z-index: 60; pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.5), transparent 12%),
-    linear-gradient(-90deg, rgba(255,255,255,0.5), transparent 12%),
-    linear-gradient(180deg, rgba(255,255,255,0.4), transparent 10%),
-    linear-gradient(0deg, rgba(255,255,255,0.4), transparent 10%);
-  animation: wall-crack 0.4s ease-out;
-}
-@keyframes wall-crack { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
 
 /* kapı çarpması → ekran sarsıntısı */
 .kabus-root.screen-shake { animation: screen-shake 0.4s ease-in-out; }
@@ -380,13 +333,92 @@
 .kabus-root.scene-dark .kabus-ghost { animation: warden-grow 1.2s ease forwards; }
 @keyframes warden-grow { to { transform: scale(1.15); } }
 
+/* ═══════════════ v2: HİKÂYE / DEFTER / DALGA ARASI ═══════════════ */
+
+/* Hikâye girişi (3 panel) */
+.kabus-story { justify-content: center; min-height: 60vh; }
+.kabus-story-icon { font-size: 4rem; }
+.kabus-story-text { font-size: 1.15rem; line-height: 1.6; max-width: 320px; }
+.kabus-story-dots { display: flex; gap: 8px; }
+.kabus-story-dots .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+}
+.kabus-story-dots .dot.active { background: var(--kabus-accent); }
+.kabus-storybtn {
+  background: transparent; border: none; color: var(--kabus-accent);
+  font-size: 0.9rem; cursor: pointer; text-decoration: underline;
+  opacity: 0.85; padding: 4px;
+}
+
+/* Zindan Defteri düğmesi (sağ üst) + overlay paneli */
+.kabus-ledgerbtn {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 12px);
+  right: 14px;
+  background: var(--kabus-panel);
+  border: 1px solid var(--kabus-border);
+  color: #eef0ff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  z-index: 20;
+}
+.kabus-ledger-backdrop {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(5, 5, 12, 0.75);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.kabus-ledger {
+  width: 100%; max-width: 420px; max-height: 80vh; overflow-y: auto;
+  background: linear-gradient(160deg, #1f1f33, #181828);
+  border: 1px solid var(--kabus-border);
+  border-radius: 18px; padding: 18px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+}
+.kabus-ledger-head { display: flex; justify-content: space-between; align-items: center; }
+.kabus-ledger-head h3 { margin: 0; font-size: 1.15rem; }
+.kabus-ledger-close {
+  background: var(--kabus-panel); border: 1px solid var(--kabus-border);
+  color: #eef0ff; width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; font-size: 0.9rem;
+}
+.kabus-ledger-section h4 {
+  margin: 14px 0 6px; font-size: 0.95rem; color: #ffeaa7;
+  display: flex; align-items: center; gap: 8px;
+}
+.kabus-ledger-count {
+  background: var(--kabus-panel); border: 1px solid var(--kabus-border);
+  border-radius: 999px; padding: 1px 9px; font-size: 0.75rem; color: #eef0ff;
+}
+.kabus-ledger-empty { font-size: 0.85rem; opacity: 0.6; margin: 4px 0; }
+.kabus-wordlist li { cursor: pointer; }
+.kabus-tr-hidden { font-size: 0.78rem; opacity: 0.45; font-style: italic; }
+.kabus-tr-revealed { color: #ffeaa7; }
+
+/* Bitiş özeti aynı gruplamayı kullanır */
+.kabus-summary { width: 100%; text-align: left; max-height: 42vh; overflow-y: auto; }
+
+/* Dalga arası gardiyan repliği */
+.kabus-interlude { justify-content: center; min-height: 60vh; }
+.kabus-quip { font-size: 1.1rem; font-style: italic; color: var(--kabus-accent); max-width: 300px; }
+
+/* Etap 2-3 TR yazılı soru */
+.kabus-tr-prompt { color: #ffeaa7; }
+
+/* Kurtuluş kutlaması */
+.kabus-feedback.freed { border-color: #ffd682; box-shadow: 0 0 24px rgba(255,214,130,0.35); }
+.kabus-feedback.freed .kabus-fb-head { color: #ffd682; }
+
 /* ═══════════════ Hareket azaltma tercihi ═══════════════ */
 @media (prefers-reduced-motion: reduce) {
   .kabus-ghost, .kabus-ghost.float, .kabus-ghost.combat,
   .kabus-speaker, .kabus-lantern, .kabus-mist, .kabus-door,
-  .kabus-cell, .kabus-chain span, .kabus-finale .kabus-cell.cell-freed { animation: none !important; }
-  .kabus-ghost.combat.hit, .kabus-lives.hit { animation: none !important; }
-  .kabus-root.wall-crack::after, .kabus-root.screen-shake,
+  .kabus-cell, .kabus-cell.cell-freed, .kabus-chain span { animation: none !important; }
+  .kabus-ghost.combat.hit { animation: none !important; }
+  .kabus-root.screen-shake,
   .kabus-root.scene-dark .kabus-ghost { animation: none !important; }
   .kabus-root.scene-dawn, .kabus-root.scene-dark { transition: none !important; }
 }
