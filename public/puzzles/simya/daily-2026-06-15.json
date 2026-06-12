@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-15",
+  "pieces": [
+    "ex",
+    "port_r",
+    "im",
+    "pan",
+    "cake",
+    "cup",
+    "air",
+    "port_n",
+    "come",
+    "back"
+  ],
+  "targets": [
+    {
+      "en": "EXPORT",
+      "hint": "Malları ülke dışına göndermek",
+      "tier": 3
+    },
+    {
+      "en": "IMPORT",
+      "hint": "Malları ülkeye getirmek",
+      "tier": 3
+    },
+    {
+      "en": "PANCAKE",
+      "hint": "Tavada çevrilen kahvaltılık",
+      "tier": 1
+    },
+    {
+      "en": "CUPCAKE",
+      "hint": "Fincan boyunda minik kek",
+      "tier": 1
+    },
+    {
+      "en": "AIRPORT",
+      "hint": "Uçaklar buradan kalkar",
+      "tier": 1
+    },
+    {
+      "en": "COME BACK",
+      "hint": "Giden bazen yapar",
+      "tier": 2
+    }
+  ]
+}

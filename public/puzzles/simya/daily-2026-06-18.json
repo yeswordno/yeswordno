@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-18",
+  "pieces": [
+    "dis",
+    "tract",
+    "at",
+    "hand",
+    "bag",
+    "butter",
+    "fly",
+    "sun",
+    "rise",
+    "flower"
+  ],
+  "targets": [
+    {
+      "en": "DISTRACT",
+      "hint": "Telefon bildirimi ders çalışana bunu yapar",
+      "tier": 3
+    },
+    {
+      "en": "ATTRACT",
+      "hint": "Mıknatıs demire bunu yapar",
+      "tier": 3
+    },
+    {
+      "en": "HANDBAG",
+      "hint": "Omuzda ya da elde taşınır",
+      "tier": 1
+    },
+    {
+      "en": "BUTTERFLY",
+      "hint": "Rengârenk kanatlı böcek",
+      "tier": 1
+    },
+    {
+      "en": "SUNRISE",
+      "hint": "Sabahın ilk ışıkları",
+      "tier": 1
+    },
+    {
+      "en": "SUNFLOWER",
+      "hint": "Hep güneşe dönen sarı dev çiçek",
+      "tier": 1
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-17",
+  "pieces": [
+    "port_r",
+    "er",
+    "trans",
+    "door",
+    "bell",
+    "rain",
+    "coat",
+    "bow",
+    "bring",
+    "up"
+  ],
+  "targets": [
+    {
+      "en": "PORTER",
+      "hint": "Otelde valizleri o taşır",
+      "tier": 3
+    },
+    {
+      "en": "TRANSPORT",
+      "hint": "Yük bir yerden ötekine",
+      "tier": 3
+    },
+    {
+      "en": "DOORBELL",
+      "hint": "Misafir geldiğini haber verir",
+      "tier": 1
+    },
+    {
+      "en": "RAINCOAT",
+      "hint": "Islanmamak için giyilir",
+      "tier": 1
+    },
+    {
+      "en": "RAINBOW",
+      "hint": "Yağmur sonrası yedi renk",
+      "tier": 1
+    },
+    {
+      "en": "BRING UP",
+      "hint": "Aileler çocuklarına yapar",
+      "tier": 2
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-12",
+  "pieces": [
+    "port_r",
+    "able",
+    "re",
+    "bed",
+    "room",
+    "bath",
+    "arm",
+    "chair",
+    "get",
+    "off"
+  ],
+  "targets": [
+    {
+      "en": "PORTABLE",
+      "hint": "Laptop'un L'sinden önceki kısmın ruhu",
+      "tier": 3
+    },
+    {
+      "en": "REPORT",
+      "hint": "Olanları geri getirip anlatmak",
+      "tier": 3
+    },
+    {
+      "en": "BEDROOM",
+      "hint": "Evin uyunan odası",
+      "tier": 1
+    },
+    {
+      "en": "BATHROOM",
+      "hint": "Duş burada alınır",
+      "tier": 1
+    },
+    {
+      "en": "ARMCHAIR",
+      "hint": "Kollu, rahat oturma yeri",
+      "tier": 1
+    },
+    {
+      "en": "GET OFF",
+      "hint": "Durağın geldi, hadi",
+      "tier": 2
+    }
+  ]
+}

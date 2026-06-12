@@ -1,0 +1,52 @@
+{
+  "id": "2026-06-13",
+  "pieces": [
+    "re",
+    "spect",
+    "ator",
+    "ear",
+    "ring",
+    "fire",
+    "work",
+    "place",
+    "out",
+    "run"
+  ],
+  "targets": [
+    {
+      "en": "RESPECT",
+      "hint": "Tekrar tekrar bakmaya değer bulmak",
+      "tier": 3
+    },
+    {
+      "en": "SPECTATOR",
+      "hint": "Maçı tribünden izleyen",
+      "tier": 3
+    },
+    {
+      "en": "EARRING",
+      "hint": "Kulağa takılan takı",
+      "tier": 1
+    },
+    {
+      "en": "FIREWORK",
+      "hint": "Bayram gecesi gökyüzü şöleni",
+      "tier": 1
+    },
+    {
+      "en": "FIREPLACE",
+      "hint": "Kışın evi ısıtan köşe",
+      "tier": 1
+    },
+    {
+      "en": "WORK OUT",
+      "hint": "Spor salonunda ter dökmek",
+      "tier": 2
+    },
+    {
+      "en": "RUN OUT",
+      "hint": "Telefonun şarjı bunu yapar",
+      "tier": 2
+    }
+  ]
+}

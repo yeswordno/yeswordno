@@ -38,11 +38,14 @@ jobs:
       - name: Bulmacayı üret
         run: node generator.js
 
+      - name: Simya günlük kazanı üret + doğrula
+        run: node generator-simya.js && node tools/verify-simya.js
+
       - name: Değişiklikleri commit'le
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/puzzles/*.json
+          git add public/puzzles/*.json public/puzzles/simya/*.json
           if git diff --cached --quiet; then
             echo "Değişiklik yok, commit atlanıyor."
             exit 0

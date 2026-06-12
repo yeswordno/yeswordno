@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-16",
+  "pieces": [
+    "pro",
+    "ject",
+    "in_pre",
+    "snow",
+    "man",
+    "black",
+    "board",
+    "key",
+    "grow",
+    "up"
+  ],
+  "targets": [
+    {
+      "en": "PROJECT",
+      "hint": "İleriye atılan plan",
+      "tier": 3
+    },
+    {
+      "en": "INJECT",
+      "hint": "İğneyle içeri atmak",
+      "tier": 3
+    },
+    {
+      "en": "SNOWMAN",
+      "hint": "Havuç burunlu kış arkadaşı",
+      "tier": 1
+    },
+    {
+      "en": "BLACKBOARD",
+      "hint": "Öğretmen tebeşirle yazar",
+      "tier": 1
+    },
+    {
+      "en": "KEYBOARD",
+      "hint": "Bilgisayara yazı yazdıran",
+      "tier": 1
+    },
+    {
+      "en": "GROW UP",
+      "hint": "Çocukluk biter, bu olur",
+      "tier": 2
+    }
+  ]
+}

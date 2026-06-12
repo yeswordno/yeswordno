@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-14",
+  "pieces": [
+    "con",
+    "tract",
+    "ex",
+    "water",
+    "melon",
+    "fall",
+    "book",
+    "shop",
+    "show",
+    "up"
+  ],
+  "targets": [
+    {
+      "en": "CONTRACT",
+      "hint": "İki tarafı birbirine çeken belge",
+      "tier": 3
+    },
+    {
+      "en": "EXTRACT",
+      "hint": "Dişçinin son çaresi",
+      "tier": 3
+    },
+    {
+      "en": "WATERMELON",
+      "hint": "Yazın en sulu meyvesi",
+      "tier": 1
+    },
+    {
+      "en": "WATERFALL",
+      "hint": "Su yüksekten gürültüyle düşer",
+      "tier": 1
+    },
+    {
+      "en": "BOOKSHOP",
+      "hint": "Raflar dolusu hikâye satar",
+      "tier": 1
+    },
+    {
+      "en": "SHOW UP",
+      "hint": "Beklenmedik anda kapıda belirmek",
+      "tier": 2
+    }
+  ]
+}
