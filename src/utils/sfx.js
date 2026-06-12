@@ -79,3 +79,15 @@ export function whoosh() {
   const c = ensureCtx(); if (!c || !sfxEnabled()) return;
   blip(c, { type: 'sine', f0: 300, f1: 1100, dur: 0.2, gain: 0.16 });
 }
+// Simya — başarılı kaynatma: yükselen baloncuk (~260ms)
+export function bubble() {
+  const c = ensureCtx(); if (!c || !sfxEnabled()) return;
+  blip(c, { type: 'sine', f0: 420, f1: 900, dur: 0.16, gain: 0.14 });
+  blip(c, { type: 'triangle', f0: 700, f1: 1300, dur: 0.26, gain: 0.1 });
+}
+// Simya — geçersiz birleşim: alçalan "puf" (~140ms)
+export function poof() {
+  const c = ensureCtx(); if (!c || !sfxEnabled()) return;
+  noiseBurst(c, { dur: 0.14, gain: 0.12, lp: 700 });
+  blip(c, { type: 'sine', f0: 240, f1: 110, dur: 0.14, gain: 0.08 });
+}

@@ -1,0 +1,200 @@
+/* ⚗️ KELİME SİMYACISI — sıcak atölye teması (Kâbus'un zıt kutbu). .simya-root altında izole. */
+.simya-root {
+  --bg-grad: linear-gradient(165deg, #221406 0%, #3a2410 100%);
+  --copper: #b87333;
+  --flame: #ff9f43;
+  --parch: #f3e9d2;
+  --ink: #3e2c1c;
+  --panel: rgba(255, 240, 210, 0.07);
+  --border: rgba(255, 159, 67, 0.3);
+
+  position: fixed; inset: 0;
+  background: var(--bg-grad);
+  color: #f3e9d2;
+  display: flex; flex-direction: column; align-items: center;
+  overflow-y: auto;
+  padding: calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 20px);
+  z-index: 50; font-family: inherit;
+}
+
+.simya-back, .simya-codexbtn {
+  position: absolute; top: calc(env(safe-area-inset-top) + 12px);
+  background: var(--panel); border: 1px solid var(--border);
+  color: #f3e9d2; padding: 8px 14px; border-radius: 999px;
+  font-size: 0.85rem; cursor: pointer; z-index: 20;
+}
+.simya-back { left: 14px; }
+.simya-codexbtn { right: 14px; }
+
+.simya-screen {
+  width: 100%; max-width: 480px; margin: auto;
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+}
+.simya-title { font-size: 1.5rem; margin: 6px 0; text-shadow: 0 0 16px rgba(255, 159, 67, 0.5); }
+.simya-msg { font-size: 0.95rem; opacity: 0.9; line-height: 1.5; }
+
+/* Butonlar */
+.simya-btn {
+  background: linear-gradient(135deg, var(--flame), #e67e22);
+  color: #2a1606; border: none; padding: 14px 28px; border-radius: 14px;
+  font-size: 1.05rem; font-weight: 800; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 159, 67, 0.4);
+}
+.simya-mini-btn {
+  background: var(--panel); border: 1px solid var(--border); color: #f3e9d2;
+  padding: 9px 16px; border-radius: 10px; cursor: pointer; font-size: 0.9rem;
+}
+.simya-mini-btn.primary { background: var(--flame); color: #2a1606; font-weight: 700; border: none; }
+.simya-mini-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Hikâye */
+.simya-story { justify-content: center; min-height: 60vh; }
+.simya-story-icon { font-size: 4rem; }
+.simya-story-text { font-size: 1.15rem; line-height: 1.6; max-width: 320px; }
+.simya-dots { display: flex; gap: 8px; }
+.simya-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 240, 210, 0.25); }
+.simya-dots .dot.active { background: var(--flame); }
+.simya-storybtn, .simya-sfxtoggle {
+  background: transparent; border: 1px solid var(--border); color: var(--flame);
+  font-size: 0.85rem; cursor: pointer; padding: 7px 14px; border-radius: 999px; opacity: 0.85;
+}
+
+/* Ana ekran kapıları */
+.simya-rank { font-size: 0.95rem; opacity: 0.9; }
+.simya-door {
+  width: 100%; display: flex; align-items: center; gap: 14px; text-align: left;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+  padding: 16px; cursor: pointer; color: #f3e9d2;
+}
+.simya-door-ic { font-size: 2rem; }
+.simya-door-txt { display: flex; flex-direction: column; }
+.simya-door-txt b { font-size: 1.1rem; }
+.simya-door-txt small { opacity: 0.7; font-size: 0.8rem; margin-top: 2px; }
+
+/* Oyun başlığı / ilerleme */
+.simya-daily-head, .simya-progress { display: flex; }
+.simya-daily-head { width: 100%; justify-content: space-between; align-items: center; font-weight: 700; }
+.simya-progress { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; font-size: 0.85rem; }
+
+/* Hedef ipuçları */
+.simya-targets { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.simya-target {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+  padding: 9px 12px; font-size: 0.9rem; cursor: pointer; display: flex; gap: 8px; align-items: baseline;
+}
+.simya-target.done { background: rgba(255, 159, 67, 0.18); border-color: var(--flame); cursor: default; }
+.simya-target-en { font-weight: 800; }
+.simya-target-tr { opacity: 0.8; font-size: 0.82rem; }
+.simya-target-locked { letter-spacing: 3px; opacity: 0.55; }
+.simya-usta { color: var(--flame); font-style: normal; font-size: 0.72rem; background: rgba(255,159,67,0.15); padding: 1px 6px; border-radius: 6px; }
+
+/* Kazan */
+.simya-cauldron { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.simya-slots { display: flex; gap: 10px; }
+.simya-slot {
+  width: 84px; height: 52px; border-radius: 10px;
+  border: 2px dashed var(--border); background: rgba(0,0,0,0.25);
+  color: #f3e9d2; font-weight: 800; font-size: 0.95rem; cursor: default;
+  display: flex; align-items: center; justify-content: center;
+}
+.simya-slot.filled {
+  border-style: solid; border-color: var(--piece-color);
+  background: color-mix(in srgb, var(--piece-color) 30%, transparent); cursor: pointer;
+}
+.simya-slot-empty { opacity: 0.4; font-size: 1.5rem; }
+
+.simya-pot-wrap { position: relative; width: 200px; height: 130px; }
+.simya-pot { width: 200px; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.5)); }
+.simya-flames { position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+.simya-flames span {
+  width: 14px; height: 26px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(0deg, var(--flame), #ffd86b); transform-origin: bottom;
+  animation: flame-flicker 0.5s ease-in-out infinite alternate;
+}
+.simya-flames span:nth-child(2) { height: 34px; animation-delay: 0.15s; }
+.simya-flames span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes flame-flicker { from { transform: scaleY(0.85) scaleX(1.05); opacity: 0.85; } to { transform: scaleY(1.15) scaleX(0.95); opacity: 1; } }
+.simya-bubbles { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); width: 80px; height: 40px; pointer-events: none; }
+.simya-bubbles span { position: absolute; bottom: 0; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,216,107,0.7); animation: bubble-rise 1.6s ease-in infinite; }
+.simya-bubbles span:nth-child(1) { left: 20%; animation-delay: 0s; }
+.simya-bubbles span:nth-child(2) { left: 50%; animation-delay: 0.5s; }
+.simya-bubbles span:nth-child(3) { left: 75%; animation-delay: 1s; }
+@keyframes bubble-rise { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-34px) scale(1); opacity: 0; } }
+
+.simya-controls { display: flex; gap: 10px; margin-top: 4px; }
+.simya-swap { background: var(--panel); border: 1px solid var(--border); color: #f3e9d2; padding: 10px 16px; border-radius: 10px; cursor: pointer; font-size: 0.9rem; }
+.simya-swap:disabled { opacity: 0.4; cursor: default; }
+.simya-boil {
+  background: linear-gradient(135deg, var(--flame), #e74c3c); color: #fff; font-weight: 800;
+  border: none; padding: 10px 22px; border-radius: 10px; cursor: pointer; font-size: 1rem;
+  box-shadow: 0 4px 14px rgba(231, 76, 60, 0.4);
+}
+.simya-boil:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+/* Tezgâh (parça kartları) */
+.simya-bench { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 6px; }
+.simya-bench.shake { animation: simya-shake 0.45s; }
+@keyframes simya-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+.simya-piece {
+  display: flex; flex-direction: column; align-items: center; gap: 1px;
+  background: color-mix(in srgb, var(--piece-color) 22%, #1c1208);
+  border: 1.5px solid var(--piece-color); border-radius: 10px;
+  padding: 8px 12px; cursor: pointer; color: #fff; min-width: 56px;
+}
+.simya-piece:active { transform: scale(0.95); }
+.simya-piece:disabled { opacity: 0.4; cursor: default; }
+.simya-piece-text { font-weight: 800; font-size: 0.95rem; }
+.simya-piece-type { font-size: 0.62rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.simya-quip { font-size: 0.9rem; color: #ffd86b; font-style: italic; max-width: 320px; }
+.simya-finish, .simya-lockhint { margin-top: 8px; }
+.simya-finish { background: var(--panel); border: 1px solid var(--border); color: #f3e9d2; padding: 10px 20px; border-radius: 999px; cursor: pointer; font-size: 0.9rem; }
+.simya-lockhint { font-size: 0.8rem; opacity: 0.65; max-width: 300px; }
+.simya-conn { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+
+/* Sonuç */
+.simya-result { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.simya-score { font-size: 1.3rem; }
+
+/* Keşif kartı (parşömen) */
+.simya-discovery-backdrop, .simya-codex-backdrop {
+  position: fixed; inset: 0; z-index: 80; background: rgba(20, 10, 2, 0.7);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.simya-scroll {
+  width: 100%; max-width: 360px; background: var(--parch); color: var(--ink);
+  border-radius: 14px; padding: 22px 20px; text-align: center;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.6); animation: scroll-unroll 0.4s ease-out;
+  border: 2px solid #c9b487;
+}
+@keyframes scroll-unroll { 0% { transform: scaleY(0.2); opacity: 0; } 100% { transform: scaleY(1); opacity: 1; } }
+.simya-bonus-tag { color: #b8651a; font-weight: 800; margin-bottom: 6px; }
+.simya-scroll-en { font-size: 1.7rem; font-weight: 900; letter-spacing: 1px; }
+.simya-scroll-tr { font-size: 1.1rem; margin: 4px 0 12px; }
+.simya-scroll-parts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.simya-part-chip { background: rgba(62, 44, 28, 0.12); border: 1px solid #c9b487; border-radius: 8px; padding: 4px 9px; font-weight: 700; font-size: 0.85rem; }
+.simya-part-chip small { font-weight: 400; opacity: 0.7; }
+.simya-scroll-note { font-size: 0.82rem; font-style: italic; margin: 12px 0 0; line-height: 1.45; }
+.simya-scroll-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+
+/* Kodeks */
+.simya-codex { width: 100%; max-width: 440px; max-height: 82vh; overflow-y: auto;
+  background: linear-gradient(160deg, #efe2c4, #e3d2ad); color: var(--ink);
+  border-radius: 16px; padding: 18px; border: 2px solid #c9b487; }
+.simya-codex-head { display: flex; justify-content: space-between; align-items: center; }
+.simya-codex-head h3 { margin: 0; }
+.simya-codex-count { font-size: 0.8rem; background: rgba(62,44,28,0.15); border-radius: 999px; padding: 2px 10px; }
+.simya-codex-close { background: rgba(62,44,28,0.12); border: 1px solid #c9b487; color: var(--ink); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+.simya-fam { margin-top: 14px; }
+.simya-fam h4 { margin: 0 0 6px; font-size: 0.95rem; }
+.simya-fam h4 small { font-weight: 400; opacity: 0.6; }
+.simya-fam-prog { float: right; font-size: 0.78rem; background: rgba(62,44,28,0.15); border-radius: 999px; padding: 1px 9px; }
+.simya-fam-words { display: flex; flex-wrap: wrap; gap: 6px; }
+.simya-fam-word { font-size: 0.82rem; padding: 3px 9px; border-radius: 7px; font-weight: 700; }
+.simya-fam-word.found { background: rgba(184, 115, 51, 0.25); border: 1px solid var(--copper); }
+.simya-fam-word.locked { background: rgba(62,44,28,0.08); border: 1px dashed #b3a079; color: #9a8763; letter-spacing: 2px; }
+
+/* Hareket azaltma */
+@media (prefers-reduced-motion: reduce) {
+  .simya-flames span, .simya-bubbles span, .simya-scroll, .simya-bench.shake { animation: none !important; }
+}
