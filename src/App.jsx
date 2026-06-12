@@ -10,8 +10,9 @@ import c1_c2 from './data/c1_c2.json';
 import academic from './data/academic.json';
 import { TrFlag, GbFlag } from './utils/FlagIcons';
 import { SpeakerIcon } from './utils/SpeakerIcon';
-import { PuzzleIcon, DuelIcon, GhostIcon } from './utils/MenuIcons';
+import { PuzzleIcon, DuelIcon, GhostIcon, CauldronIcon } from './utils/MenuIcons';
 import CengelGame from './CengelGame';
+import SimyaGame from './SimyaGame';
 import Scoreboard from './Scoreboard';
 import ScoreboardPreview from './ScoreboardPreview';
 import { submitScore, fetchMyDaily } from './utils/leaderboard';
@@ -543,6 +544,12 @@ function App() {
             <span>Kâbus Modu</span>
           </button>
 
+          {/* MOD 4: Kelime Simyacısı → parçaları birleştir, kelime üret */}
+          <button className="btn-main btn-lang" onClick={() => setScreen('simya')}>
+            <CauldronIcon size={24} color="var(--accent-purple)" />
+            <span>Kelime Simyacısı</span>
+          </button>
+
           {/* Tek sıralama tablosu — ana ekranda (ilk 3 + Tümünü Gör) */}
           <ScoreboardPreview limit={3} onExpand={() => setShowScoreboard(true)} />
         </div>
@@ -560,6 +567,11 @@ function App() {
       {/* KÂBUS MODU — review kelimeleriyle hayalet düellosu */}
       {screen === 'kabus' && (
         <KabusGame onBack={() => setScreen('lang')} />
+      )}
+
+      {/* KELİME SİMYACISI — parçaları birleştir, kelime üret */}
+      {screen === 'simya' && (
+        <SimyaGame onBack={() => setScreen('lang')} />
       )}
 
       {/* 2. SEVİYE EKRANI */}

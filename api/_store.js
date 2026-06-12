@@ -57,10 +57,12 @@ export function isoWeekKey(dateStr) {
 export const LEVELS = ['easy', 'medium', 'hard'];
 export const PENSE_LEVELS = ['a1_a2', 'b1_b2', 'c1_c2', 'academic'];
 export const KABUS_LEVELS = ['standard'];
+export const SIMYA_LEVELS = ['daily', 'free'];   // free skor GÖNDERMEZ; yalnız daily akar
 export const GAMES = {
   duello: LEVELS,
   pense: PENSE_LEVELS,
   kabus: KABUS_LEVELS,
+  simya: SIMYA_LEVELS,
 };
 export const DAY_TTL = 60 * 60 * 24 * 9;    // günlük anahtarlar ~9 gün
 export const WEEK_TTL = 60 * 60 * 24 * 40;  // haftalık anahtarlar ~40 gün

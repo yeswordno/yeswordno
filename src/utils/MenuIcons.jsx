@@ -37,6 +37,25 @@ export function DuelIcon({ size = 64, color = 'currentColor' }) {
   );
 }
 
+// Kelime Simyacısı: bakır kazan — gövde, kulplar, üstte baloncuklar
+export function CauldronIcon({ size = 64, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill="none"
+      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      {/* kazan gövdesi */}
+      <path d="M14 28 Q14 50 32 52 Q50 50 50 28 Z"
+        stroke={color} strokeWidth="3.2" strokeLinejoin="round" />
+      {/* ağız kenarı */}
+      <path d="M11 28 H53" stroke={color} strokeWidth="3.2" strokeLinecap="round" />
+      {/* ayak */}
+      <path d="M24 52 L22 57 M40 52 L42 57" stroke={color} strokeWidth="3" strokeLinecap="round" />
+      {/* baloncuklar */}
+      <circle cx="27" cy="20" r="2.6" stroke={color} strokeWidth="2.4" />
+      <circle cx="36" cy="14" r="2" stroke={color} strokeWidth="2.2" />
+    </svg>
+  );
+}
+
 // Kâbus Modu: klasik hayalet silüeti — dalgalı etek, iki yuvarlak göz
 export function GhostIcon({ size = 64, color = 'currentColor' }) {
   return (
