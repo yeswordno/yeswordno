@@ -539,15 +539,16 @@ function App() {
           </div>
 
           {/* MOD 3: Kâbus Modu → tek dokunuşla başlar (review kelimeleriyle) */}
-          <button className="btn-main btn-lang" onClick={() => setScreen('kabus')}>
+          <button className="btn-main btn-lang btn-mode" onClick={() => setScreen('kabus')}>
             <GhostIcon size={24} color="var(--accent-purple)" />
             <span>Kâbus Modu</span>
           </button>
 
-          {/* MOD 4: Kelime Simyacısı → parçaları birleştir, kelime üret */}
-          <button className="btn-main btn-lang" onClick={() => setScreen('simya')}>
+          {/* MOD 4: Kelime Simyacısı → parçaları birleştir, kelime üret (YENİ) */}
+          <button className="btn-main btn-lang btn-mode" onClick={() => setScreen('simya')}>
             <CauldronIcon size={24} color="var(--accent-purple)" />
             <span>Kelime Simyacısı</span>
+            <span className="new-badge">YENİ</span>
           </button>
 
           {/* Tek sıralama tablosu — ana ekranda (ilk 3 + Tümünü Gör) */}

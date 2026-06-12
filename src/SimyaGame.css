@@ -30,6 +30,10 @@
   width: 100%; max-width: 480px; margin: auto;
   display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
 }
+/* Oyun ekranlarında içerik üstteki ← / 📜 butonlarının altından başlasın
+   (başlık satırı butonlarla çakışmasın — mobilde iç içe giriyordu). */
+.simya-play { padding-top: 44px; }
+
 .simya-title { font-size: 1.5rem; margin: 6px 0; text-shadow: 0 0 16px rgba(255, 159, 67, 0.5); }
 .simya-msg { font-size: 0.95rem; opacity: 0.9; line-height: 1.5; }
 
