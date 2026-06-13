@@ -520,5 +520,77 @@
       "IT",
       "TV"
     ]
+  },
+  {
+    "date": "2026-06-19",
+    "level": "easy",
+    "words": [
+      "SN",
+      "AIRPORT",
+      "IDOL",
+      "SI",
+      "CARTOON",
+      "ARTICLE",
+      "IF",
+      "DAY",
+      "PUDGY",
+      "REPORT",
+      "YEN",
+      "POULTRY",
+      "OLD",
+      "ODE",
+      "RAG",
+      "OWN",
+      "TOY",
+      "ND"
+    ]
+  },
+  {
+    "date": "2026-06-19",
+    "level": "medium",
+    "words": [
+      "BA",
+      "CONCERT",
+      "THIS",
+      "BR",
+      "RECEIPT",
+      "CENTRAL",
+      "ON",
+      "HEM",
+      "TONNE",
+      "NOTICE",
+      "YET",
+      "CLOSELY",
+      "EON",
+      "IRE",
+      "RAN",
+      "POT",
+      "TEE",
+      "TH"
+    ]
+  },
+  {
+    "date": "2026-06-19",
+    "level": "hard",
+    "words": [
+      "IR",
+      "DISTANT",
+      "OMEN",
+      "AT",
+      "RELATED",
+      "DIVORCE",
+      "IN",
+      "MET",
+      "LUMPY",
+      "SOLELY",
+      "INK",
+      "TSUNAMI",
+      "ARM",
+      "TIN",
+      "NIP",
+      "ELK",
+      "TRY",
+      "DR"
+    ]
   }
 ]

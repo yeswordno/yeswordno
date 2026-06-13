@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-19",
+  "pieces": [
+    "re",
+    "ject",
+    "contra",
+    "dict",
+    "wheel",
+    "chair",
+    "star",
+    "fish",
+    "gold",
+    "pre"
+  ],
+  "targets": [
+    {
+      "en": "REJECT",
+      "hint": "Teklifi geri fırlatmak",
+      "tier": 3
+    },
+    {
+      "en": "CONTRADICT",
+      "hint": "Söylenene karşı söylemek",
+      "tier": 3
+    },
+    {
+      "en": "WHEELCHAIR",
+      "hint": "Hareket özgürlüğü sağlayan araç",
+      "tier": 1
+    },
+    {
+      "en": "STARFISH",
+      "hint": "Beş kollu deniz canlısı",
+      "tier": 1
+    },
+    {
+      "en": "GOLDFISH",
+      "hint": "Akvaryumun turuncu sakini",
+      "tier": 1
+    },
+    {
+      "en": "PREDICT",
+      "hint": "Olmadan önce söylemek",
+      "tier": 3
+    }
+  ]
+}
