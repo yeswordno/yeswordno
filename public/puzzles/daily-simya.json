@@ -1,51 +1,46 @@
 {
-  "id": "2026-06-13",
+  "id": "2026-06-14",
   "pieces": [
-    "re",
-    "spect",
-    "ator",
-    "ear",
-    "ring",
-    "fire",
-    "work",
-    "place",
-    "out",
-    "run"
+    "con",
+    "tract",
+    "ex",
+    "water",
+    "melon",
+    "fall",
+    "book",
+    "shop",
+    "show",
+    "up"
   ],
   "targets": [
     {
-      "en": "RESPECT",
-      "hint": "Tekrar tekrar bakmaya değer bulmak",
+      "en": "CONTRACT",
+      "hint": "İki tarafı birbirine çeken belge",
       "tier": 3
     },
     {
-      "en": "SPECTATOR",
-      "hint": "Maçı tribünden izleyen",
+      "en": "EXTRACT",
+      "hint": "Dişçinin son çaresi",
       "tier": 3
     },
     {
-      "en": "EARRING",
-      "hint": "Kulağa takılan takı",
+      "en": "WATERMELON",
+      "hint": "Yazın en sulu meyvesi",
       "tier": 1
     },
     {
-      "en": "FIREWORK",
-      "hint": "Bayram gecesi gökyüzü şöleni",
+      "en": "WATERFALL",
+      "hint": "Su yüksekten gürültüyle düşer",
       "tier": 1
     },
     {
-      "en": "FIREPLACE",
-      "hint": "Kışın evi ısıtan köşe",
+      "en": "BOOKSHOP",
+      "hint": "Raflar dolusu hikâye satar",
       "tier": 1
     },
     {
-      "en": "WORK OUT",
-      "hint": "Spor salonunda ter dökmek",
-      "tier": 2
-    },
-    {
-      "en": "RUN OUT",
-      "hint": "Telefonun şarjı bunu yapar",
+      "en": "SHOW UP",
+      "hint": "Beklenmedik anda kapıda belirmek",
       "tier": 2
     }
   ]
