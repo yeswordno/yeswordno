@@ -1,46 +1,46 @@
 {
-  "id": "2026-06-14",
+  "id": "2026-06-15",
   "pieces": [
-    "con",
-    "tract",
     "ex",
-    "water",
-    "melon",
-    "fall",
-    "book",
-    "shop",
-    "show",
-    "up"
+    "port_r",
+    "im",
+    "pan",
+    "cake",
+    "cup",
+    "air",
+    "port_n",
+    "come",
+    "back"
   ],
   "targets": [
     {
-      "en": "CONTRACT",
-      "hint": "İki tarafı birbirine çeken belge",
+      "en": "EXPORT",
+      "hint": "Malları ülke dışına göndermek",
       "tier": 3
     },
     {
-      "en": "EXTRACT",
-      "hint": "Dişçinin son çaresi",
+      "en": "IMPORT",
+      "hint": "Malları ülkeye getirmek",
       "tier": 3
     },
     {
-      "en": "WATERMELON",
-      "hint": "Yazın en sulu meyvesi",
+      "en": "PANCAKE",
+      "hint": "Tavada çevrilen kahvaltılık",
       "tier": 1
     },
     {
-      "en": "WATERFALL",
-      "hint": "Su yüksekten gürültüyle düşer",
+      "en": "CUPCAKE",
+      "hint": "Fincan boyunda minik kek",
       "tier": 1
     },
     {
-      "en": "BOOKSHOP",
-      "hint": "Raflar dolusu hikâye satar",
+      "en": "AIRPORT",
+      "hint": "Uçaklar buradan kalkar",
       "tier": 1
     },
     {
-      "en": "SHOW UP",
-      "hint": "Beklenmedik anda kapıda belirmek",
+      "en": "COME BACK",
+      "hint": "Giden bazen yapar",
       "tier": 2
     }
   ]

@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-21",
+  "pieces": [
+    "dict",
+    "ate",
+    "vis",
+    "ion",
+    "tooth",
+    "paste",
+    "brush",
+    "news",
+    "paper",
+    "ible"
+  ],
+  "targets": [
+    {
+      "en": "DICTATE",
+      "hint": "Söyle, o yazsın",
+      "tier": 3
+    },
+    {
+      "en": "VISION",
+      "hint": "Hem göz hem gelecek için kullanılır",
+      "tier": 3
+    },
+    {
+      "en": "TOOTHPASTE",
+      "hint": "Fırçanın üzerine sıkılır",
+      "tier": 1
+    },
+    {
+      "en": "TOOTHBRUSH",
+      "hint": "Sabah akşam kullanılır",
+      "tier": 1
+    },
+    {
+      "en": "NEWSPAPER",
+      "hint": "Her sabah taze haber",
+      "tier": 1
+    },
+    {
+      "en": "VISIBLE",
+      "hint": "Gözle seçilebilen",
+      "tier": 3
+    }
+  ]
+}
