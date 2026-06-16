@@ -1,46 +1,46 @@
 {
-  "id": "2026-06-15",
+  "id": "2026-06-16",
   "pieces": [
-    "ex",
-    "port_r",
-    "im",
-    "pan",
-    "cake",
-    "cup",
-    "air",
-    "port_n",
-    "come",
-    "back"
+    "pro",
+    "ject",
+    "in_pre",
+    "snow",
+    "man",
+    "black",
+    "board",
+    "key",
+    "grow",
+    "up"
   ],
   "targets": [
     {
-      "en": "EXPORT",
-      "hint": "Malları ülke dışına göndermek",
+      "en": "PROJECT",
+      "hint": "İleriye atılan plan",
       "tier": 3
     },
     {
-      "en": "IMPORT",
-      "hint": "Malları ülkeye getirmek",
+      "en": "INJECT",
+      "hint": "İğneyle içeri atmak",
       "tier": 3
     },
     {
-      "en": "PANCAKE",
-      "hint": "Tavada çevrilen kahvaltılık",
+      "en": "SNOWMAN",
+      "hint": "Havuç burunlu kış arkadaşı",
       "tier": 1
     },
     {
-      "en": "CUPCAKE",
-      "hint": "Fincan boyunda minik kek",
+      "en": "BLACKBOARD",
+      "hint": "Öğretmen tebeşirle yazar",
       "tier": 1
     },
     {
-      "en": "AIRPORT",
-      "hint": "Uçaklar buradan kalkar",
+      "en": "KEYBOARD",
+      "hint": "Bilgisayara yazı yazdıran",
       "tier": 1
     },
     {
-      "en": "COME BACK",
-      "hint": "Giden bazen yapar",
+      "en": "GROW UP",
+      "hint": "Çocukluk biter, bu olur",
       "tier": 2
     }
   ]

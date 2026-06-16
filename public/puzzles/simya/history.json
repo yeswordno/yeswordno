@@ -109,5 +109,16 @@
       "NEWSPAPER",
       "VISIBLE"
     ]
+  },
+  {
+    "date": "2026-06-22",
+    "ens": [
+      "INVISIBLE",
+      "FOOTBALL",
+      "FOOTPRINT",
+      "BASKETBALL",
+      "BREAK DOWN",
+      "WRITE DOWN"
+    ]
   }
 ]

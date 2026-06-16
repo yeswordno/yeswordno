@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-22",
+  "pieces": [
+    "in_pre",
+    "vis",
+    "ible",
+    "foot",
+    "ball",
+    "print",
+    "basket",
+    "break",
+    "down",
+    "write"
+  ],
+  "targets": [
+    {
+      "en": "INVISIBLE",
+      "hint": "Görülemeyen",
+      "tier": 3
+    },
+    {
+      "en": "FOOTBALL",
+      "hint": "Dünyanın en popüler sporu",
+      "tier": 1
+    },
+    {
+      "en": "FOOTPRINT",
+      "hint": "Kumsalda arkanda kalır",
+      "tier": 1
+    },
+    {
+      "en": "BASKETBALL",
+      "hint": "Topu potaya atarsın",
+      "tier": 1
+    },
+    {
+      "en": "BREAK DOWN",
+      "hint": "Araba yolda kalırsa...",
+      "tier": 2
+    },
+    {
+      "en": "WRITE DOWN",
+      "hint": "Unutmamak için kâğıda",
+      "tier": 2
+    }
+  ]
+}
