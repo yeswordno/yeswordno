@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-23",
+  "pieces": [
+    "earth",
+    "quake",
+    "wind",
+    "mill",
+    "day",
+    "dream",
+    "look",
+    "after",
+    "up",
+    "birth"
+  ],
+  "targets": [
+    {
+      "en": "EARTHQUAKE",
+      "hint": "Yerin sarsılması",
+      "tier": 1
+    },
+    {
+      "en": "WINDMILL",
+      "hint": "Don Kişot'un düşmanı",
+      "tier": 1
+    },
+    {
+      "en": "DAYDREAM",
+      "hint": "Gözün açık, aklın uzaklarda",
+      "tier": 1
+    },
+    {
+      "en": "LOOK AFTER",
+      "hint": "Hasta birine ya da bebeğe yapılır",
+      "tier": 2
+    },
+    {
+      "en": "LOOK UP",
+      "hint": "Bilmediğin kelimeye yapılır",
+      "tier": 2
+    },
+    {
+      "en": "BIRTHDAY",
+      "hint": "Yılda bir, pastalı kutlama",
+      "tier": 1
+    }
+  ]
+}
