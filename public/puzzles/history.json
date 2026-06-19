@@ -965,5 +965,83 @@
       "NA",
       "PT"
     ]
+  },
+  {
+    "date": "2026-06-25",
+    "level": "easy",
+    "words": [
+      "MG",
+      "MORNING",
+      "SNARL",
+      "BI",
+      "AIR",
+      "MESSAGE",
+      "OR",
+      "NIT",
+      "RA",
+      "ARK",
+      "ACT",
+      "HEM",
+      "NEAR",
+      "OH",
+      "URN",
+      "INCLUDE",
+      "NUT",
+      "RAM",
+      "GO",
+      "NA"
+    ]
+  },
+  {
+    "date": "2026-06-25",
+    "level": "medium",
+    "words": [
+      "OK",
+      "ABANDON",
+      "PLATE",
+      "KG",
+      "OAR",
+      "AIRPORT",
+      "BY",
+      "LAX",
+      "AG",
+      "ARM",
+      "ASK",
+      "PEA",
+      "NEAT",
+      "UP",
+      "ASP",
+      "DISEASE",
+      "OAK",
+      "SEA",
+      "ND",
+      "PC"
+    ]
+  },
+  {
+    "date": "2026-06-25",
+    "level": "hard",
+    "words": [
+      "AR",
+      "UNKNOWN",
+      "UPPER",
+      "BA",
+      "CUE",
+      "UNLUCKY",
+      "NE",
+      "PUN",
+      "KM",
+      "PEG",
+      "TEE",
+      "SET",
+      "NOTE",
+      "US",
+      "SAX",
+      "OVERSEE",
+      "WEE",
+      "APT",
+      "NO",
+      "XE"
+    ]
   }
 ]

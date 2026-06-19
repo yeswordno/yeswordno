@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-18",
+  "id": "2026-06-19",
   "pieces": [
-    "dis",
-    "tract",
-    "at",
-    "hand",
-    "bag",
-    "butter",
-    "fly",
-    "sun",
-    "rise",
-    "flower"
+    "re",
+    "ject",
+    "contra",
+    "dict",
+    "wheel",
+    "chair",
+    "star",
+    "fish",
+    "gold",
+    "pre"
   ],
   "targets": [
     {
-      "en": "DISTRACT",
-      "hint": "Telefon bildirimi ders çalışana bunu yapar",
+      "en": "REJECT",
+      "hint": "Teklifi geri fırlatmak",
       "tier": 3
     },
     {
-      "en": "ATTRACT",
-      "hint": "Mıknatıs demire bunu yapar",
+      "en": "CONTRADICT",
+      "hint": "Söylenene karşı söylemek",
       "tier": 3
     },
     {
-      "en": "HANDBAG",
-      "hint": "Omuzda ya da elde taşınır",
+      "en": "WHEELCHAIR",
+      "hint": "Hareket özgürlüğü sağlayan araç",
       "tier": 1
     },
     {
-      "en": "BUTTERFLY",
-      "hint": "Rengârenk kanatlı böcek",
+      "en": "STARFISH",
+      "hint": "Beş kollu deniz canlısı",
       "tier": 1
     },
     {
-      "en": "SUNRISE",
-      "hint": "Sabahın ilk ışıkları",
+      "en": "GOLDFISH",
+      "hint": "Akvaryumun turuncu sakini",
       "tier": 1
     },
     {
-      "en": "SUNFLOWER",
-      "hint": "Hep güneşe dönen sarı dev çiçek",
-      "tier": 1
+      "en": "PREDICT",
+      "hint": "Olmadan önce söylemek",
+      "tier": 3
     }
   ]
 }

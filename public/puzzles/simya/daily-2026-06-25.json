@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-25",
+  "pieces": [
+    "grand",
+    "father",
+    "mother",
+    "head",
+    "ache",
+    "get",
+    "on",
+    "turn",
+    "post",
+    "card"
+  ],
+  "targets": [
+    {
+      "en": "GRANDFATHER",
+      "hint": "Babanın babası",
+      "tier": 1
+    },
+    {
+      "en": "GRANDMOTHER",
+      "hint": "Annenin annesi",
+      "tier": 1
+    },
+    {
+      "en": "HEADACHE",
+      "hint": "Gürültü ve yorgunluk tetikler",
+      "tier": 1
+    },
+    {
+      "en": "GET ON",
+      "hint": "Otobüs durakta, kapı açıldı",
+      "tier": 2
+    },
+    {
+      "en": "TURN ON",
+      "hint": "Karanlık odada ilk yaptığın şey",
+      "tier": 2
+    },
+    {
+      "en": "POSTCARD",
+      "hint": "Tatilden gönderilen resimli kart",
+      "tier": 1
+    }
+  ]
+}
