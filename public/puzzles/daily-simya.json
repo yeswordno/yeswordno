@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-19",
+  "id": "2026-06-20",
   "pieces": [
-    "re",
-    "ject",
-    "contra",
-    "dict",
-    "wheel",
-    "chair",
-    "star",
-    "fish",
-    "gold",
-    "pre"
+    "in_pre",
+    "spect",
+    "or",
+    "hair",
+    "cut",
+    "sun",
+    "glasses",
+    "light",
+    "carry",
+    "on"
   ],
   "targets": [
     {
-      "en": "REJECT",
-      "hint": "Teklifi geri fırlatmak",
+      "en": "INSPECT",
+      "hint": "İçine dikkatle bakmak",
       "tier": 3
     },
     {
-      "en": "CONTRADICT",
-      "hint": "Söylenene karşı söylemek",
+      "en": "INSPECTOR",
+      "hint": "İçine bakan kişi — dedektif gibi",
       "tier": 3
     },
     {
-      "en": "WHEELCHAIR",
-      "hint": "Hareket özgürlüğü sağlayan araç",
+      "en": "HAIRCUT",
+      "hint": "Berberden çıkınca yenisi olur",
       "tier": 1
     },
     {
-      "en": "STARFISH",
-      "hint": "Beş kollu deniz canlısı",
+      "en": "SUNGLASSES",
+      "hint": "Yazın gözlerini korur",
       "tier": 1
     },
     {
-      "en": "GOLDFISH",
-      "hint": "Akvaryumun turuncu sakini",
+      "en": "SUNLIGHT",
+      "hint": "Bitkilerin besin kaynağı",
       "tier": 1
     },
     {
-      "en": "PREDICT",
-      "hint": "Olmadan önce söylemek",
-      "tier": 3
+      "en": "CARRY ON",
+      "hint": "Pes etmeden devam",
+      "tier": 2
     }
   ]
 }

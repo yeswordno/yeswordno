@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-26",
+  "pieces": [
+    "sea",
+    "food",
+    "week",
+    "end",
+    "moon",
+    "light",
+    "slow",
+    "down",
+    "turn",
+    "off"
+  ],
+  "targets": [
+    {
+      "en": "SEAFOOD",
+      "hint": "Karides, midye, balık...",
+      "tier": 1
+    },
+    {
+      "en": "WEEKEND",
+      "hint": "Cumartesi ve pazar",
+      "tier": 1
+    },
+    {
+      "en": "MOONLIGHT",
+      "hint": "Geceyi gümüşe boyar",
+      "tier": 1
+    },
+    {
+      "en": "SLOW DOWN",
+      "hint": "Trafik levhası bunu emreder",
+      "tier": 2
+    },
+    {
+      "en": "TURN DOWN",
+      "hint": "Teklife hayır demek",
+      "tier": 2
+    },
+    {
+      "en": "TURN OFF",
+      "hint": "Uyumadan önce ışığa yapılır",
+      "tier": 2
+    }
+  ]
+}
