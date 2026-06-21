@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-20",
+  "id": "2026-06-21",
   "pieces": [
-    "in_pre",
-    "spect",
-    "or",
-    "hair",
-    "cut",
-    "sun",
-    "glasses",
-    "light",
-    "carry",
-    "on"
+    "dict",
+    "ate",
+    "vis",
+    "ion",
+    "tooth",
+    "paste",
+    "brush",
+    "news",
+    "paper",
+    "ible"
   ],
   "targets": [
     {
-      "en": "INSPECT",
-      "hint": "İçine dikkatle bakmak",
+      "en": "DICTATE",
+      "hint": "Söyle, o yazsın",
       "tier": 3
     },
     {
-      "en": "INSPECTOR",
-      "hint": "İçine bakan kişi — dedektif gibi",
+      "en": "VISION",
+      "hint": "Hem göz hem gelecek için kullanılır",
       "tier": 3
     },
     {
-      "en": "HAIRCUT",
-      "hint": "Berberden çıkınca yenisi olur",
+      "en": "TOOTHPASTE",
+      "hint": "Fırçanın üzerine sıkılır",
       "tier": 1
     },
     {
-      "en": "SUNGLASSES",
-      "hint": "Yazın gözlerini korur",
+      "en": "TOOTHBRUSH",
+      "hint": "Sabah akşam kullanılır",
       "tier": 1
     },
     {
-      "en": "SUNLIGHT",
-      "hint": "Bitkilerin besin kaynağı",
+      "en": "NEWSPAPER",
+      "hint": "Her sabah taze haber",
       "tier": 1
     },
     {
-      "en": "CARRY ON",
-      "hint": "Pes etmeden devam",
-      "tier": 2
+      "en": "VISIBLE",
+      "hint": "Gözle seçilebilen",
+      "tier": 3
     }
   ]
 }
