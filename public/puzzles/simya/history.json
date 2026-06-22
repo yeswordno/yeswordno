@@ -153,5 +153,16 @@
       "TURN DOWN",
       "TURN OFF"
     ]
+  },
+  {
+    "date": "2026-06-28",
+    "ens": [
+      "REPORT",
+      "PORTABLE",
+      "POPCORN",
+      "BEDROOM",
+      "BATHROOM",
+      "LOOK FOR"
+    ]
   }
 ]

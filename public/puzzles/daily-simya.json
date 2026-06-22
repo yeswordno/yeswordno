@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-21",
+  "id": "2026-06-22",
   "pieces": [
-    "dict",
-    "ate",
+    "in_pre",
     "vis",
-    "ion",
-    "tooth",
-    "paste",
-    "brush",
-    "news",
-    "paper",
-    "ible"
+    "ible",
+    "foot",
+    "ball",
+    "print",
+    "basket",
+    "break",
+    "down",
+    "write"
   ],
   "targets": [
     {
-      "en": "DICTATE",
-      "hint": "Söyle, o yazsın",
+      "en": "INVISIBLE",
+      "hint": "Görülemeyen",
       "tier": 3
     },
     {
-      "en": "VISION",
-      "hint": "Hem göz hem gelecek için kullanılır",
-      "tier": 3
-    },
-    {
-      "en": "TOOTHPASTE",
-      "hint": "Fırçanın üzerine sıkılır",
+      "en": "FOOTBALL",
+      "hint": "Dünyanın en popüler sporu",
       "tier": 1
     },
     {
-      "en": "TOOTHBRUSH",
-      "hint": "Sabah akşam kullanılır",
+      "en": "FOOTPRINT",
+      "hint": "Kumsalda arkanda kalır",
       "tier": 1
     },
     {
-      "en": "NEWSPAPER",
-      "hint": "Her sabah taze haber",
+      "en": "BASKETBALL",
+      "hint": "Topu potaya atarsın",
       "tier": 1
     },
     {
-      "en": "VISIBLE",
-      "hint": "Gözle seçilebilen",
-      "tier": 3
+      "en": "BREAK DOWN",
+      "hint": "Araba yolda kalırsa...",
+      "tier": 2
+    },
+    {
+      "en": "WRITE DOWN",
+      "hint": "Unutmamak için kâğıda",
+      "tier": 2
     }
   ]
 }

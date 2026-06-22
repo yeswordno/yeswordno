@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-28",
+  "pieces": [
+    "re",
+    "port_r",
+    "able",
+    "pop",
+    "corn",
+    "bed",
+    "room",
+    "bath",
+    "look",
+    "for"
+  ],
+  "targets": [
+    {
+      "en": "REPORT",
+      "hint": "Olanları geri getirip anlatmak",
+      "tier": 3
+    },
+    {
+      "en": "PORTABLE",
+      "hint": "Laptop'un L'sinden önceki kısmın ruhu",
+      "tier": 3
+    },
+    {
+      "en": "POPCORN",
+      "hint": "Sinemanın vazgeçilmezi",
+      "tier": 1
+    },
+    {
+      "en": "BEDROOM",
+      "hint": "Evin uyunan odası",
+      "tier": 1
+    },
+    {
+      "en": "BATHROOM",
+      "hint": "Duş burada alınır",
+      "tier": 1
+    },
+    {
+      "en": "LOOK FOR",
+      "hint": "Kayıp anahtarına yaparsın",
+      "tier": 2
+    }
+  ]
+}
