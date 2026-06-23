@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-22",
+  "id": "2026-06-23",
   "pieces": [
-    "in_pre",
-    "vis",
-    "ible",
-    "foot",
-    "ball",
-    "print",
-    "basket",
-    "break",
-    "down",
-    "write"
+    "earth",
+    "quake",
+    "wind",
+    "mill",
+    "day",
+    "dream",
+    "look",
+    "after",
+    "up",
+    "birth"
   ],
   "targets": [
     {
-      "en": "INVISIBLE",
-      "hint": "Görülemeyen",
-      "tier": 3
-    },
-    {
-      "en": "FOOTBALL",
-      "hint": "Dünyanın en popüler sporu",
+      "en": "EARTHQUAKE",
+      "hint": "Yerin sarsılması",
       "tier": 1
     },
     {
-      "en": "FOOTPRINT",
-      "hint": "Kumsalda arkanda kalır",
+      "en": "WINDMILL",
+      "hint": "Don Kişot'un düşmanı",
       "tier": 1
     },
     {
-      "en": "BASKETBALL",
-      "hint": "Topu potaya atarsın",
+      "en": "DAYDREAM",
+      "hint": "Gözün açık, aklın uzaklarda",
       "tier": 1
     },
     {
-      "en": "BREAK DOWN",
-      "hint": "Araba yolda kalırsa...",
+      "en": "LOOK AFTER",
+      "hint": "Hasta birine ya da bebeğe yapılır",
       "tier": 2
     },
     {
-      "en": "WRITE DOWN",
-      "hint": "Unutmamak için kâğıda",
+      "en": "LOOK UP",
+      "hint": "Bilmediğin kelimeye yapılır",
       "tier": 2
+    },
+    {
+      "en": "BIRTHDAY",
+      "hint": "Yılda bir, pastalı kutlama",
+      "tier": 1
     }
   ]
 }

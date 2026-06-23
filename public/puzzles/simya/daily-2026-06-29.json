@@ -1,0 +1,52 @@
+{
+  "id": "2026-06-29",
+  "pieces": [
+    "spect",
+    "ator",
+    "re",
+    "lip",
+    "stick",
+    "fire",
+    "place",
+    "work",
+    "out",
+    "run"
+  ],
+  "targets": [
+    {
+      "en": "SPECTATOR",
+      "hint": "Maçı tribünden izleyen",
+      "tier": 3
+    },
+    {
+      "en": "RESPECT",
+      "hint": "Tekrar tekrar bakmaya değer bulmak",
+      "tier": 3
+    },
+    {
+      "en": "LIPSTICK",
+      "hint": "Dudaklara renk veren çubuk",
+      "tier": 1
+    },
+    {
+      "en": "FIREPLACE",
+      "hint": "Kışın evi ısıtan köşe",
+      "tier": 1
+    },
+    {
+      "en": "FIREWORK",
+      "hint": "Bayram gecesi gökyüzü şöleni",
+      "tier": 1
+    },
+    {
+      "en": "WORK OUT",
+      "hint": "Spor salonunda ter dökmek",
+      "tier": 2
+    },
+    {
+      "en": "RUN OUT",
+      "hint": "Telefonun şarjı bunu yapar",
+      "tier": 2
+    }
+  ]
+}
