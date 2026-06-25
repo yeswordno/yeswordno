@@ -1,0 +1,47 @@
+{
+  "id": "2026-06-30",
+  "pieces": [
+    "con",
+    "tract",
+    "ex",
+    "blue",
+    "berry",
+    "water",
+    "melon",
+    "fall",
+    "put",
+    "off"
+  ],
+  "targets": [
+    {
+      "en": "CONTRACT",
+      "hint": "İki tarafı birbirine çeken belge",
+      "tier": 3
+    },
+    {
+      "en": "EXTRACT",
+      "hint": "Dişçinin son çaresi",
+      "tier": 3
+    },
+    {
+      "en": "BLUEBERRY",
+      "hint": "Mavi, minik, vitamin deposu",
+      "tier": 1
+    },
+    {
+      "en": "WATERMELON",
+      "hint": "Yazın en sulu meyvesi",
+      "tier": 1
+    },
+    {
+      "en": "WATERFALL",
+      "hint": "Su yüksekten gürültüyle düşer",
+      "tier": 1
+    },
+    {
+      "en": "PUT OFF",
+      "hint": "Bugünün işini yarına bırakmak",
+      "tier": 2
+    }
+  ]
+}

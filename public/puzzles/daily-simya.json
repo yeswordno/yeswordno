@@ -1,46 +1,46 @@
 {
-  "id": "2026-06-23",
+  "id": "2026-06-25",
   "pieces": [
-    "earth",
-    "quake",
-    "wind",
-    "mill",
-    "day",
-    "dream",
-    "look",
-    "after",
-    "up",
-    "birth"
+    "grand",
+    "father",
+    "mother",
+    "head",
+    "ache",
+    "get",
+    "on",
+    "turn",
+    "post",
+    "card"
   ],
   "targets": [
     {
-      "en": "EARTHQUAKE",
-      "hint": "Yerin sarsılması",
+      "en": "GRANDFATHER",
+      "hint": "Babanın babası",
       "tier": 1
     },
     {
-      "en": "WINDMILL",
-      "hint": "Don Kişot'un düşmanı",
+      "en": "GRANDMOTHER",
+      "hint": "Annenin annesi",
       "tier": 1
     },
     {
-      "en": "DAYDREAM",
-      "hint": "Gözün açık, aklın uzaklarda",
+      "en": "HEADACHE",
+      "hint": "Gürültü ve yorgunluk tetikler",
       "tier": 1
     },
     {
-      "en": "LOOK AFTER",
-      "hint": "Hasta birine ya da bebeğe yapılır",
+      "en": "GET ON",
+      "hint": "Otobüs durakta, kapı açıldı",
       "tier": 2
     },
     {
-      "en": "LOOK UP",
-      "hint": "Bilmediğin kelimeye yapılır",
+      "en": "TURN ON",
+      "hint": "Karanlık odada ilk yaptığın şey",
       "tier": 2
     },
     {
-      "en": "BIRTHDAY",
-      "hint": "Yılda bir, pastalı kutlama",
+      "en": "POSTCARD",
+      "hint": "Tatilden gönderilen resimli kart",
       "tier": 1
     }
   ]
