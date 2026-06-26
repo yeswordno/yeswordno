@@ -1,47 +1,47 @@
 {
-  "id": "2026-06-25",
+  "id": "2026-06-26",
   "pieces": [
-    "grand",
-    "father",
-    "mother",
-    "head",
-    "ache",
-    "get",
-    "on",
+    "sea",
+    "food",
+    "week",
+    "end",
+    "moon",
+    "light",
+    "slow",
+    "down",
     "turn",
-    "post",
-    "card"
+    "off"
   ],
   "targets": [
     {
-      "en": "GRANDFATHER",
-      "hint": "Babanın babası",
+      "en": "SEAFOOD",
+      "hint": "Karides, midye, balık...",
       "tier": 1
     },
     {
-      "en": "GRANDMOTHER",
-      "hint": "Annenin annesi",
+      "en": "WEEKEND",
+      "hint": "Cumartesi ve pazar",
       "tier": 1
     },
     {
-      "en": "HEADACHE",
-      "hint": "Gürültü ve yorgunluk tetikler",
+      "en": "MOONLIGHT",
+      "hint": "Geceyi gümüşe boyar",
       "tier": 1
     },
     {
-      "en": "GET ON",
-      "hint": "Otobüs durakta, kapı açıldı",
+      "en": "SLOW DOWN",
+      "hint": "Trafik levhası bunu emreder",
       "tier": 2
     },
     {
-      "en": "TURN ON",
-      "hint": "Karanlık odada ilk yaptığın şey",
+      "en": "TURN DOWN",
+      "hint": "Teklife hayır demek",
       "tier": 2
     },
     {
-      "en": "POSTCARD",
-      "hint": "Tatilden gönderilen resimli kart",
-      "tier": 1
+      "en": "TURN OFF",
+      "hint": "Uyumadan önce ışığa yapılır",
+      "tier": 2
     }
   ]
 }

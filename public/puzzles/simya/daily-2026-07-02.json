@@ -1,0 +1,47 @@
+{
+  "id": "2026-07-02",
+  "pieces": [
+    "ex",
+    "port_r",
+    "im",
+    "cup",
+    "cake",
+    "pan",
+    "fire",
+    "fighter",
+    "grow",
+    "up"
+  ],
+  "targets": [
+    {
+      "en": "EXPORT",
+      "hint": "Malları ülke dışına göndermek",
+      "tier": 3
+    },
+    {
+      "en": "IMPORT",
+      "hint": "Malları ülkeye getirmek",
+      "tier": 3
+    },
+    {
+      "en": "CUPCAKE",
+      "hint": "Fincan boyunda minik kek",
+      "tier": 1
+    },
+    {
+      "en": "PANCAKE",
+      "hint": "Tavada çevrilen kahvaltılık",
+      "tier": 1
+    },
+    {
+      "en": "FIREFIGHTER",
+      "hint": "Alevlerle savaşan kahraman",
+      "tier": 1
+    },
+    {
+      "en": "GROW UP",
+      "hint": "Çocukluk biter, bu olur",
+      "tier": 2
+    }
+  ]
+}
