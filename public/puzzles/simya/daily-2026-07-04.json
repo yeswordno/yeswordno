@@ -1,0 +1,47 @@
+{
+  "id": "2026-07-04",
+  "pieces": [
+    "in_pre",
+    "ject",
+    "pro",
+    "snow",
+    "man",
+    "sun",
+    "set",
+    "flower",
+    "come",
+    "back"
+  ],
+  "targets": [
+    {
+      "en": "INJECT",
+      "hint": "İğneyle içeri atmak",
+      "tier": 3
+    },
+    {
+      "en": "PROJECT",
+      "hint": "İleriye atılan plan",
+      "tier": 3
+    },
+    {
+      "en": "SNOWMAN",
+      "hint": "Havuç burunlu kış arkadaşı",
+      "tier": 1
+    },
+    {
+      "en": "SUNSET",
+      "hint": "Akşam gökyüzü kızıla boyanır",
+      "tier": 1
+    },
+    {
+      "en": "SUNFLOWER",
+      "hint": "Hep güneşe dönen sarı dev çiçek",
+      "tier": 1
+    },
+    {
+      "en": "COME BACK",
+      "hint": "Giden bazen yapar",
+      "tier": 2
+    }
+  ]
+}
