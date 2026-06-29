@@ -1,46 +1,51 @@
 {
-  "id": "2026-06-28",
+  "id": "2026-06-29",
   "pieces": [
+    "spect",
+    "ator",
     "re",
-    "port_r",
-    "able",
-    "pop",
-    "corn",
-    "bed",
-    "room",
-    "bath",
-    "look",
-    "for"
+    "lip",
+    "stick",
+    "fire",
+    "place",
+    "work",
+    "out",
+    "run"
   ],
   "targets": [
     {
-      "en": "REPORT",
-      "hint": "Olanları geri getirip anlatmak",
+      "en": "SPECTATOR",
+      "hint": "Maçı tribünden izleyen",
       "tier": 3
     },
     {
-      "en": "PORTABLE",
-      "hint": "Laptop'un L'sinden önceki kısmın ruhu",
+      "en": "RESPECT",
+      "hint": "Tekrar tekrar bakmaya değer bulmak",
       "tier": 3
     },
     {
-      "en": "POPCORN",
-      "hint": "Sinemanın vazgeçilmezi",
+      "en": "LIPSTICK",
+      "hint": "Dudaklara renk veren çubuk",
       "tier": 1
     },
     {
-      "en": "BEDROOM",
-      "hint": "Evin uyunan odası",
+      "en": "FIREPLACE",
+      "hint": "Kışın evi ısıtan köşe",
       "tier": 1
     },
     {
-      "en": "BATHROOM",
-      "hint": "Duş burada alınır",
+      "en": "FIREWORK",
+      "hint": "Bayram gecesi gökyüzü şöleni",
       "tier": 1
     },
     {
-      "en": "LOOK FOR",
-      "hint": "Kayıp anahtarına yaparsın",
+      "en": "WORK OUT",
+      "hint": "Spor salonunda ter dökmek",
+      "tier": 2
+    },
+    {
+      "en": "RUN OUT",
+      "hint": "Telefonun şarjı bunu yapar",
       "tier": 2
     }
   ]
